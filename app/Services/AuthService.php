@@ -41,7 +41,8 @@ class AuthService
             'phone' => $validated['phone'],
             'password' => Hash::make($validated['password']),
             'device_token' => $validated['device_token'],
-            'last_login' => now()
+            'last_login' => now(),
+            'type' => User::TYPE_USER,
         ]);
     }
 

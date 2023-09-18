@@ -85,6 +85,7 @@ class ApiBaseController extends Controller
         $data = $this->fractal->createData($resource)->toArray();
 
         $data['message'] = $message;
+        $data['success'] = true;
 
         return $this->respondWithArray($data);
     }

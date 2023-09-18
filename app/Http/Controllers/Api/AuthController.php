@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\LoginRequest;
 use App\Services\AuthService;
-use App\Services\UserService;
+use App\Transformers\UserTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -22,8 +22,8 @@ class AuthController extends ApiBaseController
 
         return $this->respondWithArray([
             'success' => true,
-            'data'    => [
-                'code'  => $code,
+            'data' => [
+                'code' => $code,
             ]
         ]);
 
@@ -43,7 +43,7 @@ class AuthController extends ApiBaseController
         );
 
         // TODO Add otp code check
-        if ($validated['code'] != 1111){
+        if ($validated['code'] != 1111) {
             $this->setStatusCode(400);
             return $this->respondWithError('OTP did not match', 400);
         }
@@ -64,12 +64,11 @@ class AuthController extends ApiBaseController
     {
         $user = AuthService::register($request);
 
-        return $this->respondWithArray([
-            'success' => true,
-            'data' => [
-                'user' => array_merge($user->toArray(), ['token' => $user->createToken("API TOKEN")->plainTextToken])
-            ]
-        ]);
+        $user = array_merge($user->toArray(), ['token' => $user->createToken("API TOKEN")->plainTextToken]);
+        return $this->respondWithItem(
+            $user,
+            new UserTransformer()
+        );
     }
 
     /**
@@ -80,56 +79,11 @@ class AuthController extends ApiBaseController
     {
         AuthService::login($request);
 
-        return $this->respondWithArray([
-            'success' => true,
-            'data' => [
-                'user' => array_merge($request->user()->toArray(), ['token' => $request->user()->createToken("API TOKEN")->plainTextToken])
-            ]
-        ]);
+        $user = array_merge($request->user()->toArray(), ['token' => $request->user()->createToken("API TOKEN")->plainTextToken]);
+        return $this->respondWithItem(
+            $user,
+            new UserTransformer()
+        );
     }
 
-    /**
-     * Update the user password.
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function updatePassword(Request $request): JsonResponse
-    {
-        UserService::updatePassword($request);
-
-        return $this->respondWithArray([
-            'success' => true
-        ]);
-    }
-
-    /**
-     * Update the username or email of User.
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function update(Request $request): JsonResponse
-    {
-        UserService::update($request);
-
-        return $this->respondWithArray([
-            'success' => true,
-            'data'    => [
-                'user' => $request->user()
-            ]
-        ]);
-    }
-
-    /**
-     * Delete user.
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function delete(Request $request): JsonResponse
-    {
-        $request->user()->delete();
-
-        return $this->respondWithArray([
-            'success' => true
-        ]);
-    }
 }

@@ -23,13 +23,10 @@ class UserService
 
     public static function update(Request $request): void
     {
-        $validated = $request->validateWithBag('updatePassword', [
+        $validated = $request->validate([
             'username' => ['filled', 'string', 'min:3', 'alpha_dash', 'unique:' . User::class],
             'email' => ['filled', 'email', 'unique:' . User::class],
         ]);
-//        if($validated['username']){
-//            $validated['username'] = str_replace(' ', '_', $validated['username']);
-//        }
         $request->user()->update($validated);
     }
 }

@@ -24,9 +24,10 @@ class UserProfileService
             'profile_image' => ['filled', 'image'],
         ]);
 
-        if($validated['profile_image']){
+
+        if(isset($validated['profile_image'])){
             $profileImageName = $request->user()->phone.'-'.time().'.'.$request->profile_image->getClientOriginalExtension();
-            $validated['profile_image']->move(public_path('images/profile'), $profileImageName);
+            $validated['profile_image']->move(public_path('uploads/user/profile'), $profileImageName);
             $validated['profile_image'] = $profileImageName;
         }
         if($request->user()->profile){

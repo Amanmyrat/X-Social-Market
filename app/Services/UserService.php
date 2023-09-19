@@ -13,7 +13,18 @@ class UserService
     {
         $validated = $request->validateWithBag('updatePassword', [
             'current_password' => ['required', 'current_password'],
-            'password' => ['required', Password::defaults()],
+            'password' => ['required', 'confirmed', Password::defaults()],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+    }
+
+    public static function newPassword(Request $request): void
+    {
+        $validated = $request->validate([
+            'password' => ['required', 'confirmed',  Password::defaults()],
         ]);
 
         $request->user()->update([

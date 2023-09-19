@@ -25,6 +25,20 @@ class UserController extends ApiBaseController
     }
 
     /**
+     * Create new user password.
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function newPassword(Request $request): JsonResponse
+    {
+        UserService::newPassword($request);
+
+        return $this->respondWithArray([
+            'success' => true
+        ]);
+    }
+
+    /**
      * Update the username or email of User.
      * @param Request $request
      * @return JsonResponse

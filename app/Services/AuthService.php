@@ -9,18 +9,6 @@ use Illuminate\Http\Request;
 
 class AuthService
 {
-    public static function sendRegisterOtp(Request $request): int
-    {
-        $validated = $request->validate(
-            [
-                'phone' => ['required', 'integer', 'between:61000000,65999999', 'unique:' . User::class],
-            ]
-        );
-
-        // TODO Send OTP CODE to validated phone number
-        return 1111;
-    }
-
     /**
      * @param Request $request
      * @return User|null

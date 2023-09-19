@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\OtpController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserProfileController;
 use Illuminate\Http\Request;
@@ -21,14 +22,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('user/register/otp/send', [AuthController::class, 'sendRegisterOTP']);
-Route::post('user/register/otp/confirm', [AuthController::class, 'confirmRegisterOTP']);
+Route::post('user/otp/send', [OtpController::class, 'sendOTP']);
+Route::post('user/otp/confirm', [OtpController::class, 'confirmOTP']);
+
 Route::post('user/register', [AuthController::class, 'register']);
 Route::post('user/login', [AuthController::class, 'login']);
 
-
 Route::group(['middleware' => 'auth:sanctum'], function () {
-
     Route::post('user/update', [UserController::class, 'update']);
     Route::post('user/password/update', [UserController::class, 'updatePassword']);
     Route::post('user/delete', [UserController::class, 'delete']);

@@ -41,6 +41,9 @@ class OtpService
 
         $otpCode = OtpCode::where('phone', $validated['phone'])->get()->last();
 
+        if(!isset($otpCode)){
+            return  -1;
+        }
         if ($otpCode->code != $validated['code']) {
             return -1;
         }

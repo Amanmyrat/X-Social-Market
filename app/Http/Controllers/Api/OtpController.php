@@ -39,7 +39,7 @@ class OtpController extends ApiBaseController
      */
     public function confirmOtp(Request $request): JsonResponse
     {
-        $confirmed = AuthService::confirmOtp($request);
+        $confirmed = OtpService::confirmOtp($request);
 
         if ($confirmed == -1) {
             $this->setStatusCode(400);

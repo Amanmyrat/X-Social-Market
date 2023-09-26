@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Validation\Rules;
 use Hash;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ class AuthService
     /**
      * @param Request $request
      * @return User|null
-     * @throws \Exception
+     * @throws Exception
      */
     public static function register(Request $request): User|null
     {

@@ -7,7 +7,6 @@ use League\Fractal\TransformerAbstract;
 
 class UserProfileTransformer extends TransformerAbstract
 {
-
     public function transform(UserProfile $profile): array
     {
         return [

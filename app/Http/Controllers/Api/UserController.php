@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class UserController extends ApiBaseController
 {
-
     /**
      * Update the user password.
      * @param Request $request

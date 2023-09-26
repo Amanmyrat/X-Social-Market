@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class UserProfileController extends ApiBaseController
 {
-
     /**
      * Update the profile of user.
      * @param Request $request
@@ -24,5 +23,4 @@ class UserProfileController extends ApiBaseController
             new UserTransformer()
         );
     }
-
 }

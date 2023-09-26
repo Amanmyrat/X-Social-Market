@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -69,5 +71,29 @@ class User extends Authenticatable
     public function profile(): HasOne
     {
         return $this->hasOne(UserProfile::class);
+    }
+
+    /**
+     * Get stories record associated with the user.
+     */
+    public function stories(): HasMany
+    {
+        return $this->hasMany(Story::class);
+    }
+
+    /**
+     * Get user followers.
+     */
+    public function followers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'followers', 'following_user_id', 'user_id')->withTimestamps();
+    }
+
+    /**
+     * Get user followings
+     */
+    public function followings(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'followers', 'user_id', 'following_user_id')->withTimestamps();
     }
 }

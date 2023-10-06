@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\FollowerController;
 use App\Http\Controllers\Api\OtpController;
 use App\Http\Controllers\Api\PostController;
@@ -20,10 +21,6 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
 Route::prefix('users')->group(function () {
     Route::post('otp/send', [OtpController::class, 'sendOTP']);
@@ -49,8 +46,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::prefix('posts')->group(function () {
         Route::post('/', [PostController::class, 'myPosts']);
         Route::post('create', [PostController::class, 'create']);
-
     });
+
+
 
     Route::post('followers', [FollowerController::class, 'followers']);
     Route::post('followings', [FollowerController::class, 'followings']);
@@ -60,3 +58,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 });
 
+Route::prefix('categories')->group(function () {
+    Route::post('create', [CategoryController::class, 'create']);
+    Route::post('/', [CategoryController::class, 'categories']);
+});

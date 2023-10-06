@@ -12,11 +12,11 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * App\Models\Post
  *
  * @mixin Eloquent
- * @property mixed caption
- * @property mixed media_type
- * @property mixed id
- * @property mixed can_comment
- * @property mixed location
+ * @property int id
+ * @property string caption
+ * @property string media_type
+ * @property boolean can_comment
+ * @property string location
  */
 class Post extends Model implements HasMedia
 {

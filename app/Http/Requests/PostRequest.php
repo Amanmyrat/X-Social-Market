@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use JetBrains\PhpStorm\ArrayShape;
 
 class PostRequest extends FormRequest
 {
@@ -11,6 +12,12 @@ class PostRequest extends FormRequest
         return true;
     }
 
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    #[ArrayShape(['caption' => "string[]", 'location' => "string[]", 'can_comment' => "string[]", 'media_type' => "string[]", 'images' => "string[]", 'videos' => "string[]"])]
     public function rules(): array
     {
         return [

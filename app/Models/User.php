@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -78,7 +79,7 @@ class User extends Authenticatable
      */
     public function stories(): HasMany
     {
-        return $this->hasMany(Story::class);
+        return $this->hasMany(Story::class)->where('valid_until', '>', Carbon::now());
     }
 
     /**

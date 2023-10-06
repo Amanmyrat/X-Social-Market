@@ -41,6 +41,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
         Route::post('follow', [FollowerController::class, 'follow']);
         Route::post('unfollow', [FollowerController::class, 'unfollow']);
+
+        Route::post('{user_id}/stories', [StoryController::class, 'userStories']);
     });
 
     Route::prefix('posts')->group(function () {
@@ -49,9 +51,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
 
 
-
     Route::post('followers', [FollowerController::class, 'followers']);
-    Route::post('followings', [FollowerController::class, 'followings']);
+    Route::prefix('followings')->group(function () {
+        Route::post('/', [FollowerController::class, 'followings']);
+        Route::post('stories', [StoryController::class, 'followingStories']);
+    });
+
 
     Route::post('stories/create', [StoryController::class, 'create']);
     Route::post('stories', [StoryController::class, 'myStories']);

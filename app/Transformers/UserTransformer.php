@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use App\Models\UserProfile;
+use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
 
 class UserTransformer extends TransformerAbstract
@@ -29,13 +30,14 @@ class UserTransformer extends TransformerAbstract
         return $result;
     }
 
-    public function includeProfile($user)
+    public function includeProfile($user): ?Item
     {
         $profile = UserProfile::where('user_id', $user['id'])->get()->first();
 
         if($profile){
             return $this->item($profile, new UserProfileTransformer());
         }
+        return null;
     }
 
 }

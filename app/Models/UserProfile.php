@@ -11,6 +11,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * App\Models\UserProfile
  *
  * @mixin Eloquent
+ * @property mixed user_id
+ * @property mixed full_name
+ * @property mixed verified
+ * @property mixed private
+ * @property mixed profile_image
  */
 class UserProfile extends Model
 {

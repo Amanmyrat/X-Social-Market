@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * App\Models\Story
  *
  * @mixin Eloquent
+ * @property mixed id
+ * @property mixed image
  */
 class Story extends Model
 {

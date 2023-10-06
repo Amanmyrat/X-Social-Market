@@ -96,4 +96,12 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'followers', 'user_id', 'following_user_id')->withTimestamps();
     }
+
+    /**
+     * Get posts record associated with the user.
+     */
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
 }

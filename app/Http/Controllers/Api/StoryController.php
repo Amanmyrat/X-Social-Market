@@ -29,7 +29,7 @@ class StoryController extends ApiBaseController
      * My stories list
      * @return JsonResponse
      */
-    public function myStoriesList(): JsonResponse
+    public function myStories(): JsonResponse
     {
         return $this->respondWithCollection(auth()->user()->stories, new StoryTransformer());
     }

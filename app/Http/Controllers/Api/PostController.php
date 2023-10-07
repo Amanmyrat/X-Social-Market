@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\PostRequest;
+use App\Models\User;
 use App\Services\PostService;
 use App\Transformers\PostTransformer;
+use App\Transformers\StoryTransformer;
+use App\Transformers\UserPostTransformer;
+use App\Transformers\UserStoryTransformer;
 use Illuminate\Http\JsonResponse;
 
 class PostController extends ApiBaseController
@@ -32,5 +36,25 @@ class PostController extends ApiBaseController
     public function myPosts(): JsonResponse
     {
         return $this->respondWithCollection(auth()->user()->posts, new PostTransformer());
+    }
+
+    /**
+     * User posts list
+     * @param $user
+     * @return JsonResponse
+     */
+    public function userPosts($user): JsonResponse
+    {
+        $user = User::findOrFail($user);
+        return $this->respondWithCollection($user->posts, new PostTransformer());
+    }
+
+    /**
+     * Following users posts list
+     * @return JsonResponse
+     */
+    public function followingPosts(): JsonResponse
+    {
+        return $this->respondWithCollection(auth()->user()->followings, new UserPostTransformer());
     }
 }

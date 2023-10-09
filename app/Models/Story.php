@@ -6,6 +6,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\Story
@@ -54,6 +55,22 @@ class Story extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function views(): HasMany
+    {
+        return $this->hasMany(StoryView::class)->with('user');
+    }
+
+    public function myViews(): HasMany
+    {
+        return $this->hasMany(StoryView::class)
+            ->where('user_id', auth()->user()->id);
+    }
+
+    public function getIsViewed(): bool
+    {
+        return auth()->user() || auth('sanctum')->user() ? $this->myViews->isNotEmpty() : false;
     }
 
 }

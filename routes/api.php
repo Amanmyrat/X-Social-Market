@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\PostRatingController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\PostFavoritesController;
 use App\Http\Controllers\Api\StoryController;
+use App\Http\Controllers\Api\StoryViewController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserProfileController;
 use Illuminate\Support\Facades\Route;
@@ -69,7 +70,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::prefix('stories')->group(function () {
         Route::post('/', [StoryController::class, 'myStories']);
-        Route::post('stories/create', [StoryController::class, 'create']);
+        Route::post('/create', [StoryController::class, 'create']);
+
+        Route::post('/{story}/views', [StoryViewController::class, 'views']);
+        Route::post('/views/{story}/view', [StoryViewController::class, 'view']);
     });
 
     Route::post('followers', [FollowerController::class, 'followers']);

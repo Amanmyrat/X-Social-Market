@@ -111,4 +111,19 @@ class Post extends Model implements HasMedia
     {
         return $this->comments->isNotEmpty();
     }
+
+    public function ratings(): HasMany
+    {
+        return $this->hasMany(PostRating::class)->orderByDesc('created_at');
+    }
+
+    public function hasRating(): bool
+    {
+        return $this->ratings->isNotEmpty();
+    }
+
+    public function rating(): string
+    {
+        return $this->hasRating() ? floatval($this->ratings()->avg('rating')) : '-';
+    }
 }

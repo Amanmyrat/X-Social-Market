@@ -3,7 +3,6 @@
 namespace App\Transformers;
 
 use App\Models\PostComment;
-use App\Models\User;
 use Carbon\Carbon;
 use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
@@ -18,8 +17,7 @@ class CommentTransformer extends TransformerAbstract
     {
         return [
             'id' => $comment->id,
-            'user' => $comment->user->name,
-            'post' => $comment->post_id,
+            'user' => $comment->user,
             'comment' => $comment->comment,
             'date' => Carbon::parse($comment->created_at)->format('d.m.Y'),
         ];

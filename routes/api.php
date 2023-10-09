@@ -6,12 +6,12 @@ use App\Http\Controllers\Api\FollowerController;
 use App\Http\Controllers\Api\OtpController;
 use App\Http\Controllers\Api\PostBookmarkController;
 use App\Http\Controllers\Api\PostCommentController;
+use App\Http\Controllers\Api\PostRatingController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\PostFavoritesController;
 use App\Http\Controllers\Api\StoryController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserProfileController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -61,6 +61,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
         Route::post('/{post}/comments', [PostCommentController::class, 'comments']);
         Route::post('/{post}/comment', [PostCommentController::class, 'addComment']);
+
+        Route::post('/{post}/ratings', [PostRatingController::class, 'ratings']);
+        Route::post('/{post}/rating', [PostRatingController::class, 'addRating']);
+
     });
 
     Route::prefix('stories')->group(function () {

@@ -3,13 +3,13 @@
 namespace App\Transformers;
 
 use App\Models\Post;
-use JetBrains\PhpStorm\ArrayShape;
 use League\Fractal\TransformerAbstract;
 
 class PostTransformer extends TransformerAbstract
 {
     public function transform(Post $post): array
     {
+
         $medias = array();
         foreach ($post->getMedia() as $media){
             array_push($medias, [
@@ -27,6 +27,7 @@ class PostTransformer extends TransformerAbstract
             'location' => $post->location,
             'media_type' => $post->media_type,
             'can_comment' => $post->can_comment,
+            'rating' => $post->rating(),
             'media' => $medias,
         ];
     }

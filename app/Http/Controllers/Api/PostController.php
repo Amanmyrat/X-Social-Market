@@ -6,9 +6,7 @@ use App\Http\Requests\PostRequest;
 use App\Models\User;
 use App\Services\PostService;
 use App\Transformers\PostTransformer;
-use App\Transformers\StoryTransformer;
 use App\Transformers\UserPostTransformer;
-use App\Transformers\UserStoryTransformer;
 use Illuminate\Http\JsonResponse;
 
 class PostController extends ApiBaseController

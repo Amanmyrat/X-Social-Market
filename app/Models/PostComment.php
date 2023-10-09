@@ -6,18 +6,19 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * App\Models\UserProfile
+ * App\Models\PostComment
  *
  * @mixin Eloquent
- * @property mixed user_id
- * @property mixed full_name
- * @property mixed verified
- * @property mixed private
- * @property mixed profile_image
+ * @property int id
+ * @property int parent_id
+ * @property int user_id
+ * @property int post_id
+ * @property string comment
  */
-class UserProfile extends Model
+class PostComment extends Model
 {
     use HasFactory;
 
@@ -27,17 +28,10 @@ class UserProfile extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'parent_id',
         'user_id',
-        'full_name',
-        'profile_image',
-        'bio',
-        'location',
-        'website',
-        'birthdate',
-        'gender',
-        'payment_available',
-        'verified',
-        'private'
+        'post_id',
+        'comment'
     ];
 
     /**
@@ -46,25 +40,26 @@ class UserProfile extends Model
      * @var array<int, string>
      */
     protected $hidden = [
-        'created_at',
         'updated_at',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'birthdate' => 'datetime'
-    ];
-
-    /**
-     * Get the user that owns the phone.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    public function post(): BelongsTo
+    {
+        return $this->belongsTo(Post::class);
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(PostComment::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(PostComment::class, 'parent_id');
+    }
 }

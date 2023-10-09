@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\CategoryRequest;
-use App\Models\Category;
-use App\Services\CategoryService;
+use App\Models\PostCategory;
+use App\Services\PostCategoryService;
 use App\Transformers\CategoryTransformer;
 use Illuminate\Http\JsonResponse;
 
@@ -17,7 +17,7 @@ class CategoryController extends ApiBaseController
      */
     public function create(CategoryRequest $request): JsonResponse
     {
-        CategoryService::create($request);
+        PostCategoryService::create($request);
         return $this->respondWithArray([
                 'success' => true,
                 'message' => 'Successfully created a new category'
@@ -31,7 +31,7 @@ class CategoryController extends ApiBaseController
      */
     public function categories(): JsonResponse
     {
-        return $this->respondWithCollection(Category::all(), new CategoryTransformer());
+        return $this->respondWithCollection(PostCategory::all(), new CategoryTransformer());
     }
 
 }

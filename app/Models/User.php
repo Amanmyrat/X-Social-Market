@@ -105,4 +105,20 @@ class User extends Authenticatable
     {
         return $this->hasMany(Post::class);
     }
+
+    /**
+     * Get favorites associated with the user.
+     */
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(PostFavorite::class)->orderByDesc('created_at');
+    }
+
+    /**
+     * Get bookmarks associated with the user.
+     */
+    public function bookmarks(): HasMany
+    {
+        return $this->hasMany(PostBookmark::class)->orderByDesc('created_at');
+    }
 }

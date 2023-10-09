@@ -5,6 +5,8 @@ namespace App\Models;
 use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -13,7 +15,11 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  *
  * @mixin Eloquent
  * @property int id
+ * @property int user_id
+ * @property int category_id
  * @property string caption
+ * @property int price
+ * @property string description
  * @property string media_type
  * @property boolean can_comment
  * @property string location
@@ -30,10 +36,79 @@ class Post extends Model implements HasMedia
      */
     protected $fillable = [
         'user_id',
+        'category_id',
         'media_type',
         'caption',
+        'price',
+        'description',
         'location',
         'can_comment'
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'updated_at',
+    ];
+
+    /**
+     * Get the user that owns the post.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the category that owns the post.
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(PostCategory::class);
+    }
+
+    public function myFavorites(): HasMany
+    {
+        return $this->hasMany(PostFavorite::class)
+            ->where('user_id', auth()->user()->id);
+    }
+
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(PostFavorite::class);
+    }
+
+    public function getIsFavorite(): bool
+    {
+        return auth()->user() || auth('sanctum')->user() ? $this->myFavorites->isNotEmpty() : false;
+    }
+
+    public function myBookmarks(): HasMany
+    {
+        return $this->hasMany(PostBookmark::class)
+            ->where('user_id', auth()->user()->id);
+    }
+
+    public function bookmarks(): HasMany
+    {
+        return $this->hasMany(PostBookmark::class);
+    }
+
+    public function getIsBookmark(): bool
+    {
+        return auth()->user() || auth('sanctum')->user() ? $this->myBookmarks->isNotEmpty() : false;
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(PostComment::class)->where('parent_id',0)->orderByDesc('created_at');
+    }
+
+    public function hasComments(): bool
+    {
+        return $this->comments->isNotEmpty();
+    }
 }

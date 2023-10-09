@@ -4,7 +4,10 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\FollowerController;
 use App\Http\Controllers\Api\OtpController;
+use App\Http\Controllers\Api\PostBookmarkController;
+use App\Http\Controllers\Api\PostCommentController;
 use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\PostFavoritesController;
 use App\Http\Controllers\Api\StoryController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserProfileController;
@@ -49,6 +52,15 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::prefix('posts')->group(function () {
         Route::post('/', [PostController::class, 'myPosts']);
         Route::post('create', [PostController::class, 'create']);
+
+        Route::post('favorites', [PostFavoritesController::class, 'favorites']);
+        Route::post('/favorites/{post}/change', [PostFavoritesController::class, 'change']);
+
+        Route::post('bookmarks', [PostBookmarkController::class, 'bookmarks']);
+        Route::post('/bookmarks/{post}/change', [PostBookmarkController::class, 'change']);
+
+        Route::post('/{post}/comments', [PostCommentController::class, 'comments']);
+        Route::post('/{post}/comment', [PostCommentController::class, 'addComment']);
     });
 
     Route::prefix('stories')->group(function () {
@@ -63,9 +75,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('stories', [StoryController::class, 'followingStories']);
         Route::post('posts', [PostController::class, 'followingPosts']);
     });
+
 });
 
-Route::prefix('categories')->group(function () {
+Route::prefix('post/categories')->group(function () {
     Route::post('create', [CategoryController::class, 'create']);
     Route::post('/', [CategoryController::class, 'categories']);
 });
+

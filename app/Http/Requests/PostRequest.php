@@ -17,11 +17,14 @@ class PostRequest extends FormRequest
      *
      * @return array
      */
-    #[ArrayShape(['caption' => "string[]", 'location' => "string[]", 'can_comment' => "string[]", 'media_type' => "string[]", 'images' => "string[]", 'videos' => "string[]"])]
+    #[ArrayShape(['category_id' => "string[]", 'caption' => "string[]", 'price' => "string[]", 'description' => "string[]", 'location' => "string[]", 'can_comment' => "string[]", 'media_type' => "string[]", 'images' => "string[]", 'videos' => "string[]"])]
     public function rules(): array
     {
         return [
+            'category_id' => ['required', 'int', 'exists:post_categories,id'],
             'caption' => ['required', 'string', 'max:255'],
+            'price' => ['required', 'int'],
+            'description' => ['required', 'string', 'max:255'],
             'location' => ['required', 'string', 'max:255'],
             'can_comment' => ['required', 'boolean'],
             'media_type' => ['required', 'in:image,video'],

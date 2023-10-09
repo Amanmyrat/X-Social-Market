@@ -8,7 +8,6 @@ use League\Fractal\TransformerAbstract;
 
 class PostTransformer extends TransformerAbstract
 {
-    #[ArrayShape(['id' => "mixed", 'caption' => "mixed", 'location' => "mixed", 'media_type' => "mixed", 'can_comment' => "mixed", 'media' => "\Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection"])]
     public function transform(Post $post): array
     {
         $medias = array();
@@ -21,7 +20,10 @@ class PostTransformer extends TransformerAbstract
         }
         return [
             'id' => $post->id,
+            'category' => $post->category,
             'caption' => $post->caption,
+            'price' => $post->price,
+            'description' => $post->description,
             'location' => $post->location,
             'media_type' => $post->media_type,
             'can_comment' => $post->can_comment,

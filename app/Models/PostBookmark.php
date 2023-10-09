@@ -7,17 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+
 /**
- * App\Models\UserProfile
+ * App\Models\PostBookmark
  *
  * @mixin Eloquent
  * @property mixed user_id
- * @property mixed full_name
- * @property mixed verified
- * @property mixed private
- * @property mixed profile_image
+ * @property mixed post_id
  */
-class UserProfile extends Model
+class PostBookmark extends Model
 {
     use HasFactory;
 
@@ -26,19 +24,7 @@ class UserProfile extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'user_id',
-        'full_name',
-        'profile_image',
-        'bio',
-        'location',
-        'website',
-        'birthdate',
-        'gender',
-        'payment_available',
-        'verified',
-        'private'
-    ];
+    protected $fillable = ['user_id', 'post_id'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -50,21 +36,13 @@ class UserProfile extends Model
         'updated_at',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'birthdate' => 'datetime'
-    ];
-
-    /**
-     * Get the user that owns the phone.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    public function post(): BelongsTo
+    {
+        return $this->belongsTo(Post::class);
+    }
 }

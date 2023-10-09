@@ -3,12 +3,12 @@
 namespace App\Services;
 
 use App\Http\Requests\CategoryRequest;
-use App\Models\Category;
+use App\Models\PostCategory;
 
-class CategoryService
+class PostCategoryService
 {
     public static function create(CategoryRequest $request): void
     {
-        Category::create($request->validated());
+        PostCategory::create($request->validated());
     }
 }

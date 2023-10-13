@@ -8,6 +8,7 @@ use App\Services\PostService;
 use App\Transformers\PostTransformer;
 use App\Transformers\UserPostTransformer;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class PostController extends ApiBaseController
 {
@@ -54,5 +55,15 @@ class PostController extends ApiBaseController
     public function followingPosts(): JsonResponse
     {
         return $this->respondWithCollection(auth()->user()->followings, new UserPostTransformer());
+    }
+
+    /**
+     * Search posts
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function search(Request $request): JsonResponse
+    {
+        return $this->respondWithCollection(PostService::searchPosts($request), new PostTransformer());
     }
 }

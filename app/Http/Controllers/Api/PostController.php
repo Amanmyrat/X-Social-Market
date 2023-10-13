@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\PostRequest;
+use App\Models\Post;
 use App\Models\User;
 use App\Services\PostService;
 use App\Transformers\PostTransformer;
@@ -65,5 +66,15 @@ class PostController extends ApiBaseController
     public function search(Request $request): JsonResponse
     {
         return $this->respondWithCollection(PostService::searchPosts($request), new PostTransformer());
+    }
+
+    /**
+     * Post details
+     * @param Post $post
+     * @return JsonResponse
+     */
+    public function postDetails(Post $post): JsonResponse
+    {
+        return $this->respondWithItem($post, new PostTransformer());
     }
 }

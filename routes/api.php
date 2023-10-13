@@ -67,6 +67,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/{post}/rating', [PostRatingController::class, 'addRating']);
 
         Route::post('/search', [PostController::class, 'search']);
+        Route::post('/{post}', [PostController::class, 'postDetails']);
     });
 
     Route::prefix('stories')->group(function () {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\StoryRequest;
 use App\Models\Story;
 use App\Models\User;
 use App\Services\StoryService;
@@ -14,10 +15,10 @@ class StoryController extends ApiBaseController
 {
     /**
      * Create story
-     * @param Request $request
+     * @param StoryRequest $request
      * @return JsonResponse
      */
-    public function create(Request $request): JsonResponse
+    public function create(StoryRequest $request): JsonResponse
     {
         StoryService::create($request);
 

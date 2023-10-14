@@ -13,7 +13,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @mixin Eloquent
  * @property mixed id
+ * @property mixed user_id
+ * @property mixed post_id
  * @property mixed image
+ * @property mixed valid_until
  */
 class Story extends Model
 {
@@ -26,6 +29,7 @@ class Story extends Model
      */
     protected $fillable = [
         'user_id',
+        'post_id',
         'image',
         'valid_until'
     ];
@@ -55,6 +59,14 @@ class Story extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the post
+     */
+    public function post(): BelongsTo
+    {
+        return $this->belongsTo(Post::class)->with('media');
     }
 
     public function views(): HasMany

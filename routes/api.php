@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\FollowerController;
 use App\Http\Controllers\Api\OtpController;
@@ -48,6 +49,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
         Route::post('{user_id}/stories', [StoryController::class, 'userStories']);
         Route::post('{user_id}/posts', [PostController::class, 'userPosts']);
+
+        Route::post('block', [BlockedUserController::class, 'block']);
+        Route::post('unblock', [BlockedUserController::class, 'unblock']);
+
+        Route::post('block/list', [BlockedUserController::class, 'blockedList']);
     });
 
     Route::prefix('posts')->group(function () {

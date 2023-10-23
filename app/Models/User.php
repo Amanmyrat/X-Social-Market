@@ -121,4 +121,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(PostBookmark::class)->orderByDesc('created_at');
     }
+
+    /**
+     * Get user blocked list
+     */
+    public function blockedUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'blocked_users', 'user_id', 'blocked_user_id')->withTimestamps();
+    }
 }

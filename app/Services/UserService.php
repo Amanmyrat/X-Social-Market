@@ -21,6 +21,16 @@ class UserService
         ]);
     }
 
+    public static function updatePhone(Request $request): void
+    {
+        $validated = $request->validate(
+            [
+                'phone' => ['required', 'integer', 'between:61000000,65999999', 'unique:' . User::class],
+            ]
+        );
+        $request->user()->update($validated);
+    }
+
     public static function newPassword(Request $request): void
     {
         $validated = $request->validate([

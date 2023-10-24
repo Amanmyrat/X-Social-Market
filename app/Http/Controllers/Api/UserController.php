@@ -24,6 +24,20 @@ class UserController extends ApiBaseController
     }
 
     /**
+     * Update the user phone.
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function updatePhone(Request $request): JsonResponse
+    {
+        UserService::updatePhone($request);
+
+        return $this->respondWithArray([
+            'success' => true
+        ]);
+    }
+
+    /**
      * Create new user password.
      * @param Request $request
      * @return JsonResponse

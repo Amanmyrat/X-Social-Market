@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\PostCommentController;
 use App\Http\Controllers\Api\PostRatingController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\PostFavoritesController;
+use App\Http\Controllers\Api\PostSpamController;
 use App\Http\Controllers\Api\SpamTypeController;
 use App\Http\Controllers\Api\StoryController;
 use App\Http\Controllers\Api\StoryViewController;
@@ -75,6 +76,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
         Route::post('/search', [PostController::class, 'search']);
         Route::post('/{post}', [PostController::class, 'postDetails']);
+
+        Route::post('/{post}/spam', [PostSpamController::class, 'spamPost']);
     });
 
     Route::prefix('stories')->group(function () {

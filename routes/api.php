@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\PostCommentController;
 use App\Http\Controllers\Api\PostRatingController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\PostFavoritesController;
+use App\Http\Controllers\Api\SpamTypeController;
 use App\Http\Controllers\Api\StoryController;
 use App\Http\Controllers\Api\StoryViewController;
 use App\Http\Controllers\Api\UserController;
@@ -97,5 +98,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 Route::prefix('post/categories')->group(function () {
     Route::post('create', [CategoryController::class, 'create']);
     Route::post('/', [CategoryController::class, 'categories']);
+});
+
+Route::prefix('spam')->group(function () {
+    Route::post('types/create', [SpamTypeController::class, 'create']);
+    Route::post('types', [SpamTypeController::class, 'types']);
 });
 

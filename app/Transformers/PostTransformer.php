@@ -9,7 +9,6 @@ class PostTransformer extends TransformerAbstract
 {
     public function transform(Post $post): array
     {
-
         $medias = array();
         foreach ($post->getMedia() as $media){
             array_push($medias, [

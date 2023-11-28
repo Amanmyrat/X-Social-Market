@@ -109,3 +109,4 @@ Route::prefix('spam')->group(function () {
     Route::post('types', [SpamTypeController::class, 'types']);
 });
 
+Route::post('posts/all/list', [PostController::class, 'allPosts']);

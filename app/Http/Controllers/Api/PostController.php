@@ -39,6 +39,15 @@ class PostController extends ApiBaseController
     }
 
     /**
+     * All posts list
+     * @return JsonResponse
+     */
+    public function allPosts(): JsonResponse
+    {
+        return $this->respondWithCollection(Post::all(), new PostTransformer());
+    }
+
+    /**
      * User posts list
      * @param $user
      * @return JsonResponse

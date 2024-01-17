@@ -3,14 +3,20 @@
 namespace App\Transformers;
 
 use App\Models\Post;
+use App\Models\Story;
+use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
 
 class PostTransformer extends TransformerAbstract
 {
+    protected array $defaultIncludes = [
+        'user'
+    ];
+
     public function transform(Post $post): array
     {
         $medias = array();
-        foreach ($post->getMedia() as $media){
+        foreach ($post->getMedia() as $media) {
             array_push($medias, [
                 'original_url' => $media->original_url,
                 'extension' => $media->extension,
@@ -29,5 +35,10 @@ class PostTransformer extends TransformerAbstract
             'rating' => $post->rating(),
             'media' => $medias,
         ];
+    }
+
+    public function includeUser(Post $post): Item
+    {
+        return $this->item($post->user, new UserTransformer());
     }
 }

@@ -12,11 +12,19 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-
 /**
  * App\Models\User
  *
  * @mixin Eloquent
+ * @property int id
+ * @property string phone
+ * @property string username
+ * @property string email
+ * @property string password
+ * @property string type
+ * @property string device_token
+ * @property string last_login
+ * @property bool is_online
  */
 class User extends Authenticatable
 {
@@ -38,7 +46,8 @@ class User extends Authenticatable
         'password',
         'type',
         'device_token',
-        'last_login'
+        'last_login',
+        'is_online',
     ];
 
     /**
@@ -129,4 +138,14 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'blocked_users', 'user_id', 'blocked_user_id')->withTimestamps();
     }
+
+    public function chats()
+    {
+        return Chat::where(function ($query) {
+            $query->where('sender_user_id', $this->id)
+                ->orWhere('receiver_user_id', $this->id);
+        })->whereNotDeleted(); // Assuming whereNotDeleted is a defined scope
+    }
+
+
 }

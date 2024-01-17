@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 
 class PostRatingService
 {
+    /**
+     * @param Request $request
+     * @param Post $post
+     */
     public static function addRating(Request $request, Post $post): void
     {
         $validated = $request->validate([

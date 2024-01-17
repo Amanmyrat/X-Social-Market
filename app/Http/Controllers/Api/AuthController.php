@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\LoginRequest;
 use App\Services\AuthService;
 use App\Transformers\UserTransformer;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class AuthController extends ApiBaseController
      * Create User
      * @param Request $request
      * @return JsonResponse
-     * @throws \Exception
+     * @throws Exception
      */
     public function register(Request $request): JsonResponse
     {
@@ -29,7 +30,7 @@ class AuthController extends ApiBaseController
 
     /**
      * Login user
-     * @throws \Exception
+     * @throws Exception
      */
     public function login(LoginRequest $request): JsonResponse
     {

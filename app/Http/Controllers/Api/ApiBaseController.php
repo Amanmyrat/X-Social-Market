@@ -29,12 +29,14 @@ class ApiBaseController extends Controller
      */
     protected Manager $fractal;
 
-    public function __construct(Request $request)
+    public function __construct()
     {
         $this->fractal = new Manager;
+        $this->fractal->setSerializer(new App\Helpers\FractalSerializer());
 
-        $locale = $request->header('X-Localization') ?? 'tm';
-        App::setLocale($locale);
+
+//        $locale = $request->header('X-Localization') ?? 'tm';
+//        App::setLocale($locale);
     }
 
     /**
@@ -80,7 +82,7 @@ class ApiBaseController extends Controller
      */
     public function respondWithItem($item, $callback, string $message = 'Successfully'): JsonResponse
     {
-        $resource = new Item($item, $callback);
+        $resource = new Item($item, $callback, 'data');
 
         $data = $this->fractal->createData($resource)->toArray();
 
@@ -100,7 +102,7 @@ class ApiBaseController extends Controller
      */
     public function respondWithCollection($collection, $callback, string $message = 'Successfully', $extras = null): JsonResponse
     {
-        $resource = new Collection($collection, $callback);
+        $resource = new Collection($collection, $callback, 'data');
 
         $data = $this->fractal->createData($resource)->toArray();
 
@@ -124,7 +126,7 @@ class ApiBaseController extends Controller
      */
     public function respondWithPaginator($paginator, $callback, string $message = 'Successfully'): JsonResponse
     {
-        $resource = new Collection($paginator->getCollection(), $callback);
+        $resource = new Collection($paginator->getCollection(), $callback, 'data');
 
         $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
 

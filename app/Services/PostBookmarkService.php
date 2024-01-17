@@ -8,6 +8,10 @@ use Illuminate\Support\Collection;
 
 class PostBookmarkService
 {
+    /**
+     * @param Post $post
+     * @return string
+     */
     public static function add(Post $post): string
     {
         $message = trans('notification.bookmark_success');
@@ -23,6 +27,9 @@ class PostBookmarkService
         return $message;
     }
 
+    /**
+     * @return Collection
+     */
     public static function get(): Collection
     {
         $bookmarks = auth()->user()->bookmarks->pluck('post_id')->toArray();

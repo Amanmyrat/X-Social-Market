@@ -10,6 +10,9 @@ use Illuminate\Validation\Rules\Password;
 
 class UserProfileService
 {
+    /**
+     * @param Request $request
+     */
     public static function update(Request $request): void
     {
         $validated = $request->validate([

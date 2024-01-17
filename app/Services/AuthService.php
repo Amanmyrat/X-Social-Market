@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
+use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use Exception;
 use Illuminate\Validation\Rules;
 use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class AuthService
 {
@@ -36,10 +38,11 @@ class AuthService
     }
 
     /**
-     * @param Request $request
+     * @param LoginRequest $request
      * @return void
+     * @throws ValidationException
      */
-    public static function login(Request $request): void
+    public static function login(LoginRequest $request): void
     {
         $request->authenticate();
         $request->user()->update(

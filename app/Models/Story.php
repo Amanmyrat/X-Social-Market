@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property mixed id
  * @property mixed user_id
  * @property mixed post_id
- * @property mixed image
+ * @property string image
  * @property mixed valid_until
  */
 class Story extends Model

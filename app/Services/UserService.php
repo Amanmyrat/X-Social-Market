@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Jobs\ProcessUserOffline;
+use App\Jobs\ProcessUserOnline;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -9,6 +11,9 @@ use Illuminate\Validation\Rules\Password;
 
 class UserService
 {
+    /**
+     * @param Request $request
+     */
     public static function updatePassword(Request $request): void
     {
         $validated = $request->validateWithBag('updatePassword', [
@@ -21,6 +26,9 @@ class UserService
         ]);
     }
 
+    /**
+     * @param Request $request
+     */
     public static function updatePhone(Request $request): void
     {
         $validated = $request->validate(
@@ -31,6 +39,9 @@ class UserService
         $request->user()->update($validated);
     }
 
+    /**
+     * @param Request $request
+     */
     public static function newPassword(Request $request): void
     {
         $validated = $request->validate([
@@ -42,6 +53,9 @@ class UserService
         ]);
     }
 
+    /**
+     * @param Request $request
+     */
     public static function update(Request $request): void
     {
         $validated = $request->validate([
@@ -49,5 +63,22 @@ class UserService
             'email' => ['filled', 'email', 'unique:' . User::class],
         ]);
         $request->user()->update($validated);
+    }
+
+    /**
+     * @param User $user
+     * @param bool $isOnline
+     */
+    public function setOnlineStatus(User $user, bool $isOnline)
+    {
+        $user->is_online = $isOnline;
+        $user->last_login = now();
+        $user->save();
+
+        if ($isOnline) {
+            ProcessUserOnline::dispatch($user);
+        } else {
+            ProcessUserOffline::dispatch($user);
+        }
     }
 }

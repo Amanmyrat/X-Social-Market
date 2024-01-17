@@ -4,10 +4,14 @@ namespace App\Services;
 
 use App\Http\Requests\PostRequest;
 use App\Models\Post;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class PostService
 {
+    /**
+     * @param PostRequest $request
+     */
     public static function create(PostRequest $request): void
     {
         $post = Post::create(array_merge($request->validated(), [
@@ -26,7 +30,11 @@ class PostService
 
     }
 
-    public static function searchPosts(Request $request)
+    /**
+     * @param Request $request
+     * @return array|Collection
+     */
+    public static function searchPosts(Request $request): array|Collection
     {
         $limit = $request->get('limit');
 
@@ -68,6 +76,10 @@ class PostService
         return $products->limit($limit)->get();
     }
 
+    /**
+     * @param $sort
+     * @return array
+     */
     private static function getSort($sort): array
     {
         $sort_key = trim($sort, '-');

@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 
 class UserBlockService
 {
+    /**
+     * @param Request $request
+     */
     public static function block(Request $request): void
     {
         $validated = $request->validate([
@@ -19,6 +22,9 @@ class UserBlockService
         auth()->user()->blockedUsers()->syncWithoutDetaching($block);
     }
 
+    /**
+     * @param Request $request
+     */
     public static function unblock(Request $request): void
     {
         $validated = $request->validate(

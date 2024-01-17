@@ -8,6 +8,9 @@ use Carbon\Carbon;
 
 class StoryService
 {
+    /**
+     * @param StoryRequest $request
+     */
     public static function create(StoryRequest $request): void
     {
         $validated = $request->validated();
@@ -23,7 +26,7 @@ class StoryService
 
         Story::create(array_merge($validated, [
             'user_id' => $request->user()->id,
-            'valid_until' => Carbon::now()->addDay(),
+            'valid_until' => Carbon::now()->addYear(),
         ]));
 
     }

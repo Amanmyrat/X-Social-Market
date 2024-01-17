@@ -3,7 +3,9 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\FollowerController;
+use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\OtpController;
 use App\Http\Controllers\Api\PostBookmarkController;
 use App\Http\Controllers\Api\PostCommentController;
@@ -28,6 +30,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+//Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
 Route::prefix('users')->group(function () {
     Route::post('otp/send', [OtpController::class, 'sendOTP']);
@@ -97,6 +100,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('posts', [PostController::class, 'followingPosts']);
     });
 
+    Route::post('/chat/create', [ChatController::class, 'createChat']);
+    Route::post('/chat/list', [ChatController::class, 'listChats']);
+
+    Route::post('/chat/send/message', [MessageController::class, 'sendMessage']);
+    Route::post('/chat/{chatId}/messages', [MessageController::class, 'listMessages']);
+    Route::post('/message/{messageId}/read', [MessageController::class, 'readMessage']);
+
 });
 
 Route::prefix('post/categories')->group(function () {
@@ -110,3 +120,6 @@ Route::prefix('spam')->group(function () {
 });
 
 Route::post('posts/all/list', [PostController::class, 'allPosts']);
+
+
+

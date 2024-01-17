@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Services\AuthService;
 use App\Services\OtpService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -14,6 +14,7 @@ class OtpController extends ApiBaseController
      * Send otp code to the given phone
      * @param Request $request
      * @return JsonResponse
+     * @throws Exception
      */
     public function sendOTP(Request $request): JsonResponse
     {

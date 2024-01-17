@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 
 class SpamService
 {
+    /**
+     * @param Request $request
+     */
     public static function create(Request $request): void
     {
         $validated = $request->validate([
@@ -17,6 +20,10 @@ class SpamService
         SpamType::create($validated);
     }
 
+    /**
+     * @param Post $post
+     * @param Request $request
+     */
     public static function spamPost(Post $post, Request $request): void
     {
         $validated = $request->validate([

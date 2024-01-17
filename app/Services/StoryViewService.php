@@ -11,6 +11,10 @@ use Illuminate\Support\Collection;
 
 class StoryViewService
 {
+    /**
+     * @param Story $story
+     * @return string
+     */
     public static function addView(Story $story): string
     {
         $message = trans('notification.favorite_success');

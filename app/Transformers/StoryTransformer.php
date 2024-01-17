@@ -13,7 +13,7 @@ use League\Fractal\TransformerAbstract;
 class StoryTransformer extends TransformerAbstract
 {
     protected array $defaultIncludes = [
-        'post'
+        'post', 'user'
     ];
 
     #[ArrayShape(['id' => "mixed", 'image' => "mixed"])]
@@ -33,5 +33,10 @@ class StoryTransformer extends TransformerAbstract
         else{
             return null;
         }
+    }
+
+    public function includeUser(Story $story)
+    {
+        return $this->item($story->user, new UserTransformer());
     }
 }

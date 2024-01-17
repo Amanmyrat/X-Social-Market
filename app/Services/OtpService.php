@@ -4,11 +4,17 @@ namespace App\Services;
 
 use App\Models\OtpCode;
 use Carbon\Carbon;
+use Exception;
 use Http;
 use Illuminate\Http\Request;
 
 class OtpService
 {
+    /**
+     * @param Request $request
+     * @return int
+     * @throws Exception
+     */
     public static function sendOTP(Request $request): int
     {
         $validated = $request->validate(
@@ -30,6 +36,10 @@ class OtpService
         return -1;
     }
 
+    /**
+     * @param Request $request
+     * @return int
+     */
     public static function confirmOTP(Request $request): int
     {
         $validated = $request->validate(

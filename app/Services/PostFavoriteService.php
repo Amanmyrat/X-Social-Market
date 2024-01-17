@@ -8,6 +8,10 @@ use Illuminate\Support\Collection;
 
 class PostFavoriteService
 {
+    /**
+     * @param Post $post
+     * @return string
+     */
     public static function add(Post $post): string
     {
         $message = trans('notification.favorite_success');
@@ -23,6 +27,9 @@ class PostFavoriteService
         return $message;
     }
 
+    /**
+     * @return Collection
+     */
     public static function get(): Collection
     {
         $favorites = auth()->user()->favorites->pluck('post_id')->toArray();

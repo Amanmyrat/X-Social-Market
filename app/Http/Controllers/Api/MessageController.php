@@ -22,6 +22,8 @@ class MessageController extends ApiBaseController
     }
 
     /**
+     * Send message
+     *
      * @param SendMessageRequest $request
      * @return JsonResponse
      */
@@ -35,6 +37,8 @@ class MessageController extends ApiBaseController
     }
 
     /**
+     * Get all messages
+     *
      * @param $chatId
      * @return JsonResponse
      */
@@ -45,6 +49,8 @@ class MessageController extends ApiBaseController
     }
 
     /**
+     * Mark message read
+     *
      * @param $messageId
      * @return JsonResponse
      */
@@ -58,4 +64,25 @@ class MessageController extends ApiBaseController
 
         return response()->json(['message' => 'Message marked as read']);
     }
+
+    /**
+     * @return JsonResponse
+     */
+    public function readAllUnreadMessages(): JsonResponse
+    {
+        // Attempt to mark all unread messages as read
+        $unreadMessages = $this->messageService->readAllMessages();
+
+        // Check if there were any unread messages to mark as read
+        if ($unreadMessages->isEmpty()) {
+            return response()->json(['message' => 'No unread messages found'], 404);
+        }
+
+        return response()->json([
+            'message' => 'All unread messages marked as read',
+            'count' => $unreadMessages->count()
+        ]);
+    }
+
+
 }

@@ -8,10 +8,13 @@ use App\Models\Story;
 use App\Models\Post;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 class MessageService
 {
     /**
+     * Send message
+     *
      * @param array $data
      * @return Message
      */
@@ -34,7 +37,8 @@ class MessageService
             $message = $this->handleMediaMessage($message, $data);
         }
 
-        $this->updateChat($message);
+        $message->chat->updated_at = now();
+        $message->chat->save();
 
         return $message;
     }
@@ -138,15 +142,8 @@ class MessageService
     }
 
     /**
-     * @param Message $message
-     */
-    private function updateChat(Message $message)
-    {
-        $message->chat->updated_at = now();
-        $message->chat->save();
-    }
-
-    /**
+     * Get all messages
+     *
      * @param $chatId
      * @return LengthAwarePaginator
      */
@@ -165,6 +162,8 @@ class MessageService
     }
 
     /**
+     * Mark message read
+     *
      * @param $messageId
      * @return Message|null
      */
@@ -181,5 +180,30 @@ class MessageService
         ProcessMessageRead::dispatch($message);
 
         return $message;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function readAllMessages(): Collection
+    {
+        $userId = auth()->id();
+
+        $unreadMessages = Message::where('receiver_user_id', $userId)
+            ->whereNull('read_at')
+            ->get();
+
+        if ($unreadMessages->isEmpty()) {
+            return collect();
+        }
+
+        foreach ($unreadMessages as $message) {
+            $message->read_at = now();
+            $message->save();
+
+            ProcessMessageRead::dispatch($message);
+        }
+
+        return $unreadMessages;
     }
 }

@@ -32,7 +32,7 @@ class CategoryService
      */
     public function list(int $limit, string $search_query = null): LengthAwarePaginator
     {
-        return Category::when(isset($search_query), function ($query) use ($search_query) {
+        return Category::withCount('posts')->when(isset($search_query), function ($query) use ($search_query) {
                 $search_query = '%' . $search_query . '%';
                 return $query->where('title', 'LIKE', $search_query)
                     ->orWhere('description', 'LIKE', $search_query);

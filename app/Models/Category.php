@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string icon
  * @property bool is_active
  * @property bool has_product
+ * @property string created_at
+ * @property string updated_at
  */
 class Category extends Model
 {
@@ -33,16 +35,6 @@ class Category extends Model
         'icon',
         'is_active',
         'has_product',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'created_at',
-        'updated_at',
     ];
 
     /**

@@ -30,7 +30,7 @@ class AdminCategoryController extends ApiBaseController
         $query = $request->search_query ?? null;
 
         $categories = $this->service->list($limit, $query);
-        return $this->respondWithPaginator($categories, new CategoryTransformer());
+        return $this->respondWithPaginator($categories, new CategoryTransformer(false));
     }
 
     /**
@@ -40,7 +40,7 @@ class AdminCategoryController extends ApiBaseController
      */
     public function categoryDetails(Category $category): JsonResponse
     {
-        return $this->respondWithItem($category, new CategoryTransformer());
+        return $this->respondWithItem($category->loadCount('posts'), new CategoryTransformer(true));
     }
 
     /**
@@ -67,7 +67,7 @@ class AdminCategoryController extends ApiBaseController
     public function update(Category $category, CategoryUpdateRequest $request): JsonResponse
     {
         $category = $this->service->update($category, $request->validated());
-        return $this->respondWithItem($category, new CategoryTransformer(), 'Successfully updated category');
+        return $this->respondWithItem($category->loadCount('posts'), new CategoryTransformer(true), 'Successfully updated category');
     }
 
     /**

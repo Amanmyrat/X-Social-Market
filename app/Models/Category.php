@@ -8,14 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * App\Models\PostCategory
+ * App\Models\Category
  *
  * @mixin Eloquent
  * @property int id
  * @property string title
  * @property string description
+ * @property string icon
+ * @property bool is_active
+ * @property bool has_product
  */
-class PostCategory extends Model
+class Category extends Model
 {
     use HasFactory;
 
@@ -26,7 +29,10 @@ class PostCategory extends Model
      */
     protected $fillable = [
         'title',
-        'description'
+        'description',
+        'icon',
+        'is_active',
+        'has_product',
     ];
 
     /**
@@ -37,6 +43,16 @@ class PostCategory extends Model
     protected $hidden = [
         'created_at',
         'updated_at',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'is_active' => 'bool',
+        'has_product' => 'bool',
     ];
 
     /**

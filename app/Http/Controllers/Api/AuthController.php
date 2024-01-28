@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Services\AuthService;
 use App\Transformers\UserTransformer;
 use Exception;
@@ -13,15 +14,15 @@ class AuthController extends ApiBaseController
 {
     /**
      * Create User
-     * @param Request $request
+     * @param RegisterRequest $request
      * @return JsonResponse
      * @throws Exception
      */
-    public function register(Request $request): JsonResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
-        $user = AuthService::register($request);
+        $user = AuthService::register($request->validated());
 
-        $user = array_merge($user->toArray(), ['token' => $user->createToken("API TOKEN")->plainTextToken]);
+        $user = array_merge($user->toArray(), ['token' => $user->createToken('mobile', ['role:user'])->plainTextToken]);
         return $this->respondWithItem(
             $user,
             new UserTransformer()
@@ -36,7 +37,7 @@ class AuthController extends ApiBaseController
     {
         AuthService::login($request);
 
-        $user = array_merge($request->user()->toArray(), ['token' => $request->user()->createToken("API TOKEN")->plainTextToken]);
+        $user = array_merge($request->user()->toArray(), ['token' => $request->user()->createToken('mobile', ['role:user'])->plainTextToken]);
         return $this->respondWithItem(
             $user,
             new UserTransformer()

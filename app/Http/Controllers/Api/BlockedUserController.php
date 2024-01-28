@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Services\FollowerService;
 use App\Services\UserBlockService;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\JsonResponse;

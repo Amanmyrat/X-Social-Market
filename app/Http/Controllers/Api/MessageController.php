@@ -45,7 +45,7 @@ class MessageController extends ApiBaseController
     public function listMessages($chatId): JsonResponse
     {
         $messages = $this->messageService->listMessages($chatId);
-        return $this->respondWithCollection($messages, new MessageTransformer());
+        return $this->respondWithPaginator($messages, new MessageTransformer());
     }
 
     /**

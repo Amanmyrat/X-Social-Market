@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Http\Requests\PostRequest;
 use App\Models\Post;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
@@ -32,9 +33,9 @@ class PostService
 
     /**
      * @param Request $request
-     * @return array|Collection
+     * @return LengthAwarePaginator
      */
-    public static function searchPosts(Request $request): array|Collection
+    public static function searchPosts(Request $request): LengthAwarePaginator
     {
         $limit = $request->get('limit');
 
@@ -73,7 +74,7 @@ class PostService
         } else {
             $products = $products->inRandomOrder();
         }
-        return $products->limit($limit)->get();
+        return $products->paginate($limit);
     }
 
     /**

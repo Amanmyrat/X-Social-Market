@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\CategoryController;
@@ -18,6 +19,8 @@ use App\Http\Controllers\Api\StoryController;
 use App\Http\Controllers\Api\StoryViewController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserProfileController;
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,7 +43,7 @@ Route::prefix('users')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
 });
 
-Route::group(['middleware' => 'auth:sanctum'], function () {
+Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     Route::prefix('users')->group(function () {
         Route::post('update', [UserController::class, 'update']);
         Route::post('password/update', [UserController::class, 'updatePassword']);
@@ -60,6 +63,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('unblock', [BlockedUserController::class, 'unblock']);
 
         Route::post('block/list', [BlockedUserController::class, 'blockedList']);
+
+        Route::post('make/business', [UserController::class, 'makeAccountBusiness']);
     });
 
     Route::prefix('posts')->group(function () {
@@ -111,7 +116,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 });
 
 Route::prefix('post/categories')->group(function () {
-    Route::post('create', [CategoryController::class, 'create']);
     Route::post('/', [CategoryController::class, 'categories']);
 });
 
@@ -122,5 +126,19 @@ Route::prefix('spam')->group(function () {
 
 Route::post('posts/all/list', [PostController::class, 'allPosts']);
 
-
+Route::post('admin/login', [AdminAuthController::class, 'login']);
+Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
+    Route::prefix('admin')->group(function () {
+//        Route::get('users', [AdminUserController::class, 'list']);
+//        Route::get('users/{user}', [AdminUserController::class, 'show']);
+//        Route::post('users', [AdminUserController::class, 'store']);
+//        Route::put('users/{user}', [AdminUserController::class, 'update']);
+//        Route::delete('users/{user}', [AdminUserController::class, 'delete']);
+        Route::post('categories', [AdminCategoryController::class, 'list']);
+        Route::get('categories/{category}', [AdminCategoryController::class, 'categoryDetails']);
+        Route::post('categories/create', [AdminCategoryController::class, 'create']);
+        Route::post('categories/update/{category}', [AdminCategoryController::class, 'update']);
+        Route::post('categories/delete', [AdminCategoryController::class, 'delete']);
+    });
+});
 

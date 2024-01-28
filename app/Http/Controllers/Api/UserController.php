@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\User;
 use App\Services\UserService;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\JsonResponse;
@@ -74,6 +75,23 @@ class UserController extends ApiBaseController
     public function delete(Request $request): JsonResponse
     {
         $request->user()->delete();
+
+        return $this->respondWithArray([
+            'success' => true
+        ]);
+    }
+
+
+    /**
+     * Make account business
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function makeAccountBusiness(Request $request): JsonResponse
+    {
+        $request->user()->update([
+            'type' => User::TYPE_BUSINESS,
+        ]);
 
         return $this->respondWithArray([
             'success' => true

@@ -74,7 +74,7 @@ class PostController extends ApiBaseController
      */
     public function search(Request $request): JsonResponse
     {
-        return $this->respondWithCollection(PostService::searchPosts($request), new PostTransformer());
+        return $this->respondWithPaginator(PostService::searchPosts($request), new PostTransformer());
     }
 
     /**

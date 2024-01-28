@@ -31,7 +31,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     public const TYPE_USER = 'user';
-    public const TYPE_SELLER = 'seller';
+    public const TYPE_BUSINESS = 'seller';
     public const TYPE_SUPER_ADMIN = 'super_admin';
 
     /**

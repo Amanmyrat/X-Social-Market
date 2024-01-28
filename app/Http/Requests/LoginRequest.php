@@ -25,12 +25,13 @@ class LoginRequest extends FormRequest
      *
      * @return array
      */
-    #[ArrayShape(['login' => "string[]", 'password' => "string[]"])]
+    #[ArrayShape(['login' => "string[]", 'password' => "string[]", 'device_token' => "string[]"])]
     public function rules(): array
     {
         return [
             'login' => ['required', 'string'],
             'password' => ['required', 'string'],
+            'device_token' => ['required', 'string'],
         ];
     }
 

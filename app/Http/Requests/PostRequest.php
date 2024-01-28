@@ -21,7 +21,7 @@ class PostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id' => ['required', 'int', 'exists:post_categories,id'],
+            'category_id' => ['required', 'int', 'exists:categories,id'],
             'caption' => ['required', 'string', 'max:255'],
             'price' => ['required', 'int'],
             'description' => ['required', 'string', 'max:255'],

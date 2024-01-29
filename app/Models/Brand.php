@@ -5,24 +5,24 @@ namespace App\Models;
 use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * App\Models\Category
+ * App\Models\Brand
  *
  * @mixin Eloquent
  * @property int id
  * @property string title
- * @property string description
- * @property string icon
+ * @property string type
  * @property bool is_active
- * @property bool has_product
  * @property string created_at
  * @property string updated_at
  */
-class Category extends Model
+class Brand extends Model
 {
     use HasFactory;
+
+    public const TYPE_SIMPLE = 'simple';
+    public const TYPE_CLOTHING = 'clothing';
 
     /**
      * The attributes that are mass assignable.
@@ -31,10 +31,8 @@ class Category extends Model
      */
     protected $fillable = [
         'title',
-        'description',
-        'icon',
-        'is_active',
-        'has_product',
+        'type',
+        'is_active'
     ];
 
     /**
@@ -43,16 +41,14 @@ class Category extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'is_active' => 'bool',
-        'has_product' => 'bool',
+        'is_active' => 'bool'
     ];
 
-    /**
-     * Get posts record associated with the category.
-     */
-    public function posts(): HasMany
-    {
-        return $this->hasMany(Post::class);
-    }
-
+//    /**
+//     * Get products record associated with the brand.
+//     */
+//    public function products(): HasMany
+//    {
+//        return $this->hasMany(Post::class);
+//    }
 }

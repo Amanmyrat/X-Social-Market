@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Brand;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CategoryDeleteRequest extends FormRequest
+class BrandUpdateRequest extends FormRequest
 {
 
     /**
@@ -15,8 +15,8 @@ class CategoryDeleteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'categories' => 'required|array|min:1',
-            'categories.*' => 'int|exists:categories,id'
+            'title' => ['filled', 'string', 'max:255'],
+            'is_active' => ['filled', 'bool']
         ];
     }
 }

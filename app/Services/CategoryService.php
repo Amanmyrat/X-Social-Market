@@ -2,12 +2,8 @@
 
 namespace App\Services;
 
-use App\Http\Requests\CategoryCreateRequest;
 use App\Models\Category;
-use App\Models\Post;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\JsonResponse;
 
 class CategoryService
 {
@@ -47,7 +43,7 @@ class CategoryService
      * @return Category
      */
     public function update(Category $category, array $data): Category
-    {;
+    {
         if(isset($data['icon'])){
             $categoryImageName = $data['title'] ?? $category->title.'-'.time().'.'.$data['icon']->getClientOriginalExtension();
             $data['icon']->move(public_path('uploads/categories'), $categoryImageName);

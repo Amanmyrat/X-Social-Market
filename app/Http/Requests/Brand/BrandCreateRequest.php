@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Brand;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CategoryCreateRequest extends FormRequest
+class BrandCreateRequest extends FormRequest
 {
 
     /**
@@ -16,10 +16,8 @@ class CategoryCreateRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:255'],
-            'icon' => ['required', 'image'],
-            'is_active' => ['filled', 'bool'],
-            'has_product' => ['required', 'bool'],
+            'type' => ['required', 'in:simple,clothing'],
+            'is_active' => ['filled', 'bool']
         ];
     }
 }

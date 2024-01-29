@@ -1,0 +1,89 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Api\ApiBaseController;
+use App\Http\Requests\Brand\BrandCreateRequest;
+use App\Http\Requests\Brand\BrandDeleteRequest;
+use App\Http\Requests\Brand\BrandUpdateRequest;
+use App\Models\Brand;
+use App\Services\BrandService;
+use App\Transformers\BrandTransformer;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+
+class AdminBrandController extends ApiBaseController
+{
+    public function __construct(protected BrandService $service)
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Brands list
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function list(Request $request): JsonResponse
+    {
+        $limit = $request->limit ?? 10;
+        $query = $request->search_query ?? null;
+        $type = $request->type ?? Brand::TYPE_SIMPLE;
+
+        $brands = $this->service->list($type, $limit, $query);
+        return $this->respondWithPaginator($brands, new BrandTransformer(false));
+    }
+
+    /**
+     * Brand details
+     * @param Brand $brand
+     * @return JsonResponse
+     */
+    public function brandDetails(Brand $brand): JsonResponse
+    {
+        return $this->respondWithItem($brand, new BrandTransformer(true));
+    }
+
+    /**
+     * Create brand
+     * @param BrandCreateRequest $request
+     * @return JsonResponse
+     */
+    public function create(BrandCreateRequest $request): JsonResponse
+    {
+        $this->service->create($request->validated());
+        return $this->respondWithArray([
+                'success' => true,
+                'message' => 'Successfully created a new brand'
+            ]
+        );
+    }
+
+    /**
+     * Update brand
+     * @param Brand $brand
+     * @param BrandUpdateRequest $request
+     * @return JsonResponse
+     */
+    public function update(Brand $brand, BrandUpdateRequest $request): JsonResponse
+    {
+        $brand = $this->service->update($brand, $request->validated());
+        return $this->respondWithItem($brand, new BrandTransformer(true), 'Successfully updated brand');
+    }
+
+    /**
+     * Delete brands
+     * @param BrandDeleteRequest $request
+     * @return JsonResponse
+     */
+    public function delete(BrandDeleteRequest $request): JsonResponse
+    {
+        Brand::whereIn('id', $request->brands)->delete();
+
+        return $this->respondWithArray([
+                'success' => true,
+                'message' => 'Successfully deleted'
+            ]
+        );
+    }
+}

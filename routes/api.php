@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminBrandController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlockedUserController;
@@ -134,11 +135,24 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
 //        Route::post('users', [AdminUserController::class, 'store']);
 //        Route::put('users/{user}', [AdminUserController::class, 'update']);
 //        Route::delete('users/{user}', [AdminUserController::class, 'delete']);
-        Route::post('categories', [AdminCategoryController::class, 'list']);
-        Route::get('categories/{category}', [AdminCategoryController::class, 'categoryDetails']);
-        Route::post('categories/create', [AdminCategoryController::class, 'create']);
-        Route::post('categories/update/{category}', [AdminCategoryController::class, 'update']);
-        Route::post('categories/delete', [AdminCategoryController::class, 'delete']);
+        Route::prefix('categories')->group(function () {
+            Route::post('/', [AdminCategoryController::class, 'list']);
+            Route::get('/{category}', [AdminCategoryController::class, 'categoryDetails']);
+            Route::post('/create', [AdminCategoryController::class, 'create']);
+            Route::post('/update/{category}', [AdminCategoryController::class, 'update']);
+            Route::post('/delete', [AdminCategoryController::class, 'delete']);
+        });
+
+        Route::prefix('brands')->group(function () {
+            Route::post('/', [AdminBrandController::class, 'list']);
+            Route::get('/{brand}', [AdminBrandController::class, 'brandDetails']);
+            Route::post('/create', [AdminBrandController::class, 'create']);
+            Route::post('/update/{brand}', [AdminBrandController::class, 'update']);
+            Route::post('/delete', [AdminBrandController::class, 'delete']);
+        });
+
+
+
     });
 });
 

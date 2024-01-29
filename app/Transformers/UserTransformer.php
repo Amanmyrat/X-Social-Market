@@ -20,7 +20,7 @@ class UserTransformer extends TransformerAbstract
             'username' => $user['username'],
             'email' => $user['email'] ?? '',
             'type' => $user['type'],
-            'last_login' => $user['last_login'],
+            'last_activity' => $user['last_activity'],
         ];
 
         if(isset($user['token'])){
@@ -32,7 +32,7 @@ class UserTransformer extends TransformerAbstract
 
     public function includeProfile($user): ?Item
     {
-        $profile = UserProfile::where('user_id', $user['id'])->get()->first();
+        $profile = UserProfile::with(['location', 'category'])->where('user_id', $user['id'])->get()->first();
 
         if($profile){
             return $this->item($profile, new UserProfileTransformer());

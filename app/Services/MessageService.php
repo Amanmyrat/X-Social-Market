@@ -70,7 +70,7 @@ class MessageService
     private function getStoryDetails($storyId): Builder|Story
     {
         /** @var Story $story */
-        $story = Story::with('user:id,username,last_login')
+        $story = Story::with('user:id,username,last_activity')
             ->where('id', $storyId)
             ->first(['id', 'user_id', 'image', 'post_id']);
 
@@ -87,7 +87,7 @@ class MessageService
      */
     private function getPostDetails($postId): Builder|Post
     {
-        $post = Post::with('user:id,username,last_login')
+        $post = Post::with('user:id,username,last_activity')
             ->where('id', $postId)
             ->first(['id', 'user_id', 'caption']);
 

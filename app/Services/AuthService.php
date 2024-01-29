@@ -22,7 +22,7 @@ class AuthService
             'phone' => $registerData['phone'],
             'password' => Hash::make($registerData['password']),
             'device_token' => $registerData['device_token'],
-            'last_login' => now(),
+            'last_activity' => now(),
             'type' => User::TYPE_USER,
         ]);
     }
@@ -38,7 +38,7 @@ class AuthService
         $request->user()->update(
             [
                 'device_token' => $request->device_token,
-                'last_login' => now()
+                'last_activity' => now()
             ]
         );
     }

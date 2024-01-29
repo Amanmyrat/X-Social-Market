@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Api\ApiBaseController;
-use App\Http\Requests\CategoryCreateRequest;
-use App\Http\Requests\BrandDeleteRequest;
-use App\Http\Requests\CategoryUpdateRequest;
+use App\Http\Requests\Category\CategoryCreateRequest;
+use App\Http\Requests\Category\CategoryDeleteRequest;
+use App\Http\Requests\Category\CategoryUpdateRequest;
 use App\Models\Category;
 use App\Services\CategoryService;
 use App\Transformers\CategoryTransformer;
@@ -72,10 +72,10 @@ class AdminCategoryController extends ApiBaseController
 
     /**
      * Delete categories
-     * @param BrandDeleteRequest $request
+     * @param CategoryDeleteRequest $request
      * @return JsonResponse
      */
-    public function delete(BrandDeleteRequest $request): JsonResponse
+    public function delete(CategoryDeleteRequest $request): JsonResponse
     {
         Category::whereIn('id', $request->categories)->delete();
 

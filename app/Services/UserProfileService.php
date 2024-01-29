@@ -18,7 +18,8 @@ class UserProfileService
         $validated = $request->validate([
             'full_name' => ['filled', 'string', 'min:2'],
             'bio' => ['filled', 'string', 'min:3'],
-            'location' => ['filled', 'string', 'min:3'],
+            'location_id' => ['filled', 'exists:locations,id'],
+            'category_id' => ['filled', 'exists:categories,id'],
             'website' => ['filled', 'string', 'min:3'],
             'birthdate' => ['filled', 'date_format:Y-m-d'],
             'gender' => ['filled', 'in:male,female'],

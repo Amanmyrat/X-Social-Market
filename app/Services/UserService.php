@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Jobs\ProcessUserOffline;
 use App\Jobs\ProcessUserOnline;
+use App\Models\Brand;
 use App\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
@@ -72,7 +74,7 @@ class UserService
     public function setOnlineStatus(User $user, bool $isOnline)
     {
         $user->is_online = $isOnline;
-        $user->last_login = now();
+        $user->last_activity = now();
         $user->save();
 
         if ($isOnline) {
@@ -80,5 +82,23 @@ class UserService
         } else {
             ProcessUserOffline::dispatch($user);
         }
+    }
+
+    /**
+     * Get user list
+     *
+     * @param string $type
+     * @param int $limit
+     * @param string|null $search_query
+     * @return LengthAwarePaginator
+     */
+    public function list(string $type, int $limit, string $search_query = null): LengthAwarePaginator
+    {
+        return User::where('type', $type)->when(isset($search_query), function ($query) use ($search_query) {
+            $search_query = '%' . $search_query . '%';
+            return $query->whereHas('profile', function($q) use ($search_query){
+                $q->where('full_name',$search_query);
+            })->where('phone', 'LIKE', $search_query)->orWhere('username', 'LIKE', $search_query);
+        })->latest()->paginate($limit);
     }
 }

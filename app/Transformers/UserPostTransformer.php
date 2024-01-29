@@ -15,7 +15,7 @@ class UserPostTransformer extends TransformerAbstract
         'profile','posts'
     ];
 
-    #[ArrayShape(['id' => "mixed", 'phone' => "mixed", 'username' => "mixed", 'type' => "mixed", 'last_login' => "mixed"])]
+    #[ArrayShape(['id' => "mixed", 'phone' => "mixed", 'username' => "mixed", 'type' => "mixed", 'last_activity' => "mixed"])]
     public function transform(User $user): array
     {
         return [
@@ -23,7 +23,7 @@ class UserPostTransformer extends TransformerAbstract
             'phone' => $user['phone'],
             'username' => $user['username'],
             'type' => $user['type'],
-            'last_login' => $user['last_login'],
+            'last_activity' => $user['last_activity'],
         ];
     }
 

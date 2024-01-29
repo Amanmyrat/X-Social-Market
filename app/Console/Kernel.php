@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->call(function () {
             User::where('is_online', true)
-                ->where('last_login', '<', now()->subMinutes())
+                ->where('last_activity', '<', now()->subMinutes())
                 ->update(['is_online' => false]);
         })->everyMinute();
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use App\Services\UserService;
 use App\Transformers\UserTransformer;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -89,9 +90,16 @@ class UserController extends ApiBaseController
      */
     public function makeAccountBusiness(Request $request): JsonResponse
     {
-        $request->user()->update([
-            'type' => User::TYPE_BUSINESS,
+        $validated = $request->validate([
+            'location_id' => ['required', 'exists:locations,id'],
+            'category_id' => ['required', 'exists:categories,id']
         ]);
+
+        $request->user()->update([
+            'type' => User::TYPE_SELLER
+        ]);
+
+        $request->user()->profile()->update($validated);
 
         return $this->respondWithArray([
             'success' => true

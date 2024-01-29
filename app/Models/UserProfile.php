@@ -6,6 +6,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\UserProfile
@@ -31,7 +32,8 @@ class UserProfile extends Model
         'full_name',
         'profile_image',
         'bio',
-        'location',
+        'location_id',
+        'category_id',
         'website',
         'birthdate',
         'gender',
@@ -67,4 +69,13 @@ class UserProfile extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function location(): BelongsTo|null
+    {
+        return $this->belongsTo(Location::class)->withDefault();
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class)->withDefault();
+    }
 }

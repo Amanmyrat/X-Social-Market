@@ -15,6 +15,7 @@ class UserProfileTransformer extends TransformerAbstract
             'profile_image' => url('uploads/user/profile/'.$profile->profile_image),
             'bio' => $profile->bio,
             'location' => $profile->location,
+            'category' => $profile->category,
             'website' => $profile->website,
             'birthdate' => $profile->birthdate,
             'gender' => $profile->gender,

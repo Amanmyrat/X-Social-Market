@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminBrandController;
 use App\Http\Controllers\Admin\AdminCategoryController;
+use App\Http\Controllers\Admin\AdminLocationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\CategoryController;
@@ -20,8 +21,8 @@ use App\Http\Controllers\Api\StoryController;
 use App\Http\Controllers\Api\StoryViewController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserProfileController;
-use App\Http\Controllers\Admin\AuthController as AdminAuthController;
-use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\AdminAuthController as AdminAuthController;
+use App\Http\Controllers\Admin\AdminUserController as AdminUserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -65,7 +66,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
 
         Route::post('block/list', [BlockedUserController::class, 'blockedList']);
 
-        Route::post('make/business', [UserController::class, 'makeAccountBusiness']);
+        Route::post('make/seller', [UserController::class, 'makeAccountBusiness']);
     });
 
     Route::prefix('posts')->group(function () {
@@ -149,6 +150,18 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
             Route::post('/create', [AdminBrandController::class, 'create']);
             Route::post('/update/{brand}', [AdminBrandController::class, 'update']);
             Route::post('/delete', [AdminBrandController::class, 'delete']);
+        });
+
+        Route::prefix('locations')->group(function () {
+            Route::post('/', [AdminLocationController::class, 'list']);
+            Route::get('/{location}', [AdminLocationController::class, 'locationDetails']);
+            Route::post('/create', [AdminLocationController::class, 'create']);
+            Route::post('/update/{location}', [AdminLocationController::class, 'update']);
+            Route::post('/delete', [AdminLocationController::class, 'delete']);
+        });
+
+        Route::prefix('users')->group(function () {
+            Route::post('/', [AdminUserController::class, 'list']);
         });
 
 

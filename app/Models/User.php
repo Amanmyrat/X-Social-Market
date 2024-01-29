@@ -23,16 +23,16 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string password
  * @property string type
  * @property string device_token
- * @property string last_login
+ * @property string last_activity
  * @property bool is_online
+ * @property bool is_active
  */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
     public const TYPE_USER = 'user';
-    public const TYPE_BUSINESS = 'seller';
-    public const TYPE_SUPER_ADMIN = 'super_admin';
+    public const TYPE_SELLER = 'seller';
 
     /**
      * The attributes that are mass assignable.
@@ -46,8 +46,9 @@ class User extends Authenticatable
         'password',
         'type',
         'device_token',
-        'last_login',
+        'last_activity',
         'is_online',
+        'is_active',
     ];
 
     /**
@@ -71,8 +72,10 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'last_login' => 'datetime',
+        'last_activity' => 'datetime',
         'password' => 'hashed',
+        'is_active' => 'bool',
+        'is_online' => 'bool',
     ];
 
     /**
@@ -144,7 +147,7 @@ class User extends Authenticatable
         return Chat::where(function ($query) {
             $query->where('sender_user_id', $this->id)
                 ->orWhere('receiver_user_id', $this->id);
-        })->whereNotDeleted(); // Assuming whereNotDeleted is a defined scope
+        })->whereNotDeleted();
     }
 
 

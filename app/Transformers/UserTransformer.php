@@ -8,10 +8,6 @@ use League\Fractal\TransformerAbstract;
 
 class UserTransformer extends TransformerAbstract
 {
-    protected array $defaultIncludes = [
-        'profile'
-    ];
-
     public function transform($user): array
     {
         $result = [
@@ -30,14 +26,5 @@ class UserTransformer extends TransformerAbstract
         return $result;
     }
 
-    public function includeProfile($user): ?Item
-    {
-        $profile = UserProfile::with(['location', 'category'])->where('user_id', $user['id'])->get()->first();
-
-        if($profile){
-            return $this->item($profile, new UserProfileTransformer());
-        }
-        return null;
-    }
 
 }

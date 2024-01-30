@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Location;
+namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LocationDeleteRequest extends FormRequest
+class UserDeleteRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,8 +14,8 @@ class LocationDeleteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'locations' => 'required|array|min:1',
-            'locations.*' => 'int|exists:locations,id'
+            'users' => 'required|array|min:1',
+            'users.*' => 'int|exists:users,id'
         ];
     }
 }

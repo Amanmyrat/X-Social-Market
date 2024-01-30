@@ -18,7 +18,7 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phone' => ['required', 'integer', 'between:61000000,65999999', 'unique:' . User::class],
+            'phone' => ['required', 'integer', 'unique:' . User::class],
             'device_token' => ['required', 'string'],
             'password' => ['required', 'confirmed', Password::defaults()],
         ];

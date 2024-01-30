@@ -19,7 +19,7 @@ class OtpService
     {
         $validated = $request->validate(
             [
-                'phone' => ['required', 'integer', 'between:61000000,65999999'],
+                'phone' => ['required', 'integer'],
             ]
         );
 
@@ -45,7 +45,7 @@ class OtpService
         $validated = $request->validate(
             [
                 'code' => ['required', 'integer', 'between:1000,9999'],
-                'phone' => ['required', 'integer', 'between:61000000,65999999'],
+                'phone' => ['required', 'integer'],
             ]
         );
 

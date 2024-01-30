@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Services\FollowerService;
+use App\Transformers\UserSimpleTransformer;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -43,7 +44,7 @@ class FollowerController extends ApiBaseController
      */
     public function followers(): JsonResponse
     {
-        return $this->respondWithCollection(auth()->user()->followers, new UserTransformer());
+        return $this->respondWithCollection(auth()->user()->followers, new UserSimpleTransformer());
     }
 
     /**
@@ -52,6 +53,6 @@ class FollowerController extends ApiBaseController
      */
     public function followings(): JsonResponse
     {
-        return $this->respondWithCollection(auth()->user()->followings, new UserTransformer());
+        return $this->respondWithCollection(auth()->user()->followings, new UserSimpleTransformer());
     }
 }

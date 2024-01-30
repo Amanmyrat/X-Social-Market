@@ -61,8 +61,6 @@ class User extends Authenticatable
         'remember_token',
         'email_verified_at',
         'device_token',
-        'created_at',
-        'updated_at',
     ];
 
     /**

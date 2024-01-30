@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Jobs\ProcessUserOffline;
 use App\Jobs\ProcessUserOnline;
 use App\Models\Brand;
+use App\Models\Location;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
@@ -35,7 +36,7 @@ class UserService
     {
         $validated = $request->validate(
             [
-                'phone' => ['required', 'integer', 'between:61000000,65999999', 'unique:' . User::class],
+                'phone' => ['required', 'integer', 'unique:' . User::class],
             ]
         );
         $request->user()->update($validated);
@@ -100,5 +101,28 @@ class UserService
                 $q->where('full_name',$search_query);
             })->where('phone', 'LIKE', $search_query)->orWhere('username', 'LIKE', $search_query);
         })->latest()->paginate($limit);
+    }
+
+    /**
+     * Update user
+     *
+     * @param User $user
+     * @param array $data
+     * @return User
+     */
+    public function updateWithProfile(User $user, array $data): User
+    {
+        if(isset($data['profile']['profile_image'])){
+            $profileImageName = $user->phone.'-'.time().'.'.$data['profile']['profile_image']->getClientOriginalExtension();
+            $data['profile']['profile_image']->move(public_path('uploads/user/profile'), $profileImageName);
+            $data['profile']['profile_image'] = $profileImageName;
+        }
+        $user->update($data);
+
+        if($data['profile']){
+            $user->profile()->update($data['profile']);
+        }
+
+        return $user;
     }
 }

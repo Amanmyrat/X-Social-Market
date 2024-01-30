@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\User;
 use App\Services\UserProfileService;
 use App\Transformers\UserTransformer;
+use App\Transformers\UserWithProfileTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -19,8 +21,21 @@ class UserProfileController extends ApiBaseController
         UserProfileService::update($request);
 
         return $this->respondWithItem(
-            $request->user()->toArray(),
-            new UserTransformer()
+            $request->user(['posts', 'followers', 'followings']),
+            new UserWithProfileTransformer()
+        );
+    }
+
+    /**
+     * Get the profile of user.
+     * @param User $user
+     * @return JsonResponse
+     */
+    public function get(User $user): JsonResponse
+    {
+        return $this->respondWithItem(
+            $user->loadCount(['posts', 'followers', 'followings']),
+            new UserWithProfileTransformer()
         );
     }
 }

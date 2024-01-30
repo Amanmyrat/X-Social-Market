@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Http\Requests\User;
+
+use App\Models\User;
+use Illuminate\Foundation\Http\FormRequest;
+
+class UserUpdateRequest extends FormRequest
+{
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules(): array
+    {
+        return [
+            'phone' => ['filled', 'integer', 'unique:' . User::class],
+            'username' => ['filled', 'string', 'min:3', 'alpha_dash', 'unique:' . User::class],
+            'email' => ['filled', 'email', 'unique:' . User::class],
+            'is_active' => ['filled', 'bool'],
+
+            'profile.full_name' => ['filled', 'string', 'min:2'],
+            'profile.bio' => ['filled', 'string', 'min:3'],
+            'profile.location_id' => ['filled', 'exists:locations,id'],
+            'profile.category_id' => ['filled', 'exists:categories,id'],
+            'profile.website' => ['filled', 'string', 'min:3'],
+            'profile.birthdate' => ['filled', 'date_format:Y-m-d'],
+            'profile.gender' => ['filled', 'in:male,female'],
+            'profile.payment_available' => ['filled', 'boolean'],
+            'profile.private' => ['filled', 'boolean'],
+            'profile.verified' => ['filled', 'boolean'],
+            'profile.profile_image' => ['filled', 'image'],
+        ];
+    }
+}

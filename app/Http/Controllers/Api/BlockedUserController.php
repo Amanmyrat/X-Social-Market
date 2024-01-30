@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Services\UserBlockService;
+use App\Transformers\UserSimpleTransformer;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -43,6 +44,6 @@ class BlockedUserController extends ApiBaseController
      */
     public function blockedList(): JsonResponse
     {
-        return $this->respondWithCollection(auth()->user()->blockedUsers, new UserTransformer());
+        return $this->respondWithCollection(auth()->user()->blockedUsers, new UserSimpleTransformer());
     }
 }

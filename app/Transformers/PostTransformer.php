@@ -39,6 +39,6 @@ class PostTransformer extends TransformerAbstract
 
     public function includeUser(Post $post): Item
     {
-        return $this->item($post->user, new UserTransformer());
+        return $this->item($post->user, new UserSimpleTransformer());
     }
 }

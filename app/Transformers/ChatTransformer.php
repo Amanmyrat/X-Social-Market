@@ -26,7 +26,7 @@ class ChatTransformer extends TransformerAbstract
 
     public function includeReceiver(Chat $chat): Item
     {
-        return $this->item($chat->getReceiver(), new UserTransformer());
+        return $this->item($chat->getReceiver(), new UserSimpleTransformer());
     }
 
     public function includeLastMessage(Chat $chat): Item|null

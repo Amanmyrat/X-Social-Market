@@ -21,8 +21,8 @@ use App\Http\Controllers\Api\StoryController;
 use App\Http\Controllers\Api\StoryViewController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserProfileController;
-use App\Http\Controllers\Admin\AdminAuthController as AdminAuthController;
-use App\Http\Controllers\Admin\AdminUserController as AdminUserController;
+use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\AdminUserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -54,6 +54,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('phone/update', [UserController::class, 'updatePhone']);
 
         Route::post('profile/update', [UserProfileController::class, 'update']);
+        Route::post('profile/get/{user}', [UserProfileController::class, 'get']);
 
         Route::post('follow', [FollowerController::class, 'follow']);
         Route::post('unfollow', [FollowerController::class, 'unfollow']);
@@ -162,6 +163,9 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
 
         Route::prefix('users')->group(function () {
             Route::post('/', [AdminUserController::class, 'list']);
+            Route::get('/{user}', [AdminUserController::class, 'userDetails']);
+            Route::post('/update/{user}', [AdminUserController::class, 'update']);
+            Route::post('/delete', [AdminUserController::class, 'delete']);
         });
 
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Story;
 use App\Services\StoryViewService;
+use App\Transformers\UserSimpleTransformer;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\JsonResponse;
 
@@ -14,7 +15,7 @@ class StoryViewController extends ApiBaseController
      */
     public function views(Story $story): JsonResponse
     {
-        return $this->respondWithCollection($story->views->pluck('user')->toArray(), new UserTransformer());
+        return $this->respondWithCollection($story->views->pluck('user')->toArray(), new UserSimpleTransformer());
     }
 
     /**

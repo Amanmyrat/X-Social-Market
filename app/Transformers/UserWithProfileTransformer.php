@@ -23,6 +23,8 @@ class UserWithProfileTransformer extends TransformerAbstract
             'type' => $user->type,
             'last_activity' => $user->last_activity,
             'is_active' => $user->is_active,
+            'blocked_at' => $user->blocked_at,
+            'block_reason' => $user->block_reason,
             'created_at' => $user->created_at,
             'updated_at' => $user->updated_at,
             'posts_count' => $user->posts_count,

@@ -26,6 +26,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string last_activity
  * @property bool is_online
  * @property bool is_active
+ * @property string blocked_at
+ * @property string block_reason
  */
 class User extends Authenticatable
 {
@@ -49,6 +51,8 @@ class User extends Authenticatable
         'last_activity',
         'is_online',
         'is_active',
+        'blocked_at',
+        'block_reason ',
     ];
 
     /**
@@ -71,6 +75,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'last_activity' => 'datetime',
+        'blocked_at' => 'datetime',
         'password' => 'hashed',
         'is_active' => 'bool',
         'is_online' => 'bool',

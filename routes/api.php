@@ -166,6 +166,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
             Route::get('/{user}', [AdminUserController::class, 'userDetails']);
             Route::post('/update/{user}', [AdminUserController::class, 'update']);
             Route::post('/delete', [AdminUserController::class, 'delete']);
+            Route::post('/block/{user}', [AdminUserController::class, 'blockUser']);
         });
 
 

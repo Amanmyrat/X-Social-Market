@@ -78,4 +78,27 @@ class AdminUserController extends ApiBaseController
             ]
         );
     }
+
+    /**
+     * Block user
+     * @param User $user
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function blockUser(User $user, Request $request): JsonResponse
+    {
+        $request->validate([
+            'reason' => 'required|string|max:255',
+        ]);
+
+        $user->blocked_at = now();
+        $user->block_reason = $request->reason;
+        $user->save();
+
+        return $this->respondWithArray([
+                'success' => true,
+                'message' => 'User blocked successfully'
+            ]
+        );
+    }
 }

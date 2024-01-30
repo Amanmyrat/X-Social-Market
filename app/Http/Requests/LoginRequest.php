@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -47,6 +48,14 @@ class LoginRequest extends FormRequest
         $field = filter_var($this->input('login'), FILTER_VALIDATE_INT) ? 'phone' : 'username';
 
         $this->merge([$field => $this->input('login')]);
+
+        $user = User::where($field, $this->input($field))->first();
+
+        if ($user && $user->blocked_at) {
+            throw ValidationException::withMessages([
+                'login' => 'Your account is blocked. Reason: ' . $user->block_reason,
+            ]);
+        }
 
         if (! Auth::attempt($this->only($field, 'password'), $remember = true)) {
             RateLimiter::hit($this->throttleKey());

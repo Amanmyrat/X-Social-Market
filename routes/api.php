@@ -129,7 +129,9 @@ Route::prefix('spam')->group(function () {
 
 Route::post('posts/all/list', [PostController::class, 'allPosts']);
 
+
 Route::post('admin/login', [AdminAuthController::class, 'login']);
+
 Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
     Route::prefix('admin')->group(function () {
 //        Route::get('users', [AdminUserController::class, 'list']);
@@ -142,7 +144,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
             Route::get('/{category}', [AdminCategoryController::class, 'categoryDetails']);
             Route::post('/create', [AdminCategoryController::class, 'create']);
             Route::put('/update/{category}', [AdminCategoryController::class, 'update']);
-            Route::delete('/delete', [AdminCategoryController::class, 'delete']);
+            Route::post('/delete', [AdminCategoryController::class, 'delete']);
         });
 
         Route::prefix('brands')->group(function () {
@@ -150,7 +152,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
             Route::get('/{brand}', [AdminBrandController::class, 'brandDetails']);
             Route::post('/create', [AdminBrandController::class, 'create']);
             Route::put('/update/{brand}', [AdminBrandController::class, 'update']);
-            Route::delete('/delete', [AdminBrandController::class, 'delete']);
+            Route::post('/delete', [AdminBrandController::class, 'delete']);
         });
 
         Route::prefix('locations')->group(function () {
@@ -158,14 +160,14 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
             Route::get('/{location}', [AdminLocationController::class, 'locationDetails']);
             Route::post('/create', [AdminLocationController::class, 'create']);
             Route::put('/update/{location}', [AdminLocationController::class, 'update']);
-            Route::delete('/delete', [AdminLocationController::class, 'delete']);
+            Route::post('/delete', [AdminLocationController::class, 'delete']);
         });
 
         Route::prefix('users')->group(function () {
             Route::post('/', [AdminUserController::class, 'list']);
             Route::get('/{user}', [AdminUserController::class, 'userDetails']);
             Route::put('/update/{user}', [AdminUserController::class, 'update']);
-            Route::delete('/delete', [AdminUserController::class, 'delete']);
+            Route::post('/delete', [AdminUserController::class, 'delete']);
             Route::post('/block/{user}', [AdminUserController::class, 'blockUser']);
         });
 

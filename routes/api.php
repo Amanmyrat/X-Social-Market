@@ -130,12 +130,11 @@ Route::prefix('spam')->group(function () {
 Route::post('posts/all/list', [PostController::class, 'allPosts']);
 
 
+Route::prefix('admin')->group(function () {
 
-Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
-    Route::prefix('admin')->group(function () {
+    Route::post('/login', [AdminAuthController::class, 'login']);
 
-        Route::post('/login', [AdminAuthController::class, 'login']);
-
+    Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
         Route::prefix('categories')->group(function () {
             Route::post('/', [AdminCategoryController::class, 'list']);
             Route::get('/{category}', [AdminCategoryController::class, 'categoryDetails']);

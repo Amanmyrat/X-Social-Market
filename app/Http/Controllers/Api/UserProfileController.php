@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\User;
 use App\Services\UserProfileService;
-use App\Transformers\UserTransformer;
 use App\Transformers\UserWithProfileTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

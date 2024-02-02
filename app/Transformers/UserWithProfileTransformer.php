@@ -33,12 +33,10 @@ class UserWithProfileTransformer extends TransformerAbstract
         ];
     }
 
-    public function includeProfile($user): ?Item
+    public function includeProfile(User $user): ?Item
     {
-        $profile = UserProfile::with(['location', 'category'])->where('user_id', $user['id'])->get()->first();
-
-        if($profile){
-            return $this->item($profile, new UserProfileTransformer());
+        if($user->profile){
+            return $this->item($user->profile->load(['location', 'category']), new UserProfileTransformer());
         }
         return null;
     }

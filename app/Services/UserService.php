@@ -4,9 +4,8 @@ namespace App\Services;
 
 use App\Jobs\ProcessUserOffline;
 use App\Jobs\ProcessUserOnline;
-use App\Models\Brand;
-use App\Models\Location;
 use App\Models\User;
+use App\Models\UserProfile;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -120,7 +119,11 @@ class UserService
         $user->update($data);
 
         if($data['profile']){
-            $user->profile()->update($data['profile']);
+            if($user->profile){
+                $user->profile()->update($data['profile']);
+            }else{
+                UserProfile::create(array_merge($data['profile'], ['user_id' => $user->id]));
+            }
         }
 
         return $user;

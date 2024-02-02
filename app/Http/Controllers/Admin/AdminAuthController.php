@@ -13,6 +13,8 @@ class AdminAuthController extends Controller
 {
 
     /**
+     * Admin login
+     *
      * @param AdminLoginRequest $request
      * @return JsonResponse
      */

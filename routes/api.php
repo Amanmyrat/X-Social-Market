@@ -130,20 +130,17 @@ Route::prefix('spam')->group(function () {
 Route::post('posts/all/list', [PostController::class, 'allPosts']);
 
 
-Route::post('admin/login', [AdminAuthController::class, 'login']);
 
 Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
     Route::prefix('admin')->group(function () {
-//        Route::get('users', [AdminUserController::class, 'list']);
-//        Route::get('users/{user}', [AdminUserController::class, 'show']);
-//        Route::post('users', [AdminUserController::class, 'store']);
-//        Route::put('users/{user}', [AdminUserController::class, 'update']);
-//        Route::delete('users/{user}', [AdminUserController::class, 'delete']);
+
+        Route::post('/login', [AdminAuthController::class, 'login']);
+
         Route::prefix('categories')->group(function () {
             Route::post('/', [AdminCategoryController::class, 'list']);
             Route::get('/{category}', [AdminCategoryController::class, 'categoryDetails']);
             Route::post('/create', [AdminCategoryController::class, 'create']);
-            Route::put('/update/{category}', [AdminCategoryController::class, 'update']);
+            Route::post('/update/{category}', [AdminCategoryController::class, 'update']);
             Route::post('/delete', [AdminCategoryController::class, 'delete']);
         });
 
@@ -151,7 +148,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
             Route::post('/', [AdminBrandController::class, 'list']);
             Route::get('/{brand}', [AdminBrandController::class, 'brandDetails']);
             Route::post('/create', [AdminBrandController::class, 'create']);
-            Route::put('/update/{brand}', [AdminBrandController::class, 'update']);
+            Route::post('/update/{brand}', [AdminBrandController::class, 'update']);
             Route::post('/delete', [AdminBrandController::class, 'delete']);
         });
 
@@ -159,14 +156,14 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
             Route::post('/', [AdminLocationController::class, 'list']);
             Route::get('/{location}', [AdminLocationController::class, 'locationDetails']);
             Route::post('/create', [AdminLocationController::class, 'create']);
-            Route::put('/update/{location}', [AdminLocationController::class, 'update']);
+            Route::post('/update/{location}', [AdminLocationController::class, 'update']);
             Route::post('/delete', [AdminLocationController::class, 'delete']);
         });
 
         Route::prefix('users')->group(function () {
             Route::post('/', [AdminUserController::class, 'list']);
             Route::get('/{user}', [AdminUserController::class, 'userDetails']);
-            Route::put('/update/{user}', [AdminUserController::class, 'update']);
+            Route::post('/update/{user}', [AdminUserController::class, 'update']);
             Route::post('/delete', [AdminUserController::class, 'delete']);
             Route::post('/block/{user}', [AdminUserController::class, 'blockUser']);
         });

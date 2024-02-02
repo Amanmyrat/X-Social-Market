@@ -38,7 +38,7 @@ class OtpController extends ApiBaseController
      * @param Request $request
      * @return JsonResponse
      */
-    public function confirmOtp(Request $request): JsonResponse
+    public function confirmOTP(Request $request): JsonResponse
     {
         $confirmed = OtpService::confirmOtp($request);
 

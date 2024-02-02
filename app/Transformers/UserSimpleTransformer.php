@@ -12,8 +12,8 @@ class UserSimpleTransformer extends TransformerAbstract
         return [
             'id' => $user->id,
             'username' => $user->username,
-            'full_name' => $user->profile->full_name,
-            'profile_image' => $user->profile->profile_image,
+            'full_name' => $user->profile?->full_name,
+            'profile_image' => $user->profile?->profile_image,
             'last_activity' => $user->last_activity,
         ];
     }

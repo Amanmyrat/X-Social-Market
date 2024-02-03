@@ -13,7 +13,7 @@ class UserSimpleTransformer extends TransformerAbstract
             'id' => $user->id,
             'username' => $user->username,
             'full_name' => $user->profile?->full_name,
-            'profile_image' => $user->profile?->profile_image,
+            'profile_image' => $user->profile?->profile_image ? url('uploads/user/profile/'.$user->profile?->profile_image) : null,
             'last_activity' => $user->last_activity,
         ];
     }

@@ -14,7 +14,7 @@ class UserProfileSmallTransformer extends TransformerAbstract
         return [
             'user_id' => $profile->user_id,
             'full_name' => $profile->full_name,
-            'profile_image' => url('uploads/user/profile/'.$profile->profile_image),
+            'profile_image' => $profile->profile_image ? url('uploads/user/profile/'.$profile->profile_image) : null,
             'verified' => $profile->verified,
             'private' => $profile->private
         ];

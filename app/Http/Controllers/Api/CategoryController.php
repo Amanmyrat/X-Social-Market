@@ -14,7 +14,7 @@ class CategoryController extends ApiBaseController
      */
     public function categories(): JsonResponse
     {
-        return $this->respondWithCollection(Category::all(), new CategoryTransformer(false));
+        return $this->respondWithCollection(Category::where('is_active', true)->get(), new CategoryTransformer(false));
     }
 
 }

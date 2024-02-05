@@ -15,7 +15,6 @@ class LocationTransformer extends TransformerAbstract
             'is_active' => $location->is_active,
             'created_at' => $location->created_at,
             'updated_at' => $location->updated_at,
-
         ];
     }
 }

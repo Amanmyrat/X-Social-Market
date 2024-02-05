@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\FollowerController;
+use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\OtpController;
 use App\Http\Controllers\Api\PostBookmarkController;
@@ -117,10 +118,9 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     Route::post('/chat/{chatId}/read', [MessageController::class, 'readAllUnreadMessages']);
 
 });
+Route::post('/categories', [CategoryController::class, 'categories']);
+Route::post('/locations', [LocationController::class, 'list']);
 
-Route::prefix('post/categories')->group(function () {
-    Route::post('/', [CategoryController::class, 'categories']);
-});
 
 Route::prefix('spam')->group(function () {
     Route::post('types/create', [SpamTypeController::class, 'create']);

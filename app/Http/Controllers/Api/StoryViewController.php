@@ -11,7 +11,10 @@ use Illuminate\Http\JsonResponse;
 class StoryViewController extends ApiBaseController
 {
     /**
-     * Display a listing of the resource.
+     * List story views
+     *
+     * @param Story $story
+     * @return JsonResponse
      */
     public function views(Story $story): JsonResponse
     {
@@ -19,7 +22,10 @@ class StoryViewController extends ApiBaseController
     }
 
     /**
-     * Change bookmark
+     * View a story
+     *
+     * @param Story $story
+     * @return JsonResponse
      */
     public function view(Story $story): JsonResponse
     {

@@ -16,16 +16,18 @@ class StoryTransformer extends TransformerAbstract
         'post', 'user'
     ];
 
-    #[ArrayShape(['id' => "mixed", 'image' => "mixed"])]
     public function transform(Story $story): array
     {
         return [
             'id' => $story->id,
             'image' => isset($story->image) ? url('uploads/stories/'.$story->image) : null,
+            'isFavorite' => $story->getIsFavorite(),
+            'isViewed' => $story->getIsViewed(),
+            'created_at' => $story->created_at
         ];
     }
 
-    public function includePost(Story $story)
+    public function includePost(Story $story): ?Item
     {
         if($story->post){
             return $this->item($story->post, new PostTransformer());

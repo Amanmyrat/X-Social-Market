@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * App\Models\StoryView
+ * App\Models\PostView
  *
  * @mixin Eloquent
  * @property mixed user_id
- * @property mixed story_id
+ * @property mixed post_id
  */
-class StoryView extends Model
+class PostView extends Model
 {
     use HasFactory;
 
@@ -25,7 +25,7 @@ class StoryView extends Model
      */
     protected $fillable = [
         'user_id',
-        'story_id'
+        'post_id'
     ];
 
     /**
@@ -43,8 +43,8 @@ class StoryView extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function story(): BelongsTo
+    public function post(): BelongsTo
     {
-        return $this->belongsTo(Story::class);
+        return $this->belongsTo(Post::class);
     }
 }

@@ -55,6 +55,15 @@ class Post extends Model implements HasMedia
     ];
 
     /**
+     *
+     *
+     * @var array<int, string>
+     */
+    protected $casts = [
+        'can_comment' => 'boolean',
+    ];
+
+    /**
      * Get the user that owns the post.
      */
     public function user(): BelongsTo
@@ -125,5 +134,21 @@ class Post extends Model implements HasMedia
     public function rating(): string
     {
         return $this->hasRating() ? floatval($this->ratings()->avg('rating')) : '-';
+    }
+
+    public function views(): HasMany
+    {
+        return $this->hasMany(PostView::class)->with('user');
+    }
+
+    public function myViews(): HasMany
+    {
+        return $this->hasMany(PostView::class)
+            ->where('user_id', auth()->user()->id);
+    }
+
+    public function getIsViewed(): bool
+    {
+        return auth()->user() || auth('sanctum')->user() ? $this->myViews->isNotEmpty() : false;
     }
 }

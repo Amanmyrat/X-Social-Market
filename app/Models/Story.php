@@ -85,4 +85,20 @@ class Story extends Model
         return auth()->user() || auth('sanctum')->user() ? $this->myViews->isNotEmpty() : false;
     }
 
+    public function myFavorites(): HasMany
+    {
+        return $this->hasMany(StoryFavorite::class)
+            ->where('user_id', auth()->user()->id);
+    }
+
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(StoryFavorite::class);
+    }
+
+    public function getIsFavorite(): bool
+    {
+        return auth()->user() || auth('sanctum')->user() ? $this->myFavorites->isNotEmpty() : false;
+    }
+
 }

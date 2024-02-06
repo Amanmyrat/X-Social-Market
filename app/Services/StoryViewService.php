@@ -17,7 +17,7 @@ class StoryViewService
      */
     public static function addView(Story $story): string
     {
-        $message = trans('notification.favorite_success');
+        $message = trans('notification.add_view_success');
         if (!$story->getIsViewed()) {
             $storyView = new StoryView();
             $storyView->user()->associate(auth()->user());

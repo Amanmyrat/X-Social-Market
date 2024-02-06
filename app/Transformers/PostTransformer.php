@@ -34,6 +34,13 @@ class PostTransformer extends TransformerAbstract
             'can_comment' => $post->can_comment,
             'rating' => $post->rating(),
             'media' => $medias,
+            'isFavorite' => $post->getIsFavorite(),
+            'isBookmark' => $post->getIsBookmark(),
+            'isViewed' => $post->getIsViewed(),
+            'favorites_count' => $post->favorites_count,
+            'comments_count' => $post->comments_count,
+            'views_count' => $post->views_count,
+            'created_at' => $post->created_at
         ];
     }
 

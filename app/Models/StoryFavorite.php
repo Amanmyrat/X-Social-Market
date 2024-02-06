@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * App\Models\StoryView
+ * App\Models\StoryFavorite
  *
  * @mixin Eloquent
  * @property mixed user_id
  * @property mixed story_id
  */
-class StoryView extends Model
+class StoryFavorite extends Model
 {
     use HasFactory;
 
@@ -23,10 +23,7 @@ class StoryView extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'user_id',
-        'story_id'
-    ];
+    protected $fillable = ['user_id', 'story_id'];
 
     /**
      * The attributes that should be hidden for serialization.

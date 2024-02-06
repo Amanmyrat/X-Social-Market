@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Post;
+use App\Models\Story;
 use App\Services\SpamService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class PostSpamController extends ApiBaseController
+class StorySpamController extends ApiBaseController
 {
     /**
      * Display a listing of the resource.
      */
-    public function spamPost(Post $post, Request $request): JsonResponse
+    public function spamStory(Story $story, Request $request): JsonResponse
     {
-        SpamService::spamPost($post, $request);
+        SpamService::spamStory($story, $request);
         return $this->respondWithArray([
                 'success' => true,
                 'message' => 'Spam successful'

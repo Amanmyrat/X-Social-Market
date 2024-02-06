@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\PostSpamController;
 use App\Http\Controllers\Api\PostViewController;
 use App\Http\Controllers\Api\SpamTypeController;
 use App\Http\Controllers\Api\StoryController;
+use App\Http\Controllers\Api\StorySpamController;
 use App\Http\Controllers\Api\StoryViewController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserProfileController;
@@ -75,9 +76,11 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     Route::prefix('posts')->group(function () {
         Route::post('/', [PostController::class, 'myPosts']);
         Route::post('create', [PostController::class, 'create']);
+        Route::post('/{post}/delete', [PostController::class, 'delete']);
 
         Route::post('favorites', [PostFavoritesController::class, 'favorites']);
         Route::post('/favorites/{post}/change', [PostFavoritesController::class, 'change']);
+        Route::post('favorites/{post}/users', [PostFavoritesController::class, 'favoriteUsers']);
 
         Route::post('bookmarks', [PostBookmarkController::class, 'bookmarks']);
         Route::post('/bookmarks/{post}/change', [PostBookmarkController::class, 'change']);
@@ -101,6 +104,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/', [StoryController::class, 'myStories']);
         Route::post('/create', [StoryController::class, 'create']);
 
+        Route::post('/{story}/spam', [StorySpamController::class, 'spamStory']);
         Route::post('/{story}/views', [StoryViewController::class, 'views']);
         Route::post('/views/{story}/view', [StoryViewController::class, 'view']);
     });

@@ -6,6 +6,7 @@ use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use App\Models\User;
 use App\Services\PostService;
+use App\Transformers\CommentTransformer;
 use App\Transformers\PostTransformer;
 use App\Transformers\UserPostTransformer;
 use Illuminate\Http\JsonResponse;
@@ -28,6 +29,13 @@ class PostController extends ApiBaseController
             ]
         );
     }
+
+    public function delete(Post $post): JsonResponse
+    {
+        $post->delete();
+        return $this->respondWithMessage("Successfully deleted");
+    }
+
 
     /**
      * My posts list

@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Post;
 use App\Models\PostSpam;
 use App\Models\SpamType;
+use App\Models\Story;
+use App\Models\StorySpam;
 use Illuminate\Http\Request;
 
 class SpamService
@@ -33,5 +35,20 @@ class SpamService
         $validated['post_id'] = $post->id;
         $validated['user_id'] = auth()->user()->id;
         PostSpam::create($validated);
+    }
+
+    /**
+     * @param Story $story
+     * @param Request $request
+     */
+    public static function spamStory(Story $story, Request $request): void
+    {
+        $validated = $request->validate([
+            'spam_type_id' => ['required', 'integer', 'exists:' . SpamType::class . ',id'],
+            'message' => ['filled', 'string'],
+        ]);
+        $validated['story_id'] = $story->id;
+        $validated['user_id'] = auth()->user()->id;
+        StorySpam::create($validated);
     }
 }

@@ -71,7 +71,7 @@ class Chat extends Model
     public function unreadMessagesCount(): int
     {
         /** @var User $user */
-        $user = auth()->user();
+        $user = auth('sanctum')->user();
 
         return Message::where('chat_id', $this->id)
             ->where('receiver_user_id', $user->id)

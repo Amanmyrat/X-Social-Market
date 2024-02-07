@@ -88,7 +88,7 @@ class Post extends Model implements HasMedia
     public function myFavorites(): HasMany
     {
         return $this->hasMany(PostFavorite::class)
-            ->where('user_id', auth()->user()->id);
+            ->where('user_id', auth('sanctum')->user()->id);
     }
 
     public function favorites(): HasMany
@@ -98,13 +98,13 @@ class Post extends Model implements HasMedia
 
     public function getIsFavorite(): bool
     {
-        return auth()->user() || auth('sanctum')->user() ? $this->myFavorites->isNotEmpty() : false;
+        return auth('sanctum')->user() ? $this->myFavorites->isNotEmpty() : false;
     }
 
     public function myBookmarks(): HasMany
     {
         return $this->hasMany(PostBookmark::class)
-            ->where('user_id', auth()->user()->id);
+            ->where('user_id', auth('sanctum')->user()->id);
     }
 
     public function bookmarks(): HasMany
@@ -114,7 +114,7 @@ class Post extends Model implements HasMedia
 
     public function getIsBookmark(): bool
     {
-        return auth()->user() || auth('sanctum')->user() ? $this->myBookmarks->isNotEmpty() : false;
+        return auth('sanctum')->user() ? $this->myBookmarks->isNotEmpty() : false;
     }
 
     public function comments(): HasMany
@@ -150,11 +150,11 @@ class Post extends Model implements HasMedia
     public function myViews(): HasMany
     {
         return $this->hasMany(PostView::class)
-            ->where('user_id', auth()->user()->id);
+            ->where('user_id', auth('sanctum')->user()->id);
     }
 
     public function getIsViewed(): bool
     {
-        return auth()->user() || auth('sanctum')->user() ? $this->myViews->isNotEmpty() : false;
+        return auth('sanctum')->user() ? $this->myViews->isNotEmpty() : false;
     }
 }

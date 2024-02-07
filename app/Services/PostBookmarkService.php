@@ -20,7 +20,7 @@ class PostBookmarkService
             $message = trans('notification.bookmark_remove_success');
         } else {
             $bookmark = new PostBookmark();
-            $bookmark->user()->associate(auth()->user());
+            $bookmark->user()->associate(auth('sanctum')->user());
             $bookmark->post()->associate($post);
             $bookmark->save();
         }
@@ -32,7 +32,7 @@ class PostBookmarkService
      */
     public static function get(): Collection
     {
-        $bookmarks = auth()->user()->bookmarks->pluck('post_id')->toArray();
+        $bookmarks = auth('sanctum')->user()->bookmarks->pluck('post_id')->toArray();
 
         return Post::whereIn('id', $bookmarks)->get();
     }

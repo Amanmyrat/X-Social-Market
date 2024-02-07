@@ -11,12 +11,12 @@ class FollowerService
     public static function follow(Request $request): void
     {
         $validated = $request->validate([
-            'following_id' => ['required', 'integer', 'exists:' . User::class . ',id', 'not_in:' . auth()->user()->id],
+            'following_id' => ['required', 'integer', 'exists:' . User::class . ',id', 'not_in:' . auth('sanctum')->user()->id],
         ]);
 
         $following = User::find($validated['following_id']);
 
-        auth()->user()->followings()->syncWithoutDetaching($following);
+        auth('sanctum')->user()->followings()->syncWithoutDetaching($following);
 
     }
 
@@ -28,6 +28,7 @@ class FollowerService
             ]
         );
         $following = User::find($validated['following_id']);
-        auth()->user()->followings()->detach($following);
+        auth('sanctum')->user()->followings()->detach($following);
     }
 }
+

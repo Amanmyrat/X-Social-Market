@@ -14,12 +14,12 @@ class UserBlockService
     public static function block(Request $request): void
     {
         $validated = $request->validate([
-            'block_user_id' => ['required', 'integer', 'exists:' . User::class . ',id', 'not_in:' . auth()->user()->id],
+            'block_user_id' => ['required', 'integer', 'exists:' . User::class . ',id', 'not_in:' . auth('sanctum')->user()->id],
         ]);
 
         $block = User::find($validated['block_user_id']);
 
-        auth()->user()->blockedUsers()->syncWithoutDetaching($block);
+        auth('sanctum')->user()->blockedUsers()->syncWithoutDetaching($block);
     }
 
     /**
@@ -33,6 +33,6 @@ class UserBlockService
             ]
         );
         $block = User::find($validated['block_user_id']);
-        auth()->user()->blockedUsers()->detach($block);
+        auth('sanctum')->user()->blockedUsers()->detach($block);
     }
 }

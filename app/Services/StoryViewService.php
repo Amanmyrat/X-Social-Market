@@ -20,7 +20,7 @@ class StoryViewService
         $message = trans('notification.add_view_success');
         if (!$story->getIsViewed()) {
             $storyView = new StoryView();
-            $storyView->user()->associate(auth()->user());
+            $storyView->user()->associate(auth('sanctum')->user());
             $storyView->story()->associate($story);
             $storyView->save();
         }

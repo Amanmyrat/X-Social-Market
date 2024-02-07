@@ -43,7 +43,7 @@ class PostController extends ApiBaseController
      */
     public function myPosts(): JsonResponse
     {
-        return $this->respondWithCollection(auth()->user()->posts, new PostTransformer());
+        return $this->respondWithCollection(auth('sanctum')->user()->posts, new PostTransformer());
     }
 
     /**
@@ -72,7 +72,7 @@ class PostController extends ApiBaseController
      */
     public function followingPosts(): JsonResponse
     {
-        return $this->respondWithCollection(auth()->user()->followings, new UserPostTransformer());
+        return $this->respondWithCollection(auth('sanctum')->user()->followings, new UserPostTransformer());
     }
 
     /**

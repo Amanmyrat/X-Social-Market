@@ -44,6 +44,6 @@ class BlockedUserController extends ApiBaseController
      */
     public function blockedList(): JsonResponse
     {
-        return $this->respondWithCollection(auth()->user()->blockedUsers, new UserSimpleTransformer());
+        return $this->respondWithCollection(auth('sanctum')->user()->blockedUsers, new UserSimpleTransformer());
     }
 }

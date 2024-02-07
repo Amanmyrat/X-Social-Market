@@ -35,7 +35,7 @@ class StoryController extends ApiBaseController
      */
     public function myStories(): JsonResponse
     {
-        return $this->respondWithCollection(auth()->user()->stories, new StoryTransformer());
+        return $this->respondWithCollection(auth('sanctum')->user()->stories, new StoryTransformer());
     }
 
     /**
@@ -55,6 +55,6 @@ class StoryController extends ApiBaseController
      */
     public function followingStories(): JsonResponse
     {
-        return $this->respondWithCollection(auth()->user()->followings, new UserStoryTransformer());
+        return $this->respondWithCollection(auth('sanctum')->user()->followings, new UserStoryTransformer());
     }
 }

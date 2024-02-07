@@ -33,7 +33,7 @@ class SpamService
             'message' => ['filled', 'string'],
         ]);
         $validated['post_id'] = $post->id;
-        $validated['user_id'] = auth()->user()->id;
+        $validated['user_id'] = auth('sanctum')->user()->id;
         PostSpam::create($validated);
     }
 
@@ -48,7 +48,7 @@ class SpamService
             'message' => ['filled', 'string'],
         ]);
         $validated['story_id'] = $story->id;
-        $validated['user_id'] = auth()->user()->id;
+        $validated['user_id'] = auth('sanctum')->user()->id;
         StorySpam::create($validated);
     }
 }

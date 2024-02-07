@@ -17,7 +17,7 @@ class PostViewController extends ApiBaseController
      */
     public function views(Post $post): JsonResponse
     {
-        return $this->respondWithCollection($post->views->pluck('user')->toArray(), new UserSimpleTransformer());
+        return $this->respondWithCollection($post->views->pluck('user'), new UserSimpleTransformer());
     }
 
     /**
@@ -31,7 +31,7 @@ class PostViewController extends ApiBaseController
         $message = trans('notification.add_view_success');
         if (!$post->getIsViewed()) {
             $postView = new PostView();
-            $postView->user()->associate(auth()->user());
+            $postView->user()->associate(auth('sanctum')->user());
             $postView->post()->associate($post);
             $postView->save();
         }

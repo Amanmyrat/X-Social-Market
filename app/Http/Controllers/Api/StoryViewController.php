@@ -18,7 +18,7 @@ class StoryViewController extends ApiBaseController
      */
     public function views(Story $story): JsonResponse
     {
-        return $this->respondWithCollection($story->views->pluck('user')->toArray(), new UserSimpleTransformer());
+        return $this->respondWithCollection($story->views->pluck('user'), new UserSimpleTransformer());
     }
 
     /**

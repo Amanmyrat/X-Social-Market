@@ -17,9 +17,9 @@ class UserMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->user()->tokenCan('role:user')) {
-            if(auth()->user()->blocked_at){
-                return response()->json(['message' => 'Your account is blocked. Reason: ' . auth()->user()->block_reason], 403);
+        if (auth('sanctum')->user()->tokenCan('role:user')) {
+            if(auth('sanctum')->user()->blocked_at){
+                return response()->json(['message' => 'Your account is blocked. Reason: ' . auth('sanctum')->user()->block_reason], 403);
             }
             return $next($request);
         }

@@ -18,13 +18,13 @@ class PostRatingService
             'rating' => ['required', 'integer', 'between:1,5'],
         ]);
 
-        $rating = PostRating::where(['user_id' => auth()->user()->id, 'post_id' => $post->id])->get()->first();
+        $rating = PostRating::where(['user_id' => auth('sanctum')->user()->id, 'post_id' => $post->id])->get()->first();
 
         if ($rating) {
             $rating->update($validated);
         } else {
             $rating = new PostRating();
-            $rating->user()->associate(auth()->user());
+            $rating->user()->associate(auth('sanctum')->user());
             $rating->post()->associate($post);
             $rating->rating = $validated['rating'];
             $rating->save();

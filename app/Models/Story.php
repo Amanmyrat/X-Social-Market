@@ -77,18 +77,18 @@ class Story extends Model
     public function myViews(): HasMany
     {
         return $this->hasMany(StoryView::class)
-            ->where('user_id', auth()->user()->id);
+            ->where('user_id', auth('sanctum')->user()->id);
     }
 
     public function getIsViewed(): bool
     {
-        return auth()->user() || auth('sanctum')->user() ? $this->myViews->isNotEmpty() : false;
+        return auth('sanctum')->user() ? $this->myViews->isNotEmpty() : false;
     }
 
     public function myFavorites(): HasMany
     {
         return $this->hasMany(StoryFavorite::class)
-            ->where('user_id', auth()->user()->id);
+            ->where('user_id', auth('sanctum')->user()->id);
     }
 
     public function favorites(): HasMany
@@ -98,7 +98,7 @@ class Story extends Model
 
     public function getIsFavorite(): bool
     {
-        return auth()->user() || auth('sanctum')->user() ? $this->myFavorites->isNotEmpty() : false;
+        return auth('sanctum')->user() ? $this->myFavorites->isNotEmpty() : false;
     }
 
 }

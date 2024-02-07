@@ -56,7 +56,7 @@ class ChatService
     public function listUserChats(): Collection
     {
         /** @var User $user */
-        $user = auth()->user();
+        $user = auth('sanctum')->user();
 
         return $user
             ->chats()

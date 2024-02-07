@@ -20,7 +20,7 @@ class PostFavoriteService
             $message = trans('notification.favorite_remove_success');
         } else {
             $favorite = new PostFavorite();
-            $favorite->user()->associate(auth()->user());
+            $favorite->user()->associate(auth('sanctum')->user());
             $favorite->post()->associate($post);
             $favorite->save();
         }
@@ -32,7 +32,7 @@ class PostFavoriteService
      */
     public static function get(): Collection
     {
-        $favorites = auth()->user()->favorites->pluck('post_id')->toArray();
+        $favorites = auth('sanctum')->user()->favorites->pluck('post_id')->toArray();
 
         return Post::whereIn('id', $favorites)->get();
     }

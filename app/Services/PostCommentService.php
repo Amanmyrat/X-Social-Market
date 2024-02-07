@@ -20,7 +20,7 @@ class PostCommentService
         ]);
 
         $comment = new PostComment();
-        $comment->user()->associate(auth()->user());
+        $comment->user()->associate(auth('sanctum')->user());
         $comment->post()->associate($post);
         $comment->comment = $validated['comment'];
         $comment->parent_id = $validated['parent_id'] ?? 0;

@@ -17,7 +17,7 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->user()->tokenCan('role:admin')) {
+        if (auth('sanctum')->user()->tokenCan('role:admin')) {
             return $next($request);
         }
         return response()->json(['message' => 'Unauthenticated.'], 401);

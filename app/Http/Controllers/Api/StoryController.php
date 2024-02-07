@@ -46,7 +46,7 @@ class StoryController extends ApiBaseController
     public function userStories($user): JsonResponse
     {
         $user = User::findOrFail($user);
-        return $this->respondWithCollection($user->stories, new UserStoryTransformer());
+        return $this->respondWithCollection($user->stories, new StoryTransformer());
     }
 
     /**

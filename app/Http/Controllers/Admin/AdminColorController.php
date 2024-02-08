@@ -71,9 +71,7 @@ class AdminColorController extends Controller
      */
     public function update(Color $color, ColorUpdateRequest $request): ColorResource
     {
-        /**
-         * @var Color $color
-         */
+        /** @var Color $color */
         $color = $this->service->update($color, $request->validated());
         return new ColorResource($color, true);
     }

@@ -69,9 +69,7 @@ class AdminSizeController extends Controller
      */
     public function update(Size $size, SizeUpdateRequest $request): SizeResource
     {
-        /**
-         * @var Size $size
-         */
+        /** @var Size $size */
         $size = $this->service->update($size, $request->validated());
         return new SizeResource($size, true);
     }

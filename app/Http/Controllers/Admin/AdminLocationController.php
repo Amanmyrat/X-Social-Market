@@ -2,48 +2,49 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Api\ApiBaseController;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Location\LocationCreateRequest;
 use App\Http\Requests\Location\LocationDeleteRequest;
 use App\Http\Requests\Location\LocationUpdateRequest;
+use App\Http\Resources\LocationResource;
 use App\Models\Location;
 use App\Models\Size;
 use App\Services\UniversalService;
-use App\Transformers\LocationTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use JetBrains\PhpStorm\Pure;
 
-class AdminLocationController extends ApiBaseController
+class AdminLocationController extends Controller
 {
     public function __construct(protected UniversalService $service)
     {
-        parent::__construct();
         $this->service->setModel(new Size());
     }
-
 
     /**
      * Locations list
      * @param Request $request
-     * @return JsonResponse
+     * @return AnonymousResourceCollection
      */
-    public function list(Request $request): JsonResponse
+    public function list(Request $request): AnonymousResourceCollection
     {
         $limit = $request->limit ?? 10;
         $query = $request->search_query ?? null;
 
         $locations = $this->service->list($limit, $query);
-        return $this->respondWithPaginator($locations, new LocationTransformer());
+
+        return LocationResource::collection($locations);
     }
 
     /**
      * Location details
      * @param Location $location
-     * @return JsonResponse
+     * @return LocationResource
      */
-    public function locationDetails(Location $location): JsonResponse
+    #[Pure] public function locationDetails(Location $location): LocationResource
     {
-        return $this->respondWithItem($location, new LocationTransformer());
+        return new LocationResource($location);
     }
 
     /**
@@ -54,23 +55,24 @@ class AdminLocationController extends ApiBaseController
     public function create(LocationCreateRequest $request): JsonResponse
     {
         $this->service->create($request->validated());
-        return $this->respondWithArray([
-                'success' => true,
-                'message' => 'Successfully created a new location'
-            ]
-        );
+        return new JsonResponse([
+            'success' => true,
+            'message' => 'Successfully created a new location'
+        ]);
     }
 
     /**
      * Update location
      * @param Location $location
      * @param LocationUpdateRequest $request
-     * @return JsonResponse
+     * @return LocationResource
      */
-    public function update(Location $location, LocationUpdateRequest $request): JsonResponse
+    public function update(Location $location, LocationUpdateRequest $request): LocationResource
     {
+        /** @var Location $location */
         $location = $this->service->update($location, $request->validated());
-        return $this->respondWithItem($location, new LocationTransformer(), 'Successfully updated location');
+        return new LocationResource($location);
+
     }
 
     /**
@@ -82,10 +84,9 @@ class AdminLocationController extends ApiBaseController
     {
         $this->service->delete($request->locations);
 
-        return $this->respondWithArray([
-                'success' => true,
-                'message' => 'Successfully deleted'
-            ]
-        );
+        return new JsonResponse([
+            'success' => true,
+            'message' => 'Successfully deleted'
+        ]);
     }
 }

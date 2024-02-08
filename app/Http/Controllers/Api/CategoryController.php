@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
-use App\Transformers\CategoryTransformer;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CategoryController extends ApiBaseController
 {
     /**
      * Categories list
-     * @return JsonResponse
+     * @return AnonymousResourceCollection
      */
-    public function categories(): JsonResponse
+    public function categories(): AnonymousResourceCollection
     {
-        return $this->respondWithCollection(Category::where('is_active', true)->get(), new CategoryTransformer(false));
+        $categories = Category::where('is_active', true)->get();
+        return CategoryResource::collection($categories);
     }
 
 }

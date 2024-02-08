@@ -2,31 +2,32 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Api\ApiBaseController;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Brand\BrandCreateRequest;
 use App\Http\Requests\Brand\BrandDeleteRequest;
 use App\Http\Requests\Brand\BrandUpdateRequest;
+use App\Http\Resources\BrandResource;
 use App\Models\Brand;
 use App\Models\Size;
 use App\Services\UniversalService;
-use App\Transformers\BrandTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use JetBrains\PhpStorm\Pure;
 
-class AdminBrandController extends ApiBaseController
+class AdminBrandController extends Controller
 {
     public function __construct(protected UniversalService $service)
     {
-        parent::__construct();
         $this->service->setModel(new Size());
     }
 
     /**
      * Brands list
      * @param Request $request
-     * @return JsonResponse
+     * @return AnonymousResourceCollection
      */
-    public function list(Request $request): JsonResponse
+    public function list(Request $request): AnonymousResourceCollection
     {
         $limit = $request->limit ?? 10;
         $query = $request->search_query ?? null;
@@ -35,17 +36,18 @@ class AdminBrandController extends ApiBaseController
         $conditions['type'] = $type;
 
         $brands = $this->service->list($limit, $query, $conditions);
-        return $this->respondWithPaginator($brands, new BrandTransformer(false));
+        return BrandResource::collection($brands);
     }
 
     /**
      * Brand details
      * @param Brand $brand
-     * @return JsonResponse
+     * @return BrandResource
      */
-    public function brandDetails(Brand $brand): JsonResponse
+    #[Pure]
+    public function brandDetails(Brand $brand): BrandResource
     {
-        return $this->respondWithItem($brand, new BrandTransformer(true));
+        return new BrandResource($brand, true);
     }
 
     /**
@@ -56,23 +58,23 @@ class AdminBrandController extends ApiBaseController
     public function create(BrandCreateRequest $request): JsonResponse
     {
         $this->service->create($request->validated());
-        return $this->respondWithArray([
-                'success' => true,
-                'message' => 'Successfully created a new brand'
-            ]
-        );
+        return new JsonResponse([
+            'success' => true,
+            'message' => 'Successfully created a new brand'
+        ]);
     }
 
     /**
      * Update brand
      * @param Brand $brand
      * @param BrandUpdateRequest $request
-     * @return JsonResponse
+     * @return BrandResource
      */
-    public function update(Brand $brand, BrandUpdateRequest $request): JsonResponse
+    public function update(Brand $brand, BrandUpdateRequest $request): BrandResource
     {
+        /** @var Brand $brand */
         $brand = $this->service->update($brand, $request->validated());
-        return $this->respondWithItem($brand, new BrandTransformer(true), 'Successfully updated brand');
+        return new BrandResource($brand, true);
     }
 
     /**
@@ -84,10 +86,9 @@ class AdminBrandController extends ApiBaseController
     {
         $this->service->delete($request->brands);
 
-        return $this->respondWithArray([
-                'success' => true,
-                'message' => 'Successfully deleted'
-            ]
-        );
+        return new JsonResponse([
+            'success' => true,
+            'message' => 'Successfully deleted'
+        ]);
     }
 }

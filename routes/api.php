@@ -4,7 +4,7 @@ use App\Http\Controllers\Admin\AdminBrandController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminColorController;
 use App\Http\Controllers\Admin\AdminLocationController;
-use App\Http\Controllers\Admin\AdminSizeController;
+use App\Http\Controllers\Admin\AdminBrandController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\CategoryController;
@@ -187,11 +187,11 @@ Route::prefix('admin')->group(function () {
         });
 
         Route::prefix('sizes')->group(function () {
-            Route::post('/', [AdminSizeController::class, 'list']);
-            Route::post('/create', [AdminSizeController::class, 'create']);
-            Route::get('/{size}', [AdminSizeController::class, 'sizeDetails']);
-            Route::post('/update/{size}', [AdminSizeController::class, 'update']);
-            Route::post('/delete', [AdminSizeController::class, 'delete']);
+            Route::post('/', [AdminBrandController::class, 'list']);
+            Route::post('/create', [AdminBrandController::class, 'create']);
+            Route::get('/{size}', [AdminBrandController::class, 'sizeDetails']);
+            Route::post('/update/{size}', [AdminBrandController::class, 'update']);
+            Route::post('/delete', [AdminBrandController::class, 'delete']);
         });
 
 

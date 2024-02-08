@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\LocationResource;
 use App\Models\Location;
-use App\Transformers\LocationTransformer;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class LocationController extends ApiBaseController
 {
     /**
      * Locations list
-     * @return JsonResponse
+     * @return AnonymousResourceCollection
      */
-    public function list(): JsonResponse
+    public function list(): AnonymousResourceCollection
     {
-        return $this->respondWithCollection(Location::where('is_active', true)->get(), new LocationTransformer());
-
+        $locations = Location::where('is_active', true)->get();
+        return LocationResource::collection($locations);
     }
 
 }

@@ -37,7 +37,7 @@ class StoryTransformer extends TransformerAbstract
         }
     }
 
-    public function includeUser(Story $story)
+    public function includeUser(Story $story): Item
     {
         return $this->item($story->user, new UserSimpleTransformer());
     }

@@ -98,6 +98,7 @@ class ApiBaseController extends Controller
      * @param $collection
      * @param $callback
      * @param string $message
+     * @param null $extras
      * @return JsonResponse
      */
     public function respondWithCollection($collection, $callback, string $message = 'Successfully', $extras = null): JsonResponse

@@ -7,13 +7,14 @@ use App\Http\Requests\AdminLoginRequest;
 use App\Models\Admin;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+
 
 class AdminAuthController extends Controller
 {
-
     /**
      * Admin login
+     *
+     * @unauthenticated
      *
      * @param AdminLoginRequest $request
      * @return JsonResponse

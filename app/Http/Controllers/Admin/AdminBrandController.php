@@ -7,16 +7,18 @@ use App\Http\Requests\Brand\BrandCreateRequest;
 use App\Http\Requests\Brand\BrandDeleteRequest;
 use App\Http\Requests\Brand\BrandUpdateRequest;
 use App\Models\Brand;
-use App\Services\BrandService;
+use App\Models\Size;
+use App\Services\UniversalService;
 use App\Transformers\BrandTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class AdminBrandController extends ApiBaseController
 {
-    public function __construct(protected BrandService $service)
+    public function __construct(protected UniversalService $service)
     {
         parent::__construct();
+        $this->service->setModel(new Size());
     }
 
     /**
@@ -30,7 +32,9 @@ class AdminBrandController extends ApiBaseController
         $query = $request->search_query ?? null;
         $type = $request->type ?? Brand::TYPE_SIMPLE;
 
-        $brands = $this->service->list($type, $limit, $query);
+        $conditions['type'] = $type;
+
+        $brands = $this->service->list($limit, $query, $conditions);
         return $this->respondWithPaginator($brands, new BrandTransformer(false));
     }
 
@@ -78,7 +82,7 @@ class AdminBrandController extends ApiBaseController
      */
     public function delete(BrandDeleteRequest $request): JsonResponse
     {
-        Brand::whereIn('id', $request->brands)->delete();
+        $this->service->delete($request->brands);
 
         return $this->respondWithArray([
                 'success' => true,

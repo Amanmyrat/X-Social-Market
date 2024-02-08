@@ -14,6 +14,9 @@ class AuthController extends ApiBaseController
 {
     /**
      * Create User
+     *
+     * @unauthenticated
+     *
      * @param RegisterRequest $request
      * @return JsonResponse
      * @throws Exception
@@ -31,6 +34,9 @@ class AuthController extends ApiBaseController
 
     /**
      * Login user
+     *
+     * @unauthenticated
+     *
      * @throws Exception
      */
     public function login(LoginRequest $request): JsonResponse

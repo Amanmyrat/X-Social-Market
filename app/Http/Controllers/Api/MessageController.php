@@ -15,7 +15,7 @@ class MessageController extends ApiBaseController
     /**
      * @param MessageService $messageService
      */
-    public function __construct(MessageService $messageService, )
+    public function __construct(MessageService $messageService)
     {
         $this->messageService = $messageService;
         parent::__construct();

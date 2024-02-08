@@ -7,16 +7,18 @@ use App\Http\Requests\Category\CategoryCreateRequest;
 use App\Http\Requests\Category\CategoryDeleteRequest;
 use App\Http\Requests\Category\CategoryUpdateRequest;
 use App\Models\Category;
-use App\Services\CategoryService;
+use App\Models\Size;
+use App\Services\UniversalService;
 use App\Transformers\CategoryTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class AdminCategoryController extends ApiBaseController
 {
-    public function __construct(protected CategoryService $service)
+    public function __construct(protected UniversalService $service)
     {
         parent::__construct();
+        $this->service->setModel(new Size());
     }
 
     /**
@@ -77,7 +79,7 @@ class AdminCategoryController extends ApiBaseController
      */
     public function delete(CategoryDeleteRequest $request): JsonResponse
     {
-        Category::whereIn('id', $request->categories)->delete();
+        $this->service->delete($request->categories);
 
         return $this->respondWithArray([
                 'success' => true,

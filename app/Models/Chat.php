@@ -47,7 +47,11 @@ class Chat extends Model
         }
     }
 
-    public function scopeWhereNotDeleted($query)
+    /**
+     * @param $query
+     * @return mixed
+     */
+    public function scopeWhereNotDeleted($query): mixed
     {
         $userId = auth()->id();
 

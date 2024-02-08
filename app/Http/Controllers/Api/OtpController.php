@@ -12,6 +12,9 @@ class OtpController extends ApiBaseController
 
     /**
      * Send otp code to the given phone
+     *
+     * @unauthenticated
+     *
      * @param Request $request
      * @return JsonResponse
      * @throws Exception
@@ -35,6 +38,9 @@ class OtpController extends ApiBaseController
 
     /**
      * Confirm otp code to the given phone
+     *
+     * @unauthenticated
+     *
      * @param Request $request
      * @return JsonResponse
      */

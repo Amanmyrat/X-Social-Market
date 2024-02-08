@@ -7,17 +7,20 @@ use App\Http\Requests\Location\LocationCreateRequest;
 use App\Http\Requests\Location\LocationDeleteRequest;
 use App\Http\Requests\Location\LocationUpdateRequest;
 use App\Models\Location;
-use App\Services\LocationService;
+use App\Models\Size;
+use App\Services\UniversalService;
 use App\Transformers\LocationTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class AdminLocationController extends ApiBaseController
 {
-    public function __construct(protected LocationService $service)
+    public function __construct(protected UniversalService $service)
     {
         parent::__construct();
+        $this->service->setModel(new Size());
     }
+
 
     /**
      * Locations list
@@ -67,7 +70,7 @@ class AdminLocationController extends ApiBaseController
     public function update(Location $location, LocationUpdateRequest $request): JsonResponse
     {
         $location = $this->service->update($location, $request->validated());
-        return $this->respondWithItem($location, new LocationTransformer(true), 'Successfully updated location');
+        return $this->respondWithItem($location, new LocationTransformer(), 'Successfully updated location');
     }
 
     /**
@@ -77,7 +80,7 @@ class AdminLocationController extends ApiBaseController
      */
     public function delete(LocationDeleteRequest $request): JsonResponse
     {
-        Location::whereIn('id', $request->locations)->delete();
+        $this->service->delete($request->locations);
 
         return $this->respondWithArray([
                 'success' => true,

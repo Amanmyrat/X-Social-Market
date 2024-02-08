@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Admin\AdminBrandController;
 use App\Http\Controllers\Admin\AdminCategoryController;
+use App\Http\Controllers\Admin\AdminColorController;
 use App\Http\Controllers\Admin\AdminLocationController;
+use App\Http\Controllers\Admin\AdminSizeController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\CategoryController;
@@ -145,24 +147,24 @@ Route::prefix('admin')->group(function () {
     Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
         Route::prefix('categories')->group(function () {
             Route::post('/', [AdminCategoryController::class, 'list']);
-            Route::get('/{category}', [AdminCategoryController::class, 'categoryDetails']);
             Route::post('/create', [AdminCategoryController::class, 'create']);
+            Route::get('/{category}', [AdminCategoryController::class, 'categoryDetails']);
             Route::post('/update/{category}', [AdminCategoryController::class, 'update']);
             Route::post('/delete', [AdminCategoryController::class, 'delete']);
         });
 
         Route::prefix('brands')->group(function () {
             Route::post('/', [AdminBrandController::class, 'list']);
-            Route::get('/{brand}', [AdminBrandController::class, 'brandDetails']);
             Route::post('/create', [AdminBrandController::class, 'create']);
+            Route::get('/{brand}', [AdminBrandController::class, 'brandDetails']);
             Route::post('/update/{brand}', [AdminBrandController::class, 'update']);
             Route::post('/delete', [AdminBrandController::class, 'delete']);
         });
 
         Route::prefix('locations')->group(function () {
             Route::post('/', [AdminLocationController::class, 'list']);
-            Route::get('/{location}', [AdminLocationController::class, 'locationDetails']);
             Route::post('/create', [AdminLocationController::class, 'create']);
+            Route::get('/{location}', [AdminLocationController::class, 'locationDetails']);
             Route::post('/update/{location}', [AdminLocationController::class, 'update']);
             Route::post('/delete', [AdminLocationController::class, 'delete']);
         });
@@ -173,7 +175,25 @@ Route::prefix('admin')->group(function () {
             Route::post('/update/{user}', [AdminUserController::class, 'update']);
             Route::post('/delete', [AdminUserController::class, 'delete']);
             Route::post('/block/{user}', [AdminUserController::class, 'blockUser']);
+            Route::post('/unblock/{user}', [AdminUserController::class, 'unBlockUser']);
         });
+
+        Route::prefix('colors')->group(function () {
+            Route::post('/', [AdminColorController::class, 'list']);
+            Route::post('/create', [AdminColorController::class, 'create']);
+            Route::get('/{color}', [AdminColorController::class, 'colorDetails']);
+            Route::post('/update/{color}', [AdminColorController::class, 'update']);
+            Route::post('/delete', [AdminColorController::class, 'delete']);
+        });
+
+        Route::prefix('sizes')->group(function () {
+            Route::post('/', [AdminSizeController::class, 'list']);
+            Route::post('/create', [AdminSizeController::class, 'create']);
+            Route::get('/{size}', [AdminSizeController::class, 'sizeDetails']);
+            Route::post('/update/{size}', [AdminSizeController::class, 'update']);
+            Route::post('/delete', [AdminSizeController::class, 'delete']);
+        });
+
 
     });
 });

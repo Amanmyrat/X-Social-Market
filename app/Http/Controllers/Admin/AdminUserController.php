@@ -101,4 +101,22 @@ class AdminUserController extends ApiBaseController
             ]
         );
     }
+
+    /**
+     * Unblock user
+     * @param User $user
+     * @return JsonResponse
+     */
+    public function unBlockUser(User $user): JsonResponse
+    {
+        $user->blocked_at = null;
+        $user->block_reason = null;
+        $user->save();
+
+        return $this->respondWithArray([
+                'success' => true,
+                'message' => 'User unblocked successfully'
+            ]
+        );
+    }
 }

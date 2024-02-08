@@ -14,7 +14,18 @@ class AdminLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * Admin email.
+             * @var string
+             * @example admin@gmail.com
+             */
             'email' => 'required|email',
+
+            /**
+             * Admin password.
+             * @var string
+             * @example 12345678
+             */
             'password' => 'required',
         ];
     }

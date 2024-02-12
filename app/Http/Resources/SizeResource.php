@@ -40,6 +40,7 @@ class SizeResource extends JsonResource
             'title' => $this->title,
             'is_active' => $this->is_active,
             'products_count' => 0,
+            'created_at' => $this->created_at,
         ];
     }
 }

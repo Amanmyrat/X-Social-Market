@@ -20,7 +20,7 @@ class AdminColorController extends Controller
 {
     public function __construct(protected UniversalService $service)
     {
-        $this->service->setModel(new Size());
+        $this->service->setModel(new Color());
     }
 
     /**

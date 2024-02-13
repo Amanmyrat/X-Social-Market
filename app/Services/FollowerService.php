@@ -8,26 +8,16 @@ use Illuminate\Http\Request;
 
 class FollowerService
 {
-    public static function follow(Request $request): void
+    public static function follow($following_id): void
     {
-        $validated = $request->validate([
-            'following_id' => ['required', 'integer', 'exists:'.User::class.',id', 'not_in:'.auth('sanctum')->user()->id],
-        ]);
-
-        $following = User::find($validated['following_id']);
+        $following = User::find($following_id);
 
         auth('sanctum')->user()->followings()->syncWithoutDetaching($following);
-
     }
 
-    public static function unfollow(Request $request): void
+    public static function unfollow($following_id): void
     {
-        $validated = $request->validate(
-            [
-                'following_id' => ['required', 'integer', 'exists:'.User::class.',id', 'exists:'.Follower::class.',following_user_id'],
-            ]
-        );
-        $following = User::find($validated['following_id']);
+        $following = User::find($following_id);
         auth('sanctum')->user()->followings()->detach($following);
     }
 }

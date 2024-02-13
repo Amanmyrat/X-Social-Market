@@ -41,6 +41,7 @@ class PostTransformer extends TransformerAbstract
             'comments_count' => $post->comments_count,
             'views_count' => $post->views_count,
             'created_at' => $post->created_at,
+            'is_following' => (bool)$post->is_following ?? false,
         ];
     }
 

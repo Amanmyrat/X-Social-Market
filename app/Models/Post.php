@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use DB;
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -155,5 +157,21 @@ class Post extends Model implements HasMedia
     public function getIsViewed(): bool
     {
         return auth('sanctum')->user() ? $this->myViews->isNotEmpty() : false;
+    }
+
+    /**
+     * Scope a query to add 'is_following' attribute indicating if the post's creator is followed by the given user.
+     *
+     * @param Builder $query
+     * @return Builder|null
+     */
+    public function scopeWithIsFollowing(Builder $query): ?Builder
+    {
+        $user = auth('sanctum')->user();
+        return $user ? $query->leftJoin('followers', function ($join) use ($user) {
+            $join->on('followers.following_user_id', '=', 'posts.user_id')
+                ->where('followers.user_id', '=', $user->id);
+        })
+            ->addSelect(['posts.*', DB::raw('IF(followers.user_id IS NOT NULL, true, false) AS is_following')]) : null;
     }
 }

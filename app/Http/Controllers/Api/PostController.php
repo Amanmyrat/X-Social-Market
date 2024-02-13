@@ -21,9 +21,9 @@ class PostController extends ApiBaseController
         PostService::create($request);
 
         return $this->respondWithArray([
-                'success' => true,
-                'message' => 'Successfully created a new post',
-            ]
+            'success' => true,
+            'message' => 'Successfully created a new post',
+        ]
         );
     }
 
@@ -50,7 +50,7 @@ class PostController extends ApiBaseController
      */
     public function allPosts(): JsonResponse
     {
-        return $this->respondWithCollection(Post::withCount(['favorites', 'comments', 'views'])->get(), new PostTransformer());
+        return $this->respondWithCollection(Post::withCount(['favorites', 'comments', 'views'])->withIsFollowing()->get(), new PostTransformer());
     }
 
     /**
@@ -76,7 +76,8 @@ class PostController extends ApiBaseController
      */
     public function search(Request $request): JsonResponse
     {
-        $request->validate(['search_query' => ['required','string']]);
+        $request->validate(['search_query' => ['required', 'string']]);
+
         return $this->respondWithPaginator(PostService::searchPosts($request), new PostTransformer());
     }
 
@@ -85,6 +86,6 @@ class PostController extends ApiBaseController
      */
     public function postDetails(Post $post): JsonResponse
     {
-        return $this->respondWithItem($post->loadCount(['favorites', 'comments', 'views']), new PostTransformer());
+        return $this->respondWithItem($post->loadCount(['favorites', 'comments', 'views'])->withIsFollowing(), new PostTransformer());
     }
 }

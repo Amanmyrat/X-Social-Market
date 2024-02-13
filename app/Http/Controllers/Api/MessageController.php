@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\SendMessageRequest;
 use App\Jobs\ProcessMessageSent;
+use App\Models\Chat;
+use App\Models\Message;
 use App\Services\MessageService;
 use App\Transformers\MessageTransformer;
 use Illuminate\Http\JsonResponse;
@@ -43,30 +45,21 @@ class MessageController extends ApiBaseController
     /**
      * Mark message read
      */
-    public function readMessage($messageId): JsonResponse
+    public function readMessage(Message $message): JsonResponse
     {
-        $message = $this->messageService->readMessage($messageId);
-
-        if (! $message) {
-            return response()->json(['message' => 'Message not found or access denied'], 404);
-        }
+        $this->messageService->readMessage($message);
 
         return response()->json(['message' => 'Message marked as read']);
     }
 
-    public function readAllUnreadMessages(): JsonResponse
+    /**
+     * Mark message read
+     */
+    public function readAllUnreadMessages(Chat $chat): JsonResponse
     {
-        // Attempt to mark all unread messages as read
-        $unreadMessages = $this->messageService->readAllMessages();
-
-        // Check if there were any unread messages to mark as read
-        if ($unreadMessages->isEmpty()) {
-            return response()->json(['message' => 'No unread messages found'], 404);
-        }
-
+        $this->messageService->readAllMessages($chat);
         return response()->json([
             'message' => 'All unread messages marked as read',
-            'count' => $unreadMessages->count(),
         ]);
     }
 }

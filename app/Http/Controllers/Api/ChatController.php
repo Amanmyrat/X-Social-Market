@@ -14,6 +14,9 @@ class ChatController extends ApiBaseController
         parent::__construct();
     }
 
+    /**
+     * Create chat
+     */
     public function createChat(CreateChatRequest $request): JsonResponse
     {
         $receiverUserId = $request->input('receiver_user_id');
@@ -22,6 +25,9 @@ class ChatController extends ApiBaseController
         return $this->respondWithItem($chat, new ChatTransformer());
     }
 
+    /**
+     * List chat
+     */
     public function listChats(): JsonResponse
     {
         $chats = $this->chatService->listUserChats();

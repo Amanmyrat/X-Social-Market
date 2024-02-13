@@ -3,12 +3,12 @@
 namespace App\Services;
 
 use App\Jobs\ProcessMessageRead;
+use App\Models\Chat;
 use App\Models\Message;
 use App\Models\Post;
 use App\Models\Story;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 
 class MessageService
 {
@@ -141,13 +141,8 @@ class MessageService
     /**
      * Mark message read
      */
-    public function readMessage($messageId): ?Message
+    public function readMessage(Message $message): ?Message
     {
-        $message = Message::find($messageId);
-        if (! $message || $message->receiver_user_id !== auth()->id()) {
-            return null;
-        }
-
         $message->read_at = now();
         $message->save();
 
@@ -156,25 +151,14 @@ class MessageService
         return $message;
     }
 
-    public function readAllMessages(): Collection
+    public function readAllMessages(Chat $chat): void
     {
         $userId = auth()->id();
 
-        $unreadMessages = Message::where('receiver_user_id', $userId)
+        Message::where('chat_id', $chat->id)
+            ->where('receiver_user_id', $userId)
             ->whereNull('read_at')
-            ->get();
+            ->update(['read_at' => now()]);
 
-        if ($unreadMessages->isEmpty()) {
-            return collect();
-        }
-
-        foreach ($unreadMessages as $message) {
-            $message->read_at = now();
-            $message->save();
-
-            ProcessMessageRead::dispatch($message);
-        }
-
-        return $unreadMessages;
     }
 }

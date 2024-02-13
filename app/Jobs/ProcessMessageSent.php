@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Events\MessageSent;
 use App\Models\Message;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -20,7 +19,6 @@ class ProcessMessageSent implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param Message $message
      * @return void
      */
     public function __construct(Message $message)

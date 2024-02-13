@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-
 /**
  * App\Models\PostBookmark
  *
  * @mixin Eloquent
+ *
  * @property mixed user_id
  * @property mixed post_id
  */

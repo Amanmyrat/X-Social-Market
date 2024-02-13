@@ -23,10 +23,8 @@ class LoginRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    #[ArrayShape(['login' => "string[]", 'password' => "string[]", 'device_token' => "string[]"])]
+    #[ArrayShape(['login' => 'string[]', 'password' => 'string[]', 'device_token' => 'string[]'])]
     public function rules(): array
     {
         return [
@@ -53,7 +51,7 @@ class LoginRequest extends FormRequest
 
         if ($user && $user->blocked_at) {
             throw ValidationException::withMessages([
-                'login' => 'Your account is blocked. Reason: ' . $user->block_reason,
+                'login' => 'Your account is blocked. Reason: '.$user->block_reason,
             ]);
         }
 

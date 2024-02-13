@@ -8,14 +8,12 @@ class ColorDeleteRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
     public function rules(): array
     {
         return [
             'colors' => 'required|array|min:1',
-            'colors.*' => 'int|exists:colors,id'
+            'colors.*' => 'int|exists:colors,id',
         ];
     }
 }

@@ -3,14 +3,13 @@
 namespace App\Transformers;
 
 use App\Models\User;
-use App\Models\UserProfile;
 use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
 
 class UserWithProfileTransformer extends TransformerAbstract
 {
     protected array $defaultIncludes = [
-        'profile'
+        'profile',
     ];
 
     public function transform(User $user): array
@@ -35,10 +34,10 @@ class UserWithProfileTransformer extends TransformerAbstract
 
     public function includeProfile(User $user): ?Item
     {
-        if($user->profile){
+        if ($user->profile) {
             return $this->item($user->profile->load(['location', 'category']), new UserProfileTransformer());
         }
+
         return null;
     }
-
 }

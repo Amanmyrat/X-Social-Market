@@ -19,7 +19,6 @@ class ProcessMessageRead implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param Message $message
      * @return void
      */
     public function __construct(Message $message)

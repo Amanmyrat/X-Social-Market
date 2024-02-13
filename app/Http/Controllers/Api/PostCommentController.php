@@ -24,6 +24,7 @@ class PostCommentController extends ApiBaseController
     public function addComment(Post $post, Request $request): JsonResponse
     {
         PostCommentService::addComment($request, $post);
+
         return $this->respondWithMessage(trans('notification.comment_success'));
     }
 }

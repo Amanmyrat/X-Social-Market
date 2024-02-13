@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * App\Models\Category
  *
  * @mixin Eloquent
+ *
  * @property int id
  * @property string title
  * @property string description
@@ -59,5 +60,4 @@ class Category extends Model
     {
         return $this->hasMany(UserProfile::class);
     }
-
 }

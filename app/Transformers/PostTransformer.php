@@ -3,19 +3,18 @@
 namespace App\Transformers;
 
 use App\Models\Post;
-use App\Models\Story;
 use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
 
 class PostTransformer extends TransformerAbstract
 {
     protected array $defaultIncludes = [
-        'user'
+        'user',
     ];
 
     public function transform(Post $post): array
     {
-        $medias = array();
+        $medias = [];
         foreach ($post->getMedia() as $media) {
             array_push($medias, [
                 'original_url' => $media->original_url,
@@ -23,6 +22,7 @@ class PostTransformer extends TransformerAbstract
                 'size' => $media->size,
             ]);
         }
+
         return [
             'id' => $post->id,
             'category' => $post->category,
@@ -40,7 +40,7 @@ class PostTransformer extends TransformerAbstract
             'favorites_count' => $post->favorites_count,
             'comments_count' => $post->comments_count,
             'views_count' => $post->views_count,
-            'created_at' => $post->created_at
+            'created_at' => $post->created_at,
         ];
     }
 

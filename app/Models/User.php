@@ -16,6 +16,7 @@ use Laravel\Sanctum\HasApiTokens;
  * App\Models\User
  *
  * @mixin Eloquent
+ *
  * @property int id
  * @property string phone
  * @property string username
@@ -34,6 +35,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     public const TYPE_USER = 'user';
+
     public const TYPE_SELLER = 'seller';
 
     /**
@@ -118,7 +120,7 @@ class User extends Authenticatable
      */
     public function posts(): HasMany
     {
-        return $this->hasMany(Post::class)->withCount(['favorites','comments','views']);
+        return $this->hasMany(Post::class)->withCount(['favorites', 'comments', 'views']);
     }
 
     /**
@@ -152,6 +154,4 @@ class User extends Authenticatable
                 ->orWhere('receiver_user_id', $this->id);
         })->whereNotDeleted();
     }
-
-
 }

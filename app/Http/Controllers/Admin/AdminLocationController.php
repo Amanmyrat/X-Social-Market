@@ -8,7 +8,6 @@ use App\Http\Requests\Location\LocationDeleteRequest;
 use App\Http\Requests\Location\LocationUpdateRequest;
 use App\Http\Resources\LocationResource;
 use App\Models\Location;
-use App\Models\Size;
 use App\Services\UniversalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,8 +23,6 @@ class AdminLocationController extends Controller
 
     /**
      * Locations list
-     * @param Request $request
-     * @return AnonymousResourceCollection
      */
     public function list(Request $request): AnonymousResourceCollection
     {
@@ -39,46 +36,40 @@ class AdminLocationController extends Controller
 
     /**
      * Location details
-     * @param Location $location
-     * @return LocationResource
      */
-    #[Pure] public function locationDetails(Location $location): LocationResource
+    #[Pure]
+    public function locationDetails(Location $location): LocationResource
     {
         return new LocationResource($location);
     }
 
     /**
      * Create location
-     * @param LocationCreateRequest $request
-     * @return JsonResponse
      */
     public function create(LocationCreateRequest $request): JsonResponse
     {
         $this->service->create($request->validated());
+
         return new JsonResponse([
             'success' => true,
-            'message' => 'Successfully created a new location'
+            'message' => 'Successfully created a new location',
         ]);
     }
 
     /**
      * Update location
-     * @param Location $location
-     * @param LocationUpdateRequest $request
-     * @return LocationResource
      */
     public function update(Location $location, LocationUpdateRequest $request): LocationResource
     {
         /** @var Location $location */
         $location = $this->service->update($location, $request->validated());
+
         return new LocationResource($location);
 
     }
 
     /**
      * Delete locations
-     * @param LocationDeleteRequest $request
-     * @return JsonResponse
      */
     public function delete(LocationDeleteRequest $request): JsonResponse
     {
@@ -86,7 +77,7 @@ class AdminLocationController extends Controller
 
         return new JsonResponse([
             'success' => true,
-            'message' => 'Successfully deleted'
+            'message' => 'Successfully deleted',
         ]);
     }
 }

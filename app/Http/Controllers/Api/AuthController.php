@@ -8,7 +8,6 @@ use App\Services\AuthService;
 use App\Transformers\UserTransformer;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class AuthController extends ApiBaseController
 {
@@ -17,8 +16,6 @@ class AuthController extends ApiBaseController
      *
      * @unauthenticated
      *
-     * @param RegisterRequest $request
-     * @return JsonResponse
      * @throws Exception
      */
     public function register(RegisterRequest $request): JsonResponse
@@ -26,6 +23,7 @@ class AuthController extends ApiBaseController
         $user = AuthService::register($request->validated());
 
         $user = array_merge($user->toArray(), ['token' => $user->createToken('mobile', ['role:user'])->plainTextToken]);
+
         return $this->respondWithItem(
             $user,
             new UserTransformer()
@@ -44,10 +42,10 @@ class AuthController extends ApiBaseController
         AuthService::login($request);
 
         $user = array_merge($request->user()->toArray(), ['token' => $request->user()->createToken('mobile', ['role:user'])->plainTextToken]);
+
         return $this->respondWithItem(
             $user,
             new UserTransformer()
         );
     }
-
 }

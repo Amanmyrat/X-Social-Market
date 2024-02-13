@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminBrandController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminColorController;
 use App\Http\Controllers\Admin\AdminLocationController;
 use App\Http\Controllers\Admin\AdminSizeController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\CategoryController;
@@ -15,9 +17,9 @@ use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\OtpController;
 use App\Http\Controllers\Api\PostBookmarkController;
 use App\Http\Controllers\Api\PostCommentController;
-use App\Http\Controllers\Api\PostRatingController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\PostFavoritesController;
+use App\Http\Controllers\Api\PostRatingController;
 use App\Http\Controllers\Api\PostSpamController;
 use App\Http\Controllers\Api\PostViewController;
 use App\Http\Controllers\Api\SpamTypeController;
@@ -26,8 +28,6 @@ use App\Http\Controllers\Api\StorySpamController;
 use App\Http\Controllers\Api\StoryViewController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserProfileController;
-use App\Http\Controllers\Admin\AdminAuthController;
-use App\Http\Controllers\Admin\AdminUserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -131,14 +131,12 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
 Route::post('/categories', [CategoryController::class, 'categories']);
 Route::post('/locations', [LocationController::class, 'list']);
 
-
 Route::prefix('spam')->group(function () {
     Route::post('types/create', [SpamTypeController::class, 'create']);
     Route::post('types', [SpamTypeController::class, 'types']);
 });
 
 Route::post('posts/all/list', [PostController::class, 'allPosts']);
-
 
 Route::prefix('admin')->group(function () {
 
@@ -194,7 +192,5 @@ Route::prefix('admin')->group(function () {
             Route::post('/delete', [AdminSizeController::class, 'delete']);
         });
 
-
     });
 });
-

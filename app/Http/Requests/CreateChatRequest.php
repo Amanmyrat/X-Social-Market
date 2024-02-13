@@ -8,7 +8,7 @@ use JetBrains\PhpStorm\ArrayShape;
 
 class CreateChatRequest extends FormRequest
 {
-    #[ArrayShape(['receiver_user_id' => "array"])]
+    #[ArrayShape(['receiver_user_id' => 'array'])]
     public function rules(): array
     {
         return [
@@ -16,7 +16,7 @@ class CreateChatRequest extends FormRequest
                 'required',
                 'integer',
                 'exists:users,id',
-                Rule::notIn([auth()->id()])
+                Rule::notIn([auth()->id()]),
             ],
         ];
     }

@@ -11,11 +11,9 @@ use Illuminate\Validation\ValidationException;
 class AuthService
 {
     /**
-     * @param $registerData
-     * @return User|null
      * @throws Exception
      */
-    public static function register($registerData): User|null
+    public static function register($registerData): ?User
     {
         return User::create([
             'username' => 'ulanyjy_'.random_int(10000000, 99999999),
@@ -28,8 +26,6 @@ class AuthService
     }
 
     /**
-     * @param LoginRequest $request
-     * @return void
      * @throws ValidationException
      */
     public static function login(LoginRequest $request): void
@@ -38,7 +34,7 @@ class AuthService
         $request->user()->update(
             [
                 'device_token' => $request->device_token,
-                'last_activity' => now()
+                'last_activity' => now(),
             ]
         );
     }

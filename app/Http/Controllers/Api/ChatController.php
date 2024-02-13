@@ -9,18 +9,11 @@ use Illuminate\Http\JsonResponse;
 
 class ChatController extends ApiBaseController
 {
-    /**
-     * @param ChatService $chatService
-     */
     public function __construct(protected ChatService $chatService)
     {
         parent::__construct();
     }
 
-    /**
-     * @param CreateChatRequest $request
-     * @return JsonResponse
-     */
     public function createChat(CreateChatRequest $request): JsonResponse
     {
         $receiverUserId = $request->input('receiver_user_id');
@@ -29,13 +22,10 @@ class ChatController extends ApiBaseController
         return $this->respondWithItem($chat, new ChatTransformer());
     }
 
-    /**
-     * @return JsonResponse
-     */
     public function listChats(): JsonResponse
     {
         $chats = $this->chatService->listUserChats();
+
         return $this->respondWithCollection($chats, new ChatTransformer());
     }
-
 }

@@ -23,8 +23,6 @@ class AdminSizeController extends Controller
 
     /**
      * Sizes list
-     * @param Request $request
-     * @return AnonymousResourceCollection
      */
     public function list(Request $request): AnonymousResourceCollection
     {
@@ -32,13 +30,12 @@ class AdminSizeController extends Controller
         $query = $request->search_query ?? null;
 
         $sizes = $this->service->list($limit, $query);
+
         return SizeResource::collection($sizes);
     }
 
     /**
      * Size details
-     * @param Size $size
-     * @return SizeResource
      */
     #[Pure]
     public function sizeDetails(Size $size): SizeResource
@@ -48,8 +45,6 @@ class AdminSizeController extends Controller
 
     /**
      * Create size
-     * @param SizeCreateRequest $request
-     * @return JsonResponse
      */
     public function create(SizeCreateRequest $request): JsonResponse
     {
@@ -57,27 +52,23 @@ class AdminSizeController extends Controller
 
         return new JsonResponse([
             'success' => true,
-            'message' => 'Successfully created a new size'
+            'message' => 'Successfully created a new size',
         ]);
     }
 
     /**
      * Update size
-     * @param Size $size
-     * @param SizeUpdateRequest $request
-     * @return SizeResource
      */
     public function update(Size $size, SizeUpdateRequest $request): SizeResource
     {
         /** @var Size $size */
         $size = $this->service->update($size, $request->validated());
+
         return new SizeResource($size, true);
     }
 
     /**
      * Delete sizes
-     * @param SizeDeleteRequest $request
-     * @return JsonResponse
      */
     public function delete(SizeDeleteRequest $request): JsonResponse
     {
@@ -85,7 +76,7 @@ class AdminSizeController extends Controller
 
         return new JsonResponse([
             'success' => true,
-            'message' => 'Successfully deleted'
+            'message' => 'Successfully deleted',
         ]);
     }
 }

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * App\Models\StoryView
  *
  * @mixin Eloquent
+ *
  * @property mixed user_id
  * @property mixed story_id
  */
@@ -25,7 +26,7 @@ class StoryView extends Model
      */
     protected $fillable = [
         'user_id',
-        'story_id'
+        'story_id',
     ];
 
     /**

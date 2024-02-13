@@ -15,10 +15,11 @@ class StorySpamController extends ApiBaseController
     public function spamStory(Story $story, Request $request): JsonResponse
     {
         SpamService::spamStory($story, $request);
+
         return $this->respondWithArray([
-                'success' => true,
-                'message' => 'Spam successful'
-            ]
+            'success' => true,
+            'message' => 'Spam successful',
+        ]
         );
     }
 }

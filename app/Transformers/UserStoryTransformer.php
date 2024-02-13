@@ -12,10 +12,10 @@ use League\Fractal\TransformerAbstract;
 class UserStoryTransformer extends TransformerAbstract
 {
     protected array $defaultIncludes = [
-        'profile','stories'
+        'profile', 'stories',
     ];
 
-    #[ArrayShape(['id' => "mixed", 'phone' => "mixed", 'username' => "mixed", 'type' => "mixed", 'last_activity' => "mixed"])]
+    #[ArrayShape(['id' => 'mixed', 'phone' => 'mixed', 'username' => 'mixed', 'type' => 'mixed', 'last_activity' => 'mixed'])]
     public function transform(User $user): array
     {
         return [
@@ -31,9 +31,10 @@ class UserStoryTransformer extends TransformerAbstract
     {
         $profile = UserProfile::where('user_id', $user['id'])->get()->first();
 
-        if($profile){
+        if ($profile) {
             return $this->item($profile, new UserProfileSmallTransformer());
         }
+
         return null;
     }
 
@@ -41,5 +42,4 @@ class UserStoryTransformer extends TransformerAbstract
     {
         return $this->collection($user->stories, new StoryTransformer());
     }
-
 }

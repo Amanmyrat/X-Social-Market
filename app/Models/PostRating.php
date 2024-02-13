@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * App\Models\PostComment
  *
  * @mixin Eloquent
+ *
  * @property int id
  * @property int user_id
  * @property int post_id
@@ -28,7 +29,7 @@ class PostRating extends Model
     protected $fillable = [
         'user_id',
         'post_id',
-        'rating'
+        'rating',
     ];
 
     /**
@@ -49,5 +50,4 @@ class PostRating extends Model
     {
         return $this->belongsTo(Post::class);
     }
-
 }

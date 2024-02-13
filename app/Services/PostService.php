@@ -5,18 +5,14 @@ namespace App\Services;
 use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class PostService
 {
-    /**
-     * @param PostRequest $request
-     */
     public static function create(PostRequest $request): void
     {
         $post = Post::create(array_merge($request->validated(), [
-            'user_id' => $request->user()->id
+            'user_id' => $request->user()->id,
         ]));
 
         $medias = $request->validated()['media_type'] == 'image'
@@ -31,17 +27,13 @@ class PostService
 
     }
 
-    /**
-     * @param Request $request
-     * @return LengthAwarePaginator
-     */
     public static function searchPosts(Request $request): LengthAwarePaginator
     {
         $limit = $request->get('limit');
 
         $products = Post::when(isset($request->categories), function ($query) use ($request) {
-                return $query->whereIn('category_id', $request->categories);
-            })
+            return $query->whereIn('category_id', $request->categories);
+        })
             ->when(isset($request->price_min), function ($query) use ($request) {
                 return $query->where('price', '>=', $request->price_min);
             })
@@ -55,7 +47,8 @@ class PostService
                 return $query->where('created_at', '<=', $request->date_end);
             })
             ->when(isset($request->search_query), function ($query) use ($request) {
-                $search_query = '%' . $request->search_query . '%';
+                $search_query = '%'.$request->search_query.'%';
+
                 return $query->where('caption', 'LIKE', $search_query)
                     ->orWhere('description', 'LIKE', $search_query);
             });
@@ -69,18 +62,15 @@ class PostService
                     break;
                 default:
                     $sort = self::getSort($s);
-                    $products = $products->orderBy('posts.' . $sort[0], $sort[1]);
+                    $products = $products->orderBy('posts.'.$sort[0], $sort[1]);
             }
         } else {
             $products = $products->inRandomOrder();
         }
+
         return $products->paginate($limit);
     }
 
-    /**
-     * @param $sort
-     * @return array
-     */
     private static function getSort($sort): array
     {
         $sort_key = trim($sort, '-');
@@ -88,9 +78,10 @@ class PostService
         if (str_contains($sort, '-') && strpos($sort, '-') == 0) {
             $sort_direction = 'desc';
         }
+
         return [
             $sort_key,
-            $sort_direction ?? 'asc'
+            $sort_direction ?? 'asc',
         ];
     }
 }

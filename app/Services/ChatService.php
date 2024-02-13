@@ -8,10 +8,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 class ChatService
 {
-    /**
-     * @param $receiverUserId
-     * @return Chat
-     */
     public function findOrCreateChat($receiverUserId): Chat
     {
         $existingChat = $this->findExistingChat($receiverUserId);
@@ -23,11 +19,7 @@ class ChatService
         return $this->createNewChat($receiverUserId);
     }
 
-    /**
-     * @param $receiverUserId
-     * @return Chat|null
-     */
-    private function findExistingChat($receiverUserId): Chat|null
+    private function findExistingChat($receiverUserId): ?Chat
     {
         return Chat::where(function ($query) use ($receiverUserId) {
             $query->where('sender_user_id', auth()->id())
@@ -38,10 +30,6 @@ class ChatService
         })->first();
     }
 
-    /**
-     * @param $receiverUserId
-     * @return Chat
-     */
     private function createNewChat($receiverUserId): Chat
     {
         return Chat::create([
@@ -50,9 +38,6 @@ class ChatService
         ]);
     }
 
-    /**
-     * @return Collection
-     */
     public function listUserChats(): Collection
     {
         /** @var User $user */

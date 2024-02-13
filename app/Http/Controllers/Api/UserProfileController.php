@@ -12,8 +12,6 @@ class UserProfileController extends ApiBaseController
 {
     /**
      * Update the profile of user.
-     * @param ProfileUpdateRequest $request
-     * @return JsonResponse
      */
     public function update(ProfileUpdateRequest $request): JsonResponse
     {
@@ -27,8 +25,6 @@ class UserProfileController extends ApiBaseController
 
     /**
      * Get the profile of user.
-     * @param User $user
-     * @return JsonResponse
      */
     public function get(User $user): JsonResponse
     {

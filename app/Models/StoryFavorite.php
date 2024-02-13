@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * App\Models\StoryFavorite
  *
  * @mixin Eloquent
+ *
  * @property mixed user_id
  * @property mixed story_id
  */

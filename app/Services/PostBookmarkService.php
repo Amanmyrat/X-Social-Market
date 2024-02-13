@@ -8,10 +8,6 @@ use Illuminate\Support\Collection;
 
 class PostBookmarkService
 {
-    /**
-     * @param Post $post
-     * @return string
-     */
     public static function add(Post $post): string
     {
         $message = trans('notification.bookmark_success');
@@ -24,17 +20,14 @@ class PostBookmarkService
             $bookmark->post()->associate($post);
             $bookmark->save();
         }
+
         return $message;
     }
 
-    /**
-     * @return Collection
-     */
     public static function get(): Collection
     {
         $bookmarks = auth('sanctum')->user()->bookmarks->pluck('post_id')->toArray();
 
         return Post::whereIn('id', $bookmarks)->get();
     }
-
 }

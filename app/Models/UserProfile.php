@@ -6,12 +6,12 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\UserProfile
  *
  * @mixin Eloquent
+ *
  * @property mixed user_id
  * @property mixed full_name
  * @property mixed verified
@@ -39,7 +39,7 @@ class UserProfile extends Model
         'gender',
         'payment_available',
         'verified',
-        'private'
+        'private',
     ];
 
     /**
@@ -58,7 +58,7 @@ class UserProfile extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'birthdate' => 'datetime'
+        'birthdate' => 'datetime',
     ];
 
     /**
@@ -69,7 +69,7 @@ class UserProfile extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function location(): BelongsTo|null
+    public function location(): ?BelongsTo
     {
         return $this->belongsTo(Location::class)->withDefault();
     }

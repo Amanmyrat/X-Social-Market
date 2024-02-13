@@ -23,7 +23,7 @@ class OtpCode extends Model
     protected $fillable = [
         'phone',
         'code',
-        'valid_until'
+        'valid_until',
     ];
 
     /**
@@ -32,6 +32,6 @@ class OtpCode extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'valid_until' => 'datetime'
+        'valid_until' => 'datetime',
     ];
 }

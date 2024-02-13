@@ -12,26 +12,23 @@ class SpamTypeController extends ApiBaseController
 {
     /**
      * Create spam type
-     * @param Request $request
-     * @return JsonResponse
      */
     public function create(Request $request): JsonResponse
     {
         SpamService::create($request);
+
         return $this->respondWithArray([
-                'success' => true,
-                'message' => 'Successfully created a new spam type'
-            ]
+            'success' => true,
+            'message' => 'Successfully created a new spam type',
+        ]
         );
     }
 
     /**
      * Spam types list
-     * @return JsonResponse
      */
     public function types(): JsonResponse
     {
         return $this->respondWithCollection(SpamType::all(), new SpamTypeTransformer());
     }
-
 }

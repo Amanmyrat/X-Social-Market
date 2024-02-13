@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Jobs\ProcessMessageRead;
 use App\Models\Message;
-use App\Models\Story;
 use App\Models\Post;
+use App\Models\Story;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -14,18 +14,15 @@ class MessageService
 {
     /**
      * Send message
-     *
-     * @param array $data
-     * @return Message
      */
     public function sendMessage(array $data): Message
     {
         $extras = $this->handleExtrasBasedOnType($data);
 
         $messageData = [
-            'chat_id' => (int)$data['chat_id'],
+            'chat_id' => (int) $data['chat_id'],
             'sender_user_id' => auth()->id(),
-            'receiver_user_id' => (int)$data['receiver_user_id'],
+            'receiver_user_id' => (int) $data['receiver_user_id'],
             'body' => $data['body'],
             'type' => $data['type'],
             'extra' => $extras,
@@ -43,11 +40,7 @@ class MessageService
         return $message;
     }
 
-    /**
-     * @param array $data
-     * @return array|null
-     */
-    private function handleExtrasBasedOnType(array $data): array|null
+    private function handleExtrasBasedOnType(array $data): ?array
     {
         $extras = null;
         $type = $data['type'];
@@ -63,10 +56,6 @@ class MessageService
         return $extras;
     }
 
-    /**
-     * @param $storyId
-     * @return Builder|Story
-     */
     private function getStoryDetails($storyId): Builder|Story
     {
         /** @var Story $story */
@@ -75,16 +64,12 @@ class MessageService
             ->first(['id', 'user_id', 'image', 'post_id']);
 
         if ($story) {
-            $story->image = $story->image ? url('uploads/stories/' . $story->image) : null;
+            $story->image = $story->image ? url('uploads/stories/'.$story->image) : null;
         }
 
         return $story;
     }
 
-    /**
-     * @param $postId
-     * @return Builder|Post
-     */
     private function getPostDetails($postId): Builder|Post
     {
         $post = Post::with('user:id,username,last_activity')
@@ -107,11 +92,6 @@ class MessageService
         return $post;
     }
 
-    /**
-     * @param Message $message
-     * @param array $data
-     * @return Message
-     */
     private function handleMediaMessage(Message $message, array $data): Message
     {
         // Determine the type of media (images or videos)
@@ -143,9 +123,6 @@ class MessageService
 
     /**
      * Get all messages
-     *
-     * @param $chatId
-     * @return LengthAwarePaginator
      */
     public function listMessages($chatId): LengthAwarePaginator
     {
@@ -163,14 +140,11 @@ class MessageService
 
     /**
      * Mark message read
-     *
-     * @param $messageId
-     * @return Message|null
      */
-    public function readMessage($messageId): Message|null
+    public function readMessage($messageId): ?Message
     {
         $message = Message::find($messageId);
-        if (!$message || $message->receiver_user_id !== auth()->id()) {
+        if (! $message || $message->receiver_user_id !== auth()->id()) {
             return null;
         }
 
@@ -182,9 +156,6 @@ class MessageService
         return $message;
     }
 
-    /**
-     * @return Collection
-     */
     public function readAllMessages(): Collection
     {
         $userId = auth()->id();

@@ -6,7 +6,6 @@ use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use App\Models\User;
 use App\Services\PostService;
-use App\Transformers\CommentTransformer;
 use App\Transformers\PostTransformer;
 use App\Transformers\UserPostTransformer;
 use Illuminate\Http\JsonResponse;
@@ -16,8 +15,6 @@ class PostController extends ApiBaseController
 {
     /**
      * Create post
-     * @param PostRequest $request
-     * @return JsonResponse
      */
     public function create(PostRequest $request): JsonResponse
     {
@@ -25,7 +22,7 @@ class PostController extends ApiBaseController
 
         return $this->respondWithArray([
                 'success' => true,
-                'message' => 'Successfully created a new post'
+                'message' => 'Successfully created a new post',
             ]
         );
     }
@@ -33,13 +30,12 @@ class PostController extends ApiBaseController
     public function delete(Post $post): JsonResponse
     {
         $post->delete();
-        return $this->respondWithMessage("Successfully deleted");
-    }
 
+        return $this->respondWithMessage('Successfully deleted');
+    }
 
     /**
      * My posts list
-     * @return JsonResponse
      */
     public function myPosts(): JsonResponse
     {
@@ -48,7 +44,6 @@ class PostController extends ApiBaseController
 
     /**
      * All posts list
-     * @return JsonResponse
      */
     public function allPosts(): JsonResponse
     {
@@ -57,18 +52,16 @@ class PostController extends ApiBaseController
 
     /**
      * User posts list
-     * @param $user
-     * @return JsonResponse
      */
     public function userPosts($user): JsonResponse
     {
         $user = User::findOrFail($user);
+
         return $this->respondWithCollection($user->posts, new PostTransformer());
     }
 
     /**
      * Following users posts list
-     * @return JsonResponse
      */
     public function followingPosts(): JsonResponse
     {
@@ -77,8 +70,6 @@ class PostController extends ApiBaseController
 
     /**
      * Search posts
-     * @param Request $request
-     * @return JsonResponse
      */
     public function search(Request $request): JsonResponse
     {
@@ -87,8 +78,6 @@ class PostController extends ApiBaseController
 
     /**
      * Post details
-     * @param Post $post
-     * @return JsonResponse
      */
     public function postDetails(Post $post): JsonResponse
     {

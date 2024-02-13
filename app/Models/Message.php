@@ -13,6 +13,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * App\Models\Message
  *
  * @mixin Eloquent
+ *
  * @property int id
  * @property int chat_id
  * @property int sender_user_id
@@ -24,17 +25,20 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property string sender_deleted_at
  * @property string receiver_deleted_at
  * @property string created_at
- *
  */
 class Message extends Model implements HasMedia
 {
-    use InteractsWithMedia;
     use HasFactory;
+    use InteractsWithMedia;
 
     public const TYPE_MESSAGE = 'message';
+
     public const TYPE_SHARE_STORY = 'share_story';
+
     public const TYPE_SHARE_POST = 'share_post';
+
     public const TYPE_MEDIA = 'media';
+
     public const TYPE_FILE = 'file';
 
     protected $fillable = [
@@ -46,11 +50,11 @@ class Message extends Model implements HasMedia
         'extra',
         'read_at',
         'sender_deleted_at',
-        'receiver_deleted_at'
+        'receiver_deleted_at',
     ];
 
     protected $casts = [
-        'extra' => 'array'
+        'extra' => 'array',
     ];
 
     protected array $dates = ['read_at', 'sender_deleted_at', 'receiver_deleted_at'];
@@ -59,5 +63,4 @@ class Message extends Model implements HasMedia
     {
         return $this->belongsTo(Chat::class);
     }
-
 }

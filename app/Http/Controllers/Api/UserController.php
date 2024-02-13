@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use App\Services\UserService;
 use App\Transformers\UserTransformer;
-use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -13,50 +12,42 @@ class UserController extends ApiBaseController
 {
     /**
      * Update the user password.
-     * @param Request $request
-     * @return JsonResponse
      */
     public function updatePassword(Request $request): JsonResponse
     {
         UserService::updatePassword($request);
 
         return $this->respondWithArray([
-            'success' => true
+            'success' => true,
         ]);
     }
 
     /**
      * Update the user phone.
-     * @param Request $request
-     * @return JsonResponse
      */
     public function updatePhone(Request $request): JsonResponse
     {
         UserService::updatePhone($request);
 
         return $this->respondWithArray([
-            'success' => true
+            'success' => true,
         ]);
     }
 
     /**
      * Create new user password.
-     * @param Request $request
-     * @return JsonResponse
      */
     public function newPassword(Request $request): JsonResponse
     {
         UserService::newPassword($request);
 
         return $this->respondWithArray([
-            'success' => true
+            'success' => true,
         ]);
     }
 
     /**
      * Update the username or email of User.
-     * @param Request $request
-     * @return JsonResponse
      */
     public function update(Request $request): JsonResponse
     {
@@ -70,39 +61,34 @@ class UserController extends ApiBaseController
 
     /**
      * Delete user.
-     * @param Request $request
-     * @return JsonResponse
      */
     public function delete(Request $request): JsonResponse
     {
         $request->user()->delete();
 
         return $this->respondWithArray([
-            'success' => true
+            'success' => true,
         ]);
     }
 
-
     /**
      * Make account business
-     * @param Request $request
-     * @return JsonResponse
      */
     public function makeAccountBusiness(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'location_id' => ['required', 'exists:locations,id'],
-            'category_id' => ['required', 'exists:categories,id']
+            'category_id' => ['required', 'exists:categories,id'],
         ]);
 
         $request->user()->update([
-            'type' => User::TYPE_SELLER
+            'type' => User::TYPE_SELLER,
         ]);
 
         $request->user()->profile()->update($validated);
 
         return $this->respondWithArray([
-            'success' => true
+            'success' => true,
         ]);
     }
 }

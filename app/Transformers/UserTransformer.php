@@ -2,8 +2,6 @@
 
 namespace App\Transformers;
 
-use App\Models\UserProfile;
-use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
 
 class UserTransformer extends TransformerAbstract
@@ -19,12 +17,10 @@ class UserTransformer extends TransformerAbstract
             'last_activity' => $user['last_activity'],
         ];
 
-        if(isset($user['token'])){
+        if (isset($user['token'])) {
             $result['token'] = $user['token'];
         }
 
         return $result;
     }
-
-
 }

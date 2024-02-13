@@ -8,7 +8,6 @@ use App\Http\Requests\Brand\BrandDeleteRequest;
 use App\Http\Requests\Brand\BrandUpdateRequest;
 use App\Http\Resources\BrandResource;
 use App\Models\Brand;
-use App\Models\Size;
 use App\Services\UniversalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,8 +23,6 @@ class AdminBrandController extends Controller
 
     /**
      * Brands list
-     * @param Request $request
-     * @return AnonymousResourceCollection
      */
     public function list(Request $request): AnonymousResourceCollection
     {
@@ -36,13 +33,12 @@ class AdminBrandController extends Controller
         $conditions['type'] = $type;
 
         $brands = $this->service->list($limit, $query, $conditions);
+
         return BrandResource::collection($brands);
     }
 
     /**
      * Brand details
-     * @param Brand $brand
-     * @return BrandResource
      */
     #[Pure]
     public function brandDetails(Brand $brand): BrandResource
@@ -52,35 +48,30 @@ class AdminBrandController extends Controller
 
     /**
      * Create brand
-     * @param BrandCreateRequest $request
-     * @return JsonResponse
      */
     public function create(BrandCreateRequest $request): JsonResponse
     {
         $this->service->create($request->validated());
+
         return new JsonResponse([
             'success' => true,
-            'message' => 'Successfully created a new brand'
+            'message' => 'Successfully created a new brand',
         ]);
     }
 
     /**
      * Update brand
-     * @param Brand $brand
-     * @param BrandUpdateRequest $request
-     * @return BrandResource
      */
     public function update(Brand $brand, BrandUpdateRequest $request): BrandResource
     {
         /** @var Brand $brand */
         $brand = $this->service->update($brand, $request->validated());
+
         return new BrandResource($brand, true);
     }
 
     /**
      * Delete brands
-     * @param BrandDeleteRequest $request
-     * @return JsonResponse
      */
     public function delete(BrandDeleteRequest $request): JsonResponse
     {
@@ -88,7 +79,7 @@ class AdminBrandController extends Controller
 
         return new JsonResponse([
             'success' => true,
-            'message' => 'Successfully deleted'
+            'message' => 'Successfully deleted',
         ]);
     }
 }

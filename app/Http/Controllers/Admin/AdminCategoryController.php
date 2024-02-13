@@ -8,7 +8,6 @@ use App\Http\Requests\Category\CategoryDeleteRequest;
 use App\Http\Requests\Category\CategoryUpdateRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
-use App\Models\Size;
 use App\Services\UniversalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -23,8 +22,6 @@ class AdminCategoryController extends Controller
 
     /**
      * Categories list
-     * @param Request $request
-     * @return AnonymousResourceCollection
      */
     public function list(Request $request): AnonymousResourceCollection
     {
@@ -38,8 +35,6 @@ class AdminCategoryController extends Controller
 
     /**
      * Category details
-     * @param Category $category
-     * @return CategoryResource
      */
     public function categoryDetails(Category $category): CategoryResource
     {
@@ -48,35 +43,30 @@ class AdminCategoryController extends Controller
 
     /**
      * Create category
-     * @param CategoryCreateRequest $request
-     * @return JsonResponse
      */
     public function create(CategoryCreateRequest $request): JsonResponse
     {
         $this->service->create($request->validated());
+
         return new JsonResponse([
             'success' => true,
-            'message' => 'Successfully created a new category'
+            'message' => 'Successfully created a new category',
         ]);
     }
 
     /**
      * Update category
-     * @param Category $category
-     * @param CategoryUpdateRequest $request
-     * @return CategoryResource
      */
     public function update(Category $category, CategoryUpdateRequest $request): CategoryResource
     {
         /** @var Category $category */
         $category = $this->service->update($category, $request->validated());
+
         return new CategoryResource($category->loadCount('posts'), true);
     }
 
     /**
      * Delete categories
-     * @param CategoryDeleteRequest $request
-     * @return JsonResponse
      */
     public function delete(CategoryDeleteRequest $request): JsonResponse
     {
@@ -84,7 +74,7 @@ class AdminCategoryController extends Controller
 
         return new JsonResponse([
             'success' => true,
-            'message' => 'Successfully deleted'
+            'message' => 'Successfully deleted',
         ]);
     }
 }

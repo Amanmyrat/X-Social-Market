@@ -8,8 +8,6 @@ use League\Fractal\TransformerAbstract;
 
 class PostRatingTransformer extends TransformerAbstract
 {
-
-
     public function transform(PostRating $rating): array
     {
         return [

@@ -10,12 +10,11 @@ class LocationController extends ApiBaseController
 {
     /**
      * Locations list
-     * @return AnonymousResourceCollection
      */
     public function list(): AnonymousResourceCollection
     {
         $locations = Location::where('is_active', true)->get();
+
         return LocationResource::collection($locations);
     }
-
 }

@@ -23,7 +23,7 @@ class UserListTransformer extends TransformerAbstract
             'full_name' => $user->profile?->full_name,
             'profile_image' => $user->profile?->profile_image ? url('uploads/user/profile/'.$user->profile?->profile_image) : null,
             'location' => $user->profile?->location->title,
-            'category' => $user->profile?->category->title
+            'category' => $user->profile?->category->title,
         ] : [
             'id' => $user->id,
             'phone' => $user->phone,

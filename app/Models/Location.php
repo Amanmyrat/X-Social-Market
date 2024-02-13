@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * App\Models\Location
  *
  * @mixin Eloquent
+ *
  * @property int id
  * @property string title
  * @property bool is_active
@@ -29,7 +29,7 @@ class Location extends Model
      */
     protected $fillable = [
         'title',
-        'is_active'
+        'is_active',
     ];
 
     /**
@@ -38,7 +38,7 @@ class Location extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'is_active' => 'bool'
+        'is_active' => 'bool',
     ];
 
     public function userProfiles(): HasMany

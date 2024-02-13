@@ -8,19 +8,16 @@ use Carbon\Carbon;
 
 class StoryService
 {
-    /**
-     * @param StoryRequest $request
-     */
     public static function create(StoryRequest $request): void
     {
         $validated = $request->validated();
 
-        if($validated['type'] == 'basic'){
+        if ($validated['type'] == 'basic') {
             $imageName = $request->user()->phone.'-'.time().'.'.$request->image->getClientOriginalExtension();
             $validated['image']->move(public_path('uploads/stories'), $imageName);
             $validated['image'] = $imageName;
             $validated['post_id'] = null;
-        }else{
+        } else {
             $validated['image'] = null;
         }
 

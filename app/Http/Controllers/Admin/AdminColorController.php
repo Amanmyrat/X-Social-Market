@@ -8,13 +8,11 @@ use App\Http\Requests\Color\ColorDeleteRequest;
 use App\Http\Requests\Color\ColorUpdateRequest;
 use App\Http\Resources\ColorResource;
 use App\Models\Color;
-use App\Models\Size;
 use App\Services\UniversalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use JetBrains\PhpStorm\Pure;
-
 
 class AdminColorController extends Controller
 {
@@ -25,8 +23,6 @@ class AdminColorController extends Controller
 
     /**
      * Colors list
-     * @param Request $request
-     * @return AnonymousResourceCollection
      */
     public function list(Request $request): AnonymousResourceCollection
     {
@@ -34,13 +30,12 @@ class AdminColorController extends Controller
         $query = $request->search_query ?? null;
 
         $colors = $this->service->list($limit, $query);
+
         return ColorResource::collection($colors);
     }
 
     /**
      * Color details
-     * @param Color $color
-     * @return ColorResource
      */
     #[Pure]
     public function colorDetails(Color $color): ColorResource
@@ -50,8 +45,6 @@ class AdminColorController extends Controller
 
     /**
      * Create color
-     * @param ColorCreateRequest $request
-     * @return JsonResponse
      */
     public function create(ColorCreateRequest $request): JsonResponse
     {
@@ -59,27 +52,23 @@ class AdminColorController extends Controller
 
         return new JsonResponse([
             'success' => true,
-            'message' => 'Successfully created a new color'
+            'message' => 'Successfully created a new color',
         ]);
     }
 
     /**
      * Update color
-     * @param Color $color
-     * @param ColorUpdateRequest $request
-     * @return ColorResource
      */
     public function update(Color $color, ColorUpdateRequest $request): ColorResource
     {
         /** @var Color $color */
         $color = $this->service->update($color, $request->validated());
+
         return new ColorResource($color, true);
     }
 
     /**
      * Delete colors
-     * @param ColorDeleteRequest $request
-     * @return JsonResponse
      */
     public function delete(ColorDeleteRequest $request): JsonResponse
     {
@@ -87,7 +76,7 @@ class AdminColorController extends Controller
 
         return new JsonResponse([
             'success' => true,
-            'message' => 'Successfully deleted'
+            'message' => 'Successfully deleted',
         ]);
     }
 }

@@ -6,17 +6,14 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CategoryDeleteRequest extends FormRequest
 {
-
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
     public function rules(): array
     {
         return [
             'categories' => 'required|array|min:1',
-            'categories.*' => 'int|exists:categories,id'
+            'categories.*' => 'int|exists:categories,id',
         ];
     }
 }

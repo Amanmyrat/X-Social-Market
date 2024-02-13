@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Size
  *
  * @mixin Eloquent
+ *
  * @property int id
  * @property string title
  * @property bool is_active
@@ -27,7 +28,7 @@ class Size extends Model
      */
     protected $fillable = [
         'title',
-        'is_active'
+        'is_active',
     ];
 
     /**
@@ -36,6 +37,6 @@ class Size extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'is_active' => 'bool'
+        'is_active' => 'bool',
     ];
 }

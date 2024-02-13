@@ -9,15 +9,13 @@ class UserUpdateRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
     public function rules(): array
     {
         return [
-            'phone' => ['filled', 'integer', 'unique:' . User::class],
-            'username' => ['filled', 'string', 'min:3', 'alpha_dash', 'unique:' . User::class],
-            'email' => ['filled', 'email', 'unique:' . User::class],
+            'phone' => ['filled', 'integer', 'unique:'.User::class],
+            'username' => ['filled', 'string', 'min:3', 'alpha_dash', 'unique:'.User::class],
+            'email' => ['filled', 'email', 'unique:'.User::class],
             'is_active' => ['filled', 'bool'],
 
             'profile.full_name' => ['filled', 'string', 'min:2'],

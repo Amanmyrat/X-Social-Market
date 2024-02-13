@@ -8,14 +8,12 @@ class SizeDeleteRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
     public function rules(): array
     {
         return [
             'sizes' => 'required|array|min:1',
-            'sizes.*' => 'int|exists:sizes,id'
+            'sizes.*' => 'int|exists:sizes,id',
         ];
     }
 }

@@ -12,9 +12,6 @@ class MessageController extends ApiBaseController
 {
     protected MessageService $messageService;
 
-    /**
-     * @param MessageService $messageService
-     */
     public function __construct(MessageService $messageService)
     {
         $this->messageService = $messageService;
@@ -23,9 +20,6 @@ class MessageController extends ApiBaseController
 
     /**
      * Send message
-     *
-     * @param SendMessageRequest $request
-     * @return JsonResponse
      */
     public function sendMessage(SendMessageRequest $request): JsonResponse
     {
@@ -38,36 +32,28 @@ class MessageController extends ApiBaseController
 
     /**
      * Get all messages
-     *
-     * @param $chatId
-     * @return JsonResponse
      */
     public function listMessages($chatId): JsonResponse
     {
         $messages = $this->messageService->listMessages($chatId);
+
         return $this->respondWithPaginator($messages, new MessageTransformer());
     }
 
     /**
      * Mark message read
-     *
-     * @param $messageId
-     * @return JsonResponse
      */
     public function readMessage($messageId): JsonResponse
     {
         $message = $this->messageService->readMessage($messageId);
 
-        if (!$message) {
+        if (! $message) {
             return response()->json(['message' => 'Message not found or access denied'], 404);
         }
 
         return response()->json(['message' => 'Message marked as read']);
     }
 
-    /**
-     * @return JsonResponse
-     */
     public function readAllUnreadMessages(): JsonResponse
     {
         // Attempt to mark all unread messages as read
@@ -80,9 +66,7 @@ class MessageController extends ApiBaseController
 
         return response()->json([
             'message' => 'All unread messages marked as read',
-            'count' => $unreadMessages->count()
+            'count' => $unreadMessages->count(),
         ]);
     }
-
-
 }

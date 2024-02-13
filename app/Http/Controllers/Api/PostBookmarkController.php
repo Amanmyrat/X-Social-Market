@@ -15,6 +15,7 @@ class PostBookmarkController extends ApiBaseController
     public function bookmarks(): JsonResponse
     {
         $products = PostBookmarkService::get();
+
         return $this->respondWithCollection($products, new PostTransformer());
     }
 
@@ -24,6 +25,7 @@ class PostBookmarkController extends ApiBaseController
     public function change(Post $post): JsonResponse
     {
         $message = PostBookmarkService::add($post);
+
         return $this->respondWithMessage($message);
     }
 }

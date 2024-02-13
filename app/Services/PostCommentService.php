@@ -2,16 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\PostComment;
 use App\Models\Post;
+use App\Models\PostComment;
 use Illuminate\Http\Request;
 
 class PostCommentService
 {
-    /**
-     * @param Request $request
-     * @param Post $post
-     */
     public static function addComment(Request $request, Post $post): void
     {
         $validated = $request->validate([

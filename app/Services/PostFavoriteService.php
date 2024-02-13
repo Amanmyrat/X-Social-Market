@@ -8,10 +8,6 @@ use Illuminate\Support\Collection;
 
 class PostFavoriteService
 {
-    /**
-     * @param Post $post
-     * @return string
-     */
     public static function add(Post $post): string
     {
         $message = trans('notification.favorite_success');
@@ -24,17 +20,14 @@ class PostFavoriteService
             $favorite->post()->associate($post);
             $favorite->save();
         }
+
         return $message;
     }
 
-    /**
-     * @return Collection
-     */
     public static function get(): Collection
     {
         $favorites = auth('sanctum')->user()->favorites->pluck('post_id')->toArray();
 
         return Post::whereIn('id', $favorites)->get();
     }
-
 }

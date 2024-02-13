@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Brand
  *
  * @mixin Eloquent
+ *
  * @property int id
  * @property string title
  * @property string type
@@ -22,6 +23,7 @@ class Brand extends Model
     use HasFactory;
 
     public const TYPE_SIMPLE = 'simple';
+
     public const TYPE_CLOTHING = 'clothing';
 
     /**
@@ -32,7 +34,7 @@ class Brand extends Model
     protected $fillable = [
         'title',
         'type',
-        'is_active'
+        'is_active',
     ];
 
     /**
@@ -41,14 +43,14 @@ class Brand extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'is_active' => 'bool'
+        'is_active' => 'bool',
     ];
 
-//    /**
-//     * Get products record associated with the brand.
-//     */
-//    public function products(): HasMany
-//    {
-//        return $this->hasMany(Post::class);
-//    }
+    //    /**
+    //     * Get products record associated with the brand.
+    //     */
+    //    public function products(): HasMany
+    //    {
+    //        return $this->hasMany(Post::class);
+    //    }
 }

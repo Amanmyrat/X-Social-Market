@@ -15,6 +15,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * App\Models\Post
  *
  * @mixin Eloquent
+ *
  * @property int id
  * @property int user_id
  * @property int category_id
@@ -22,13 +23,13 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property int price
  * @property string description
  * @property string media_type
- * @property boolean can_comment
+ * @property bool can_comment
  * @property string location
  */
 class Post extends Model implements HasMedia
 {
-    use InteractsWithMedia;
     use HasFactory;
+    use InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -43,7 +44,7 @@ class Post extends Model implements HasMedia
         'price',
         'description',
         'location',
-        'can_comment'
+        'can_comment',
     ];
 
     /**
@@ -56,8 +57,6 @@ class Post extends Model implements HasMedia
     ];
 
     /**
-     *
-     *
      * @var array<int, string>
      */
     protected $casts = [
@@ -119,7 +118,7 @@ class Post extends Model implements HasMedia
 
     public function comments(): HasMany
     {
-        return $this->hasMany(PostComment::class)->where('parent_id',0)->orderByDesc('created_at');
+        return $this->hasMany(PostComment::class)->where('parent_id', 0)->orderByDesc('created_at');
     }
 
     public function hasComments(): bool

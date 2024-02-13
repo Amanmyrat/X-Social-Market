@@ -14,10 +14,8 @@ class PostRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    #[ArrayShape(['category_id' => "string[]", 'caption' => "string[]", 'price' => "string[]", 'description' => "string[]", 'location' => "string[]", 'can_comment' => "string[]", 'media_type' => "string[]", 'images' => "string[]", 'videos' => "string[]"])]
+    #[ArrayShape(['category_id' => 'string[]', 'caption' => 'string[]', 'price' => 'string[]', 'description' => 'string[]', 'location' => 'string[]', 'can_comment' => 'string[]', 'media_type' => 'string[]', 'images' => 'string[]', 'videos' => 'string[]'])]
     public function rules(): array
     {
         return [

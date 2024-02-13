@@ -11,18 +11,18 @@ class UserMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
-     * @param Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     * @return Response
+     * @param  Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
         if (auth('sanctum')->user()->tokenCan('role:user')) {
-            if(auth('sanctum')->user()->blocked_at){
-                return response()->json(['message' => 'Your account is blocked. Reason: ' . auth('sanctum')->user()->block_reason], 403);
+            if (auth('sanctum')->user()->blocked_at) {
+                return response()->json(['message' => 'Your account is blocked. Reason: '.auth('sanctum')->user()->block_reason], 403);
             }
+
             return $next($request);
         }
+
         return response()->json(['message' => 'Unauthenticated.'], 401);
     }
 }

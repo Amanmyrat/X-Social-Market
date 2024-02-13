@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * App\Models\PostView
  *
  * @mixin Eloquent
+ *
  * @property mixed user_id
  * @property mixed post_id
  */
@@ -25,7 +26,7 @@ class PostView extends Model
      */
     protected $fillable = [
         'user_id',
-        'post_id'
+        'post_id',
     ];
 
     /**

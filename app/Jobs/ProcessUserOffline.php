@@ -2,13 +2,10 @@
 
 namespace App\Jobs;
 
-use App\Events\MessageSent;
 use App\Events\UserOffline;
-use App\Events\UserOnline;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -23,7 +20,6 @@ class ProcessUserOffline implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param User $user
      * @return void
      */
     public function __construct(User $user)

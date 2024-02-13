@@ -11,9 +11,6 @@ class PostViewController extends ApiBaseController
 {
     /**
      * List post views
-     *
-     * @param Post $post
-     * @return JsonResponse
      */
     public function views(Post $post): JsonResponse
     {
@@ -22,19 +19,17 @@ class PostViewController extends ApiBaseController
 
     /**
      * View a post
-     *
-     * @param Post $post
-     * @return JsonResponse
      */
     public function view(Post $post): JsonResponse
     {
         $message = trans('notification.add_view_success');
-        if (!$post->getIsViewed()) {
+        if (! $post->getIsViewed()) {
             $postView = new PostView();
             $postView->user()->associate(auth('sanctum')->user());
             $postView->post()->associate($post);
             $postView->save();
         }
+
         return $this->respondWithMessage($message);
     }
 }

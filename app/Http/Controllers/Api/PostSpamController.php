@@ -15,10 +15,11 @@ class PostSpamController extends ApiBaseController
     public function spamPost(Post $post, Request $request): JsonResponse
     {
         SpamService::spamPost($post, $request);
+
         return $this->respondWithArray([
-                'success' => true,
-                'message' => 'Spam successful'
-            ]
+            'success' => true,
+            'message' => 'Spam successful',
+        ]
         );
     }
 }

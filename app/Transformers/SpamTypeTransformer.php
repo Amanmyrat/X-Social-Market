@@ -11,7 +11,7 @@ class SpamTypeTransformer extends TransformerAbstract
     {
         return [
             'id' => $type->id,
-            'name' => $type->name
+            'name' => $type->name,
         ];
     }
 }

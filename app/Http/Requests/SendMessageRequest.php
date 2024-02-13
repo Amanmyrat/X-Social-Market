@@ -23,7 +23,7 @@ class SendMessageRequest extends FormRequest
                 'required',
                 'integer',
                 'exists:users,id',
-                Rule::notIn([auth()->id()])
+                Rule::notIn([auth()->id()]),
             ],
             'type' => 'required|in:message,share_story,share_post,media,file',
             'body' => 'required_if:type,message,share_story,share_post|string',

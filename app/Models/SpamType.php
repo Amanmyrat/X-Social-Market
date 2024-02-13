@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\SpamType
  *
  * @mixin Eloquent
+ *
  * @property int id
  * @property string name
  */
@@ -23,7 +24,7 @@ class SpamType extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name'
+        'name',
     ];
 
     /**

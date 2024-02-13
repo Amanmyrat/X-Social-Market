@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * App\Models\Chat
  *
  * @mixin Eloquent
+ *
  * @property int id
  * @property int sender_user_id
  * @property int receiver_user_id
@@ -24,13 +25,13 @@ class Chat extends Model
 
     protected $fillable = [
         'sender_user_id',
-        'receiver_user_id'
+        'receiver_user_id',
     ];
 
     protected $hidden = [
         'deleted_at',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     public function messages(): HasMany
@@ -47,17 +48,13 @@ class Chat extends Model
         }
     }
 
-    /**
-     * @param $query
-     * @return mixed
-     */
     public function scopeWhereNotDeleted($query): mixed
     {
         $userId = auth()->id();
 
         return $query->where(function ($query) use ($userId) {
 
-            #where message is not deleted
+            //where message is not deleted
             $query->whereHas('messages', function ($query) use ($userId) {
                 $query->where(function ($query) use ($userId) {
                     $query->where('sender_user_id', $userId)
@@ -67,7 +64,7 @@ class Chat extends Model
                         ->whereNull('receiver_deleted_at');
                 });
             })
-                #include conversations without messages
+                //include conversations without messages
                 ->orWhereDoesntHave('messages');
         });
     }

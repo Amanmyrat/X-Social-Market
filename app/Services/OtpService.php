@@ -11,8 +11,6 @@ use Illuminate\Http\Request;
 class OtpService
 {
     /**
-     * @param Request $request
-     * @return int
      * @throws Exception
      */
     public static function sendOTP(Request $request): int
@@ -25,21 +23,19 @@ class OtpService
 
         $code = random_int(1000, 9999);
         $response = Http::post(config('otp.url'), [
-            'phoneNumber' => '+993' . $validated['phone'],
-            'code' => 'Siziň gysga wagtlaýyn tassyklaak üçin koduňyz: ' . $code,
+            'phoneNumber' => '+993'.$validated['phone'],
+            'code' => 'Siziň gysga wagtlaýyn tassyklaak üçin koduňyz: '.$code,
         ]);
 
         if ($response->status() == 200) {
             OtpCode::create(['phone' => $validated['phone'], 'code' => $code, 'valid_until' => Carbon::now()->addMinutes(config('otp.timeout'))]);
+
             return $code;
         }
+
         return -1;
     }
 
-    /**
-     * @param Request $request
-     * @return int
-     */
     public static function confirmOTP(Request $request): int
     {
         $validated = $request->validate(
@@ -51,8 +47,8 @@ class OtpService
 
         $otpCode = OtpCode::where('phone', $validated['phone'])->get()->last();
 
-        if(!isset($otpCode)){
-            return  -1;
+        if (! isset($otpCode)) {
+            return -1;
         }
         if ($otpCode->code != $validated['code']) {
             return -1;
@@ -60,7 +56,7 @@ class OtpService
         if (Carbon::now() > $otpCode->valid_until) {
             return 0;
         }
+
         return 1;
     }
-
 }

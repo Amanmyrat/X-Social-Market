@@ -11,6 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
  * App\Models\Admin
  *
  * @mixin Eloquent
+ *
  * @property int id
  * @property string name
  * @property string email
@@ -30,7 +31,7 @@ class Admin extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'password'
+        'password',
     ];
 
     /**
@@ -44,5 +45,4 @@ class Admin extends Authenticatable
         'created_at',
         'updated_at',
     ];
-
 }

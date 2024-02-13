@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * App\Models\PostComment
  *
  * @mixin Eloquent
+ *
  * @property int id
  * @property int parent_id
  * @property int user_id
@@ -31,7 +32,7 @@ class PostComment extends Model
         'parent_id',
         'user_id',
         'post_id',
-        'comment'
+        'comment',
     ];
 
     /**

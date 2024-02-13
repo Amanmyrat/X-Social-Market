@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Color
  *
  * @mixin Eloquent
+ *
  * @property int id
  * @property string title
  * @property string code
@@ -29,7 +30,7 @@ class Color extends Model
     protected $fillable = [
         'title',
         'code',
-        'is_active'
+        'is_active',
     ];
 
     /**
@@ -38,6 +39,6 @@ class Color extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'is_active' => 'bool'
+        'is_active' => 'bool',
     ];
 }

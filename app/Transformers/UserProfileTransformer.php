@@ -21,8 +21,7 @@ class UserProfileTransformer extends TransformerAbstract
             'gender' => $profile->gender,
             'payment_available' => $profile->payment_available,
             'verified' => $profile->verified,
-            'private' => $profile->private
+            'private' => $profile->private,
         ];
     }
-
 }

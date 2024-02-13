@@ -7,6 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @template T of \Illuminate\Database\Eloquent\Model
+ *
  * @property T $model
  */
 class UniversalService
@@ -15,8 +16,6 @@ class UniversalService
 
     /**
      * Set the model for the service to operate on.
-     *
-     * @param Model $model
      */
     public function setModel(Model $model): void
     {
@@ -25,8 +24,6 @@ class UniversalService
 
     /**
      * Create a new instance of the model.
-     *
-     * @param array $data
      */
     public function create(array $data): void
     {
@@ -37,12 +34,10 @@ class UniversalService
     /**
      * Get a list of model instances with optional search query and filtering.
      *
-     * @param int $limit
-     * @param string|null $search_query Optional search query for filtering.
-     * @param array $conditions Optional conditions for additional filtering.
-     * @return LengthAwarePaginator
+     * @param  string|null  $search_query  Optional search query for filtering.
+     * @param  array  $conditions  Optional conditions for additional filtering.
      */
-    public function list(int $limit, string $search_query = null, array $conditions = []): LengthAwarePaginator
+    public function list(int $limit, ?string $search_query = null, array $conditions = []): LengthAwarePaginator
     {
         $query = $this->model::query();
 
@@ -52,8 +47,8 @@ class UniversalService
         }
 
         // Apply search query if provided
-        if (!is_null($search_query)) {
-            $search_query = '%' . $search_query . '%';
+        if (! is_null($search_query)) {
+            $search_query = '%'.$search_query.'%';
             $query->where('title', 'LIKE', $search_query);
         }
 
@@ -62,23 +57,18 @@ class UniversalService
 
     /**
      * Update a model instance.
-     *
-     * @param Model $instance
-     * @param array $data
-     * @return Model
      */
     public function update(Model $instance, array $data): Model
     {
         $instance->update($data);
+
         return $instance;
     }
-
 
     /**
      * Delete entities by IDs.
      *
-     * @param array $ids Array of entity IDs to delete.
-     * @return void
+     * @param  array  $ids  Array of entity IDs to delete.
      */
     public function delete(array $ids): void
     {

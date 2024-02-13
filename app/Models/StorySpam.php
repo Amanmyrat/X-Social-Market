@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * App\Models\StorySpam
  *
  * @mixin Eloquent
+ *
  * @property int id
  * @property int user_id
  * @property int story_id
@@ -30,7 +31,7 @@ class StorySpam extends Model
         'user_id',
         'story_id',
         'spam_type_id',
-        'message'
+        'message',
     ];
 
     /**
@@ -57,5 +58,4 @@ class StorySpam extends Model
     {
         return $this->belongsTo(SpamType::class);
     }
-
 }

@@ -24,6 +24,7 @@ class PostRatingController extends ApiBaseController
     public function addRating(Post $post, Request $request): JsonResponse
     {
         PostRatingService::addRating($request, $post);
+
         return $this->respondWithMessage(trans('notification.rating_success'));
     }
 }

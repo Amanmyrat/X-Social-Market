@@ -10,10 +10,10 @@ use League\Fractal\TransformerAbstract;
 class ChatTransformer extends TransformerAbstract
 {
     protected array $defaultIncludes = [
-        'receiver', 'last_message'
+        'receiver', 'last_message',
     ];
 
-    #[ArrayShape(['id' => "int", 'sender_user_id' => "int", 'receiver_user_id' => "int", 'unread_messages' => "int"])]
+    #[ArrayShape(['id' => 'int', 'sender_user_id' => 'int', 'receiver_user_id' => 'int', 'unread_messages' => 'int'])]
     public function transform(Chat $chat): array
     {
         return [
@@ -29,11 +29,12 @@ class ChatTransformer extends TransformerAbstract
         return $this->item($chat->getReceiver(), new UserSimpleTransformer());
     }
 
-    public function includeLastMessage(Chat $chat): Item|null
+    public function includeLastMessage(Chat $chat): ?Item
     {
         if ($chat->messages()->count()) {
             return $this->item($chat->messages()->latest()->first(), new MessageTransformer());
         }
+
         return null;
     }
 }

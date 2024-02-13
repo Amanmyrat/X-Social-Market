@@ -16,6 +16,7 @@ class PostFavoritesController extends ApiBaseController
     public function favorites(): JsonResponse
     {
         $products = PostFavoriteService::get();
+
         return $this->respondWithCollection($products, new PostTransformer());
     }
 
@@ -25,6 +26,7 @@ class PostFavoritesController extends ApiBaseController
     public function change(Post $post): JsonResponse
     {
         $message = PostFavoriteService::add($post);
+
         return $this->respondWithMessage($message);
     }
 
@@ -34,6 +36,7 @@ class PostFavoritesController extends ApiBaseController
     public function favoriteUsers(Post $post): JsonResponse
     {
         $users = $post->favoriteByUsers()->get();
+
         return $this->respondWithCollection($users, new UserSimpleTransformer());
     }
 }

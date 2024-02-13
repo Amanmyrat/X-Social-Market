@@ -21,8 +21,6 @@ class AdminUserController extends ApiBaseController
 
     /**
      * Users list
-     * @param Request $request
-     * @return JsonResponse
      */
     public function list(Request $request): JsonResponse
     {
@@ -31,13 +29,12 @@ class AdminUserController extends ApiBaseController
         $type = $request->type ?? User::TYPE_USER;
 
         $brands = $this->service->list($type, $limit, $query);
+
         return $this->respondWithPaginator($brands, new UserListTransformer($type == User::TYPE_SELLER));
     }
 
     /**
      * User details
-     * @param User $user
-     * @return JsonResponse
      */
     public function userDetails(User $user): JsonResponse
     {
@@ -49,13 +46,11 @@ class AdminUserController extends ApiBaseController
 
     /**
      * Update user
-     * @param User $user
-     * @param UserUpdateRequest $request
-     * @return JsonResponse
      */
     public function update(User $user, UserUpdateRequest $request): JsonResponse
     {
         $user = $this->service->updateWithProfile($user, $request->validated());
+
         return $this->respondWithItem(
             $user->loadCount(['posts', 'followers', 'followings']),
             new UserWithProfileTransformer(),
@@ -65,25 +60,20 @@ class AdminUserController extends ApiBaseController
 
     /**
      * Delete users
-     * @param UserDeleteRequest $request
-     * @return JsonResponse
      */
     public function delete(UserDeleteRequest $request): JsonResponse
     {
         User::whereIn('id', $request->users)->delete();
 
         return $this->respondWithArray([
-                'success' => true,
-                'message' => 'Successfully deleted'
-            ]
+            'success' => true,
+            'message' => 'Successfully deleted',
+        ]
         );
     }
 
     /**
      * Block user
-     * @param User $user
-     * @param Request $request
-     * @return JsonResponse
      */
     public function blockUser(User $user, Request $request): JsonResponse
     {
@@ -96,16 +86,14 @@ class AdminUserController extends ApiBaseController
         $user->save();
 
         return $this->respondWithArray([
-                'success' => true,
-                'message' => 'User blocked successfully'
-            ]
+            'success' => true,
+            'message' => 'User blocked successfully',
+        ]
         );
     }
 
     /**
      * Unblock user
-     * @param User $user
-     * @return JsonResponse
      */
     public function unBlockUser(User $user): JsonResponse
     {
@@ -114,9 +102,9 @@ class AdminUserController extends ApiBaseController
         $user->save();
 
         return $this->respondWithArray([
-                'success' => true,
-                'message' => 'User unblocked successfully'
-            ]
+            'success' => true,
+            'message' => 'User unblocked successfully',
+        ]
         );
     }
 }

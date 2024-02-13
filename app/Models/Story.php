@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * App\Models\Story
  *
  * @mixin Eloquent
+ *
  * @property mixed id
  * @property mixed user_id
  * @property mixed post_id
@@ -31,7 +32,7 @@ class Story extends Model
         'user_id',
         'post_id',
         'image',
-        'valid_until'
+        'valid_until',
     ];
 
     /**
@@ -50,7 +51,7 @@ class Story extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'valid_until' => 'datetime'
+        'valid_until' => 'datetime',
     ];
 
     /**
@@ -100,5 +101,4 @@ class Story extends Model
     {
         return auth('sanctum')->user() ? $this->myFavorites->isNotEmpty() : false;
     }
-
 }

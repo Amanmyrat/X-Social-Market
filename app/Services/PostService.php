@@ -68,7 +68,7 @@ class PostService
             $products = $products->inRandomOrder();
         }
 
-        return $products->paginate($limit);
+        return $products->withCount(['favorites', 'comments', 'views'])->paginate($limit);
     }
 
     private static function getSort($sort): array

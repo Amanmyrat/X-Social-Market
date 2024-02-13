@@ -28,9 +28,24 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'login' => ['required', 'string'],
-            'password' => ['required', 'string'],
-            'device_token' => ['required', 'string'],
+            /**
+             * User login(phone or username).
+             *
+             * @var string
+             *
+             * @example 65021734
+             */
+            'login' => 'required|string',
+
+            /**
+             * Admin password.
+             *
+             * @var string
+             *
+             * @example 12345678
+             */
+            'password' => 'required',
+            'device_token' => ['filled', 'string'],
         ];
     }
 

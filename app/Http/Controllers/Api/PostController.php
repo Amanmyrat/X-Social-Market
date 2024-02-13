@@ -27,6 +27,9 @@ class PostController extends ApiBaseController
         );
     }
 
+    /**
+     * Delete post
+     */
     public function delete(Post $post): JsonResponse
     {
         $post->delete();
@@ -47,7 +50,7 @@ class PostController extends ApiBaseController
      */
     public function allPosts(): JsonResponse
     {
-        return $this->respondWithCollection(Post::all(), new PostTransformer());
+        return $this->respondWithCollection(Post::withCount(['favorites', 'comments', 'views'])->get(), new PostTransformer());
     }
 
     /**
@@ -73,6 +76,7 @@ class PostController extends ApiBaseController
      */
     public function search(Request $request): JsonResponse
     {
+        $request->validate(['search_query' => ['required','string']]);
         return $this->respondWithPaginator(PostService::searchPosts($request), new PostTransformer());
     }
 
@@ -81,6 +85,6 @@ class PostController extends ApiBaseController
      */
     public function postDetails(Post $post): JsonResponse
     {
-        return $this->respondWithItem($post, new PostTransformer());
+        return $this->respondWithItem($post->loadCount(['favorites', 'comments', 'views']), new PostTransformer());
     }
 }

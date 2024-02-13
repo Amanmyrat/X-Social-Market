@@ -11,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 class PostFavoritesController extends ApiBaseController
 {
     /**
-     * Display a listing of the resource.
+     * List of my favorite posts
      */
     public function favorites(): JsonResponse
     {
@@ -31,7 +31,7 @@ class PostFavoritesController extends ApiBaseController
     }
 
     /**
-     * Get post favorite users
+     * Get posts' favorited users
      */
     public function favoriteUsers(Post $post): JsonResponse
     {

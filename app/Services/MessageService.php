@@ -141,14 +141,11 @@ class MessageService
     /**
      * Mark message read
      */
-    public function readMessage(Message $message): ?Message
+    public function readMessage(Message $message): void
     {
-        $message->read_at = now();
-        $message->save();
+        $message->update(['read_at' => now()]);
 
         ProcessMessageRead::dispatch($message);
-
-        return $message;
     }
 
     public function readAllMessages(Chat $chat): void

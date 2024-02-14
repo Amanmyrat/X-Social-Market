@@ -53,7 +53,7 @@ class MessageController extends ApiBaseController
     }
 
     /**
-     * Mark message read
+     * Mark all message read of the chat
      */
     public function readAllUnreadMessages(Chat $chat): JsonResponse
     {

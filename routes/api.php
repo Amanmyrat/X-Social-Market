@@ -124,8 +124,8 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
 
     Route::post('/chat/send/message', [MessageController::class, 'sendMessage']);
     Route::post('/chat/{chatId}/messages', [MessageController::class, 'listMessages']);
-    Route::post('/message/{messageId}/read', [MessageController::class, 'readMessage']);
-    Route::post('/chat/{chatId}/read', [MessageController::class, 'readAllUnreadMessages']);
+    Route::post('/message/{message}/read', [MessageController::class, 'readMessage']);
+    Route::post('/chat/{chat}/read', [MessageController::class, 'readAllUnreadMessages']);
 
 });
 Route::post('/categories', [CategoryController::class, 'categories']);

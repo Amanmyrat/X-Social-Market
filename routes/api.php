@@ -137,6 +137,7 @@ Route::prefix('spam')->group(function () {
 });
 
 Route::post('posts/all/list', [PostController::class, 'allPosts']);
+Route::post('users/all/list', [UserController::class, 'getAll']);
 
 Route::prefix('admin')->group(function () {
 

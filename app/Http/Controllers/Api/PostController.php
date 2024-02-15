@@ -59,7 +59,10 @@ class PostController extends ApiBaseController
      */
     public function userPosts($user_id): JsonResponse
     {
-        $posts = Post::where('user_id', $user_id)->withCount(['favorites', 'comments', 'views'])->withIsFollowing()->get();
+        $posts = Post::where('posts.user_id', $user_id)
+            ->withCount(['favorites', 'comments', 'views'])
+            ->withIsFollowing()
+            ->get();
 
         return $this->respondWithCollection($posts, new PostTransformer());
     }

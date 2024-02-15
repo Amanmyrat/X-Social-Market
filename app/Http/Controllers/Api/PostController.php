@@ -50,17 +50,18 @@ class PostController extends ApiBaseController
      */
     public function allPosts(): JsonResponse
     {
-        return $this->respondWithCollection(Post::withCount(['favorites', 'comments', 'views'])->withIsFollowing()->get(), new PostTransformer());
+        $posts = Post::withCount(['favorites', 'comments', 'views'])->withIsFollowing()->get();
+        return $this->respondWithCollection($posts, new PostTransformer());
     }
 
     /**
      * User posts list
      */
-    public function userPosts($user): JsonResponse
+    public function userPosts($user_id): JsonResponse
     {
-        $user = User::findOrFail($user);
+        $posts = Post::where('user_id', $user_id)->withCount(['favorites', 'comments', 'views'])->withIsFollowing()->get();
 
-        return $this->respondWithCollection($user->posts, new PostTransformer());
+        return $this->respondWithCollection($posts, new PostTransformer());
     }
 
     /**
@@ -86,6 +87,8 @@ class PostController extends ApiBaseController
      */
     public function postDetails(Post $post): JsonResponse
     {
-        return $this->respondWithItem($post->loadCount(['favorites', 'comments', 'views'])->withIsFollowing(), new PostTransformer());
+        $post = Post::firstWhere('id', $post->id)->withCount(['favorites', 'comments', 'views'])->withIsFollowing()->get()->first();
+
+        return $this->respondWithItem($post, new PostTransformer());
     }
 }

@@ -4,30 +4,57 @@ namespace App\Services;
 
 use App\Http\Requests\PostRequest;
 use App\Models\Post;
+use App\Models\PostComment;
+use App\Models\Product;
+use DB;
+use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
+use Throwable;
 
 class PostService
 {
-    public static function create(PostRequest $request): void
+    /**
+     * @param array $postData
+     * @param int $userId
+     * @param array $productData
+     * @return bool
+     * @throws Throwable
+     */
+    public function create(array $postData, int $userId, array $productData = []): bool
     {
-        $post = Post::create(array_merge($request->validated(), [
-            'user_id' => $request->user()->id,
-        ]));
+        try {
+            $exception = DB::transaction(function () use ($postData, $productData, $userId) {
+                $post = Post::create($postData + [
+                        'user_id' => $userId,
+                    ]);
 
-        $medias = $request->validated()['media_type'] == 'image'
-            ? 'images'
-            : 'videos';
+                $medias = $postData['media_type'] == 'image'
+                    ? 'images'
+                    : 'videos';
 
-        $post->addMultipleMediaFromRequest([$medias])
-            ->each(function ($fileAdder) {
+                $post->addMultipleMediaFromRequest([$medias])
+                    ->each(function ($fileAdder) {
+                        $fileAdder->toMediaCollection();
+                    });
 
-                $fileAdder->toMediaCollection();
+                if ($post->category->has_product) {
+                    $product = new Product($productData);
+                    $product->post()->associate($post);
+                    $product->save();
+                }
+
             });
+
+            return is_null($exception) ? true : $exception;
+
+        } catch (Exception $e) {
+            return false;
+        }
 
     }
 
-    public static function searchPosts(Request $request): LengthAwarePaginator
+    public function searchPosts(Request $request): LengthAwarePaginator
     {
         $limit = $request->get('limit');
 
@@ -47,7 +74,7 @@ class PostService
                 return $query->where('created_at', '<=', $request->date_end);
             })
             ->when(isset($request->search_query), function ($query) use ($request) {
-                $search_query = '%'.$request->search_query.'%';
+                $search_query = '%' . $request->search_query . '%';
 
                 return $query->where('caption', 'LIKE', $search_query)
                     ->orWhere('description', 'LIKE', $search_query);
@@ -61,8 +88,8 @@ class PostService
                         ->orderByDesc('favorites_count');
                     break;
                 default:
-                    $sort = self::getSort($s);
-                    $products = $products->orderBy('posts.'.$sort[0], $sort[1]);
+                    $sort = $this->getSort($s);
+                    $products = $products->orderBy('posts.' . $sort[0], $sort[1]);
             }
         } else {
             $products = $products->inRandomOrder();
@@ -71,7 +98,7 @@ class PostService
         return $products->withCount(['favorites', 'comments', 'views'])->paginate($limit);
     }
 
-    private static function getSort($sort): array
+    private function getSort($sort): array
     {
         $sort_key = trim($sort, '-');
 

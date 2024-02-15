@@ -4,9 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\User;
 use App\Services\UserService;
-use App\Transformers\UserSimpleTransformer;
 use App\Transformers\UserTransformer;
-use App\Transformers\UserWithProfileTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -101,5 +99,4 @@ class UserController extends ApiBaseController
     {
         return $this->respondWithCollection(User::latest()->get(), new UserTransformer());
     }
-
 }

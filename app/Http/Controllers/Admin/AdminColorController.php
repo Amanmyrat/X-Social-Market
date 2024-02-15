@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Color\ColorCreateRequest;
 use App\Http\Requests\Color\ColorDeleteRequest;
 use App\Http\Requests\Color\ColorUpdateRequest;
-use App\Http\Resources\ColorResource;
+use App\Http\Resources\Admin\ColorResource;
 use App\Models\Color;
 use App\Services\UniversalService;
 use Illuminate\Http\JsonResponse;

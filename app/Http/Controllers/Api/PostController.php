@@ -2,29 +2,50 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\FractalSerializer;
 use App\Http\Requests\PostRequest;
 use App\Models\Post;
-use App\Models\User;
 use App\Services\PostService;
 use App\Transformers\PostTransformer;
 use App\Transformers\UserPostTransformer;
+use Arr;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use League\Fractal\Manager;
+use Response;
+use Throwable;
 
 class PostController extends ApiBaseController
 {
+    public function __construct(
+        protected PostService $service
+    )
+    {
+        $this->fractal = new Manager;
+        $this->fractal->setSerializer(new FractalSerializer());
+    }
+
     /**
      * Create post
+     * @throws Throwable
      */
     public function create(PostRequest $request): JsonResponse
     {
-        PostService::create($request);
+        $validated = $request->validated();
+        $productData = Arr::only($validated, 'product')['product'] ?? [];
 
-        return $this->respondWithArray([
+        $postCreated = $this->service->create(Arr::except($validated, 'product'), $request->user()->id, $productData);
+
+        if(!$postCreated){
+            return Response::json([
+                'success' => false,
+                'message' => 'Error occurred',
+            ], 400);
+        }
+        return Response::json([
             'success' => true,
             'message' => 'Successfully created a new post',
-        ]
-        );
+        ]);
     }
 
     /**
@@ -50,8 +71,9 @@ class PostController extends ApiBaseController
      */
     public function allPosts(): JsonResponse
     {
-        $posts = Post::withCount(['favorites', 'comments', 'views'])->withIsFollowing()->get();
-        return $this->respondWithCollection($posts, new PostTransformer());
+        $posts = Post::with('product')->withCount(['favorites', 'comments', 'views'])->withIsFollowing()->latest()->paginate(10);
+
+        return $this->respondWithPaginator($posts, new PostTransformer());
     }
 
     /**
@@ -60,9 +82,10 @@ class PostController extends ApiBaseController
     public function userPosts($user_id): JsonResponse
     {
         $posts = Post::where('posts.user_id', $user_id)
+            ->with('product')
             ->withCount(['favorites', 'comments', 'views'])
             ->withIsFollowing()
-            ->get();
+            ->latest()->paginate(10);
 
         return $this->respondWithCollection($posts, new PostTransformer());
     }
@@ -82,7 +105,9 @@ class PostController extends ApiBaseController
     {
         $request->validate(['search_query' => ['required', 'string']]);
 
-        return $this->respondWithPaginator(PostService::searchPosts($request), new PostTransformer());
+        $result = $this->service->searchPosts($request);
+
+        return $this->respondWithPaginator($result, new PostTransformer());
     }
 
     /**
@@ -90,7 +115,9 @@ class PostController extends ApiBaseController
      */
     public function postDetails(Post $post): JsonResponse
     {
-        $post = Post::firstWhere('id', $post->id)->withCount(['favorites', 'comments', 'views'])->withIsFollowing()->get()->first();
+        $post = Post::firstWhere('id', $post->id)
+            ->with('product')
+            ->withCount(['favorites', 'comments', 'views'])->withIsFollowing()->get()->first();
 
         return $this->respondWithItem($post, new PostTransformer());
     }

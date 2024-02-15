@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -159,15 +160,18 @@ class Post extends Model implements HasMedia
         return auth('sanctum')->user() ? $this->myViews->isNotEmpty() : false;
     }
 
+    public function product(): HasOne
+    {
+        return $this->hasOne(Product::class);
+    }
+
     /**
      * Scope a query to add 'is_following' attribute indicating if the post's creator is followed by the given user.
-     *
-     * @param Builder $query
-     * @return Builder|null
      */
     public function scopeWithIsFollowing(Builder $query): ?Builder
     {
         $user = auth('sanctum')->user();
+
         return $user ? $query->leftJoin('followers', function ($join) use ($user) {
             $join->on('followers.following_user_id', '=', 'posts.user_id')
                 ->where('followers.user_id', '=', $user->id);

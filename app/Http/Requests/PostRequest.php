@@ -2,20 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ProductDetailsValidation;
 use Illuminate\Foundation\Http\FormRequest;
-use JetBrains\PhpStorm\ArrayShape;
 
 class PostRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      */
-    #[ArrayShape(['category_id' => 'string[]', 'caption' => 'string[]', 'price' => 'string[]', 'description' => 'string[]', 'location' => 'string[]', 'can_comment' => 'string[]', 'media_type' => 'string[]', 'images' => 'string[]', 'videos' => 'string[]'])]
     public function rules(): array
     {
         return [
@@ -28,6 +22,30 @@ class PostRequest extends FormRequest
             'media_type' => ['required', 'in:image,video'],
             'images' => ['required_if:media_type,image', 'max:8'],
             'videos' => ['required_if:media_type,video', 'max:5'],
+
+            /**
+             *
+             * Required if category has product true
+             *
+             * @example {
+             *   "product": {
+             *     "brand_id": 1,
+             *     "gender": "male",
+             *     "options": [{
+             *       "colors": [{
+             *         "color_id": 1,
+             *         "sizes": [{
+             *           "size_id": 1,
+             *           "price": 100,
+             *           "stock": 101
+             *         }]
+             *       }]
+             *     }]
+             *   }
+             * }
+             */
+            'product' => [new ProductDetailsValidation((int)request('category_id'))]
         ];
     }
+
 }

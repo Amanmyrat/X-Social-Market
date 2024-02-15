@@ -40,13 +40,13 @@ return [
                 'host' => env('PUSHER_HOST') ?: '127.0.0.1',
                 'port' => env('PUSHER_PORT', 6001),
                 'scheme' => env('PUSHER_SCHEME', 'https'),
-//                'encrypted' => true,
-//                'useTLS' => false,
-//                'useTLS' => env('PUSHER_SCHEME', 'https') === 'https',
+                //                'encrypted' => true,
+                //                'useTLS' => false,
+                //                'useTLS' => env('PUSHER_SCHEME', 'https') === 'https',
             ],
             'client_options' => [
-//                CURLOPT_SSL_VERIFYHOST => 0,
-//                CURLOPT_SSL_VERIFYPEER => 0,
+                //                CURLOPT_SSL_VERIFYHOST => 0,
+                //                CURLOPT_SSL_VERIFYPEER => 0,
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
             ],
         ],

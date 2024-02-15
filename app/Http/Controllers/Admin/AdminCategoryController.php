@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Category\CategoryCreateRequest;
 use App\Http\Requests\Category\CategoryDeleteRequest;
 use App\Http\Requests\Category\CategoryUpdateRequest;
-use App\Http\Resources\CategoryResource;
+use App\Http\Resources\Admin\CategoryResource;
 use App\Models\Category;
 use App\Services\UniversalService;
 use Illuminate\Http\JsonResponse;

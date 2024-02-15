@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Size\SizeCreateRequest;
 use App\Http\Requests\Size\SizeDeleteRequest;
 use App\Http\Requests\Size\SizeUpdateRequest;
-use App\Http\Resources\SizeResource;
+use App\Http\Resources\Admin\SizeResource;
 use App\Models\Size;
 use App\Services\UniversalService;
 use Illuminate\Http\JsonResponse;

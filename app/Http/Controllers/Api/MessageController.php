@@ -58,6 +58,7 @@ class MessageController extends ApiBaseController
     public function readAllUnreadMessages(Chat $chat): JsonResponse
     {
         $this->messageService->readAllMessages($chat);
+
         return response()->json([
             'message' => 'All unread messages marked as read',
         ]);

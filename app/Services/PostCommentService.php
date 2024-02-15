@@ -15,11 +15,13 @@ class PostCommentService
             'parent_id' => ['filled', 'int', 'exists:post_comments,id'],
         ]);
 
-        $comment = new PostComment();
+        $comment = new PostComment([
+            'comment' => $validated['comment'],
+            'parent_id' => $validated['parent_id'] ?? 0,
+        ]);
+
         $comment->user()->associate(auth('sanctum')->user());
         $comment->post()->associate($post);
-        $comment->comment = $validated['comment'];
-        $comment->parent_id = $validated['parent_id'] ?? 0;
         $comment->save();
     }
 }

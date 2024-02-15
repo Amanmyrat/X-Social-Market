@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Brand\BrandCreateRequest;
 use App\Http\Requests\Brand\BrandDeleteRequest;
 use App\Http\Requests\Brand\BrandUpdateRequest;
-use App\Http\Resources\BrandResource;
+use App\Http\Resources\Admin\BrandResource;
 use App\Models\Brand;
 use App\Services\UniversalService;
 use Illuminate\Http\JsonResponse;

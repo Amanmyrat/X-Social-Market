@@ -9,11 +9,11 @@ use App\Http\Controllers\Admin\AdminSizeController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlockedUserController;
-use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\FollowerController;
 use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\OptionsController;
 use App\Http\Controllers\Api\OtpController;
 use App\Http\Controllers\Api\PostBookmarkController;
 use App\Http\Controllers\Api\PostCommentController;
@@ -127,9 +127,14 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     Route::post('/message/{message}/read', [MessageController::class, 'readMessage']);
     Route::post('/chat/{chat}/read', [MessageController::class, 'readAllUnreadMessages']);
 
+    Route::post('/categories', [OptionsController::class, 'categories']);
+    Route::post('/locations', [OptionsController::class, 'locations']);
+    Route::post('/brands', [OptionsController::class, 'brands']);
+    Route::post('/colors', [OptionsController::class, 'colors']);
+    Route::post('/sizes', [OptionsController::class, 'sizes']);
+
+    Route::post('/users/all/list', [UserController::class, 'getAll']);
 });
-Route::post('/categories', [CategoryController::class, 'categories']);
-Route::post('/locations', [LocationController::class, 'list']);
 
 Route::prefix('spam')->group(function () {
     Route::post('types/create', [SpamTypeController::class, 'create']);
@@ -137,7 +142,6 @@ Route::prefix('spam')->group(function () {
 });
 
 Route::post('posts/all/list', [PostController::class, 'allPosts']);
-Route::post('users/all/list', [UserController::class, 'getAll']);
 
 Route::prefix('admin')->group(function () {
 

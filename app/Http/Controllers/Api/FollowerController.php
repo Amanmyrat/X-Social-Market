@@ -18,7 +18,7 @@ class FollowerController extends ApiBaseController
     public function follow(Request $request): JsonResponse
     {
         $validated = $request->validate([
-//            'following_id' => ['required', 'integer', 'exists:'. User::class.',id', 'not_in:'. $request->user()->id],
+            //            'following_id' => ['required', 'integer', 'exists:'. User::class.',id', 'not_in:'. $request->user()->id],
             'following_id' => [
                 'required',
                 'integer',

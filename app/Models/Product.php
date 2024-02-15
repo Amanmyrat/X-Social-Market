@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-
 use Eloquent;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -47,13 +46,16 @@ class Product extends Model
         'options' => 'array',
     ];
 
-    public function post(): BelongsTo{
+    public function post(): BelongsTo
+    {
         return $this->belongsTo(Post::class);
     }
 
-    public function brand(): BelongsTo{
+    public function brand(): BelongsTo
+    {
         return $this->belongsTo(Brand::class);
     }
+
     protected function options(): Attribute
     {
         return Attribute::make(
@@ -73,7 +75,7 @@ class Product extends Model
                                     'id' => $colorModel->id,
                                     'title' => $colorModel->title,
                                     'code' => $colorModel->code,
-                                ]
+                                ],
                             ];
 
                             // For sizes within each color
@@ -103,5 +105,4 @@ class Product extends Model
             }
         );
     }
-
 }

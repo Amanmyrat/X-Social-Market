@@ -11,7 +11,6 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\FollowerController;
-use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\OptionsController;
 use App\Http\Controllers\Api\OtpController;
@@ -79,6 +78,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/', [PostController::class, 'myPosts']);
         Route::post('create', [PostController::class, 'create']);
         Route::post('/{post}/delete', [PostController::class, 'delete']);
+        Route::post('/{post}/related', [PostController::class, 'relatedPosts']);
 
         Route::post('favorites', [PostFavoritesController::class, 'favorites']);
         Route::post('/favorites/{post}/change', [PostFavoritesController::class, 'change']);

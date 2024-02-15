@@ -24,7 +24,6 @@ class PostRequest extends FormRequest
             'videos' => ['required_if:media_type,video', 'max:5'],
 
             /**
-             *
              * Required if category has product true
              *
              * @example {
@@ -44,8 +43,7 @@ class PostRequest extends FormRequest
              *   }
              * }
              */
-            'product' => [new ProductDetailsValidation((int)request('category_id'))]
+            'product' => [new ProductDetailsValidation((int) request('category_id'))],
         ];
     }
-
 }

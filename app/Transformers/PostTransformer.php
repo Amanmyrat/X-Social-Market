@@ -9,7 +9,7 @@ use League\Fractal\TransformerAbstract;
 class PostTransformer extends TransformerAbstract
 {
     protected array $defaultIncludes = [
-        'user', 'product'
+        'user', 'product',
     ];
 
     public function transform(Post $post): array
@@ -26,9 +26,9 @@ class PostTransformer extends TransformerAbstract
         return [
             'id' => $post->id,
             'category' => [
-                'id' =>  $post->category->id,
-                'title' =>  $post->category->title,
-                'icon' =>   url('uploads/categories/'.$post->category->icon),
+                'id' => $post->category->id,
+                'title' => $post->category->title,
+                'icon' => url('uploads/categories/'.$post->category->icon),
             ],
             'caption' => $post->caption,
             'price' => $post->price,
@@ -45,7 +45,7 @@ class PostTransformer extends TransformerAbstract
             'comments_count' => $post->comments_count,
             'views_count' => $post->views_count,
             'created_at' => $post->created_at,
-            'is_following' => (bool)$post->is_following ?? false,
+            'is_following' => (bool) $post->is_following ?? false,
 
         ];
     }
@@ -55,12 +55,12 @@ class PostTransformer extends TransformerAbstract
         return $this->item($post->user, new UserSimpleTransformer());
     }
 
-
-    public function includeProduct(Post $post): Item|null
+    public function includeProduct(Post $post): ?Item
     {
         if ($post->product()->exists()) {
             return $this->item($post->product, new ProductTransformer());
         }
+
         return null;
     }
 }

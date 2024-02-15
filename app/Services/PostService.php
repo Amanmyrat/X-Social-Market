@@ -2,9 +2,7 @@
 
 namespace App\Services;
 
-use App\Http\Requests\PostRequest;
 use App\Models\Post;
-use App\Models\PostComment;
 use App\Models\Product;
 use DB;
 use Exception;
@@ -15,10 +13,6 @@ use Throwable;
 class PostService
 {
     /**
-     * @param array $postData
-     * @param int $userId
-     * @param array $productData
-     * @return bool
      * @throws Throwable
      */
     public function create(array $postData, int $userId, array $productData = []): bool
@@ -26,8 +20,8 @@ class PostService
         try {
             $exception = DB::transaction(function () use ($postData, $productData, $userId) {
                 $post = Post::create($postData + [
-                        'user_id' => $userId,
-                    ]);
+                    'user_id' => $userId,
+                ]);
 
                 $medias = $postData['media_type'] == 'image'
                     ? 'images'
@@ -74,7 +68,7 @@ class PostService
                 return $query->where('created_at', '<=', $request->date_end);
             })
             ->when(isset($request->search_query), function ($query) use ($request) {
-                $search_query = '%' . $request->search_query . '%';
+                $search_query = '%'.$request->search_query.'%';
 
                 return $query->where('caption', 'LIKE', $search_query)
                     ->orWhere('description', 'LIKE', $search_query);
@@ -89,7 +83,7 @@ class PostService
                     break;
                 default:
                     $sort = $this->getSort($s);
-                    $products = $products->orderBy('posts.' . $sort[0], $sort[1]);
+                    $products = $products->orderBy('posts.'.$sort[0], $sort[1]);
             }
         } else {
             $products = $products->inRandomOrder();

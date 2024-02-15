@@ -11,7 +11,7 @@ class ColorResource extends JsonResource
     /**
      * Transform the resource into an array.
      */
-    #[ArrayShape(['id' => "mixed", 'title' => "mixed", 'code' => "mixed"])]
+    #[ArrayShape(['id' => 'mixed', 'title' => 'mixed', 'code' => 'mixed'])]
     public function toArray(Request $request): array
     {
         return [

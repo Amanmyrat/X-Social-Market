@@ -6,6 +6,7 @@ use App\Helpers\FractalSerializer;
 use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use App\Services\PostService;
+use App\Transformers\PostSimpleTransformer;
 use App\Transformers\PostTransformer;
 use App\Transformers\UserPostTransformer;
 use Arr;
@@ -19,14 +20,14 @@ class PostController extends ApiBaseController
 {
     public function __construct(
         protected PostService $service
-    )
-    {
+    ) {
         $this->fractal = new Manager;
         $this->fractal->setSerializer(new FractalSerializer());
     }
 
     /**
      * Create post
+     *
      * @throws Throwable
      */
     public function create(PostRequest $request): JsonResponse
@@ -36,12 +37,13 @@ class PostController extends ApiBaseController
 
         $postCreated = $this->service->create(Arr::except($validated, 'product'), $request->user()->id, $productData);
 
-        if(!$postCreated){
+        if (! $postCreated) {
             return Response::json([
                 'success' => false,
                 'message' => 'Error occurred',
             ], 400);
         }
+
         return Response::json([
             'success' => true,
             'message' => 'Successfully created a new post',
@@ -56,6 +58,16 @@ class PostController extends ApiBaseController
         $post->delete();
 
         return $this->respondWithMessage('Successfully deleted');
+    }
+
+    /**
+     * Get related posts
+     */
+    public function relatedPosts(Post $post): JsonResponse
+    {
+        $posts = Post::where('id', '!=', $post->id)->where('category_id', $post->category_id)->inRandomOrder()->limit(10)->get();
+
+        return $this->respondWithCollection($posts, new PostSimpleTransformer());
     }
 
     /**

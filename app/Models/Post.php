@@ -168,14 +168,17 @@ class Post extends Model implements HasMedia
     /**
      * Scope a query to add 'is_following' attribute indicating if the post's creator is followed by the given user.
      */
-    public function scopeWithIsFollowing(Builder $query): ?Builder
+    public function scopeWithIsFollowing($query)
     {
         $user = auth('sanctum')->user();
 
-        return $user ? $query->leftJoin('followers', function ($join) use ($user) {
+        if (!$user) {
+            return $query;
+        }
+
+        return $query->leftJoin('followers', function ($join) use ($user) {
             $join->on('followers.following_user_id', '=', 'posts.user_id')
                 ->where('followers.user_id', '=', $user->id);
-        })
-            ->addSelect(['posts.*', DB::raw('IF(followers.user_id IS NOT NULL, true, false) AS is_following')]) : null;
+        })->addSelect(['posts.*', DB::raw('IF(followers.user_id IS NOT NULL, true, false) AS is_following')]);
     }
 }

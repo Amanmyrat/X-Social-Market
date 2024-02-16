@@ -127,9 +127,11 @@ class PostController extends ApiBaseController
      */
     public function postDetails(Post $post): JsonResponse
     {
-        $post = Post::firstWhere('id', $post->id)
+        $post = Post::where('posts.id', $post->id)
             ->with('product')
-            ->withCount(['favorites', 'comments', 'views'])->withIsFollowing()->get()->first();
+            ->withCount(['favorites', 'comments', 'views'])
+            ->withIsFollowing()
+            ->first();
 
         return $this->respondWithItem($post, new PostTransformer());
     }

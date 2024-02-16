@@ -80,6 +80,9 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/{post}/delete', [PostController::class, 'delete']);
         Route::post('/{post}/related', [PostController::class, 'relatedPosts']);
 
+        Route::post('/search', [PostController::class, 'search']);
+        Route::post('/{post}', [PostController::class, 'postDetails']);
+
         Route::post('favorites', [PostFavoritesController::class, 'favorites']);
         Route::post('/favorites/{post}/change', [PostFavoritesController::class, 'change']);
         Route::post('favorites/{post}/users', [PostFavoritesController::class, 'favoriteUsers']);
@@ -92,9 +95,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
 
         Route::post('/{post}/ratings', [PostRatingController::class, 'ratings']);
         Route::post('/{post}/rating', [PostRatingController::class, 'addRating']);
-
-        Route::post('/search', [PostController::class, 'search']);
-        Route::post('/{post}', [PostController::class, 'postDetails']);
 
         Route::post('/{post}/spam', [PostSpamController::class, 'spamPost']);
 

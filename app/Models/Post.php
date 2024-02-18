@@ -2,32 +2,74 @@
 
 namespace App\Models;
 
+use Auth;
 use DB;
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * App\Models\Post
  *
- * @mixin Eloquent
+ * @property int $id
+ * @property int $user_id
+ * @property int $category_id
+ * @property string $media_type
+ * @property string $caption
+ * @property int $price
+ * @property string $description
+ * @property string $location
+ * @property bool $can_comment
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, PostBookmark> $bookmarks
+ * @property-read int|null $bookmarks_count
+ * @property-read Category $category
+ * @property-read Collection<int, PostComment> $comments
+ * @property-read int|null $comments_count
+ * @property-read Collection<int, User> $favoriteByUsers
+ * @property-read int|null $favorite_by_users_count
+ * @property-read Collection<int, PostFavorite> $favorites
+ * @property-read int|null $favorites_count
+ * @property MediaCollection<int, Media> $media
+ * @property-read int|null $media_count
+ * @property-read Product|null $product
+ * @property-read Collection<int, PostRating> $ratings
+ * @property-read int|null $ratings_count
+ * @property-read User $user
+ * @property-read Collection<int, PostView> $views
+ * @property-read int|null $views_count
+ * @property-read float $ratings_avg_rating
+ * @property-read bool $is_following
  *
- * @property int id
- * @property int user_id
- * @property int category_id
- * @property string caption
- * @property int price
- * @property string description
- * @property string media_type
- * @property bool can_comment
- * @property string created_at
- * @property string location
+ * @method static Builder|Post newModelQuery()
+ * @method static Builder|Post newQuery()
+ * @method static Builder|Post query()
+ * @method static Builder|Post whereCanComment($value)
+ * @method static Builder|Post whereCaption($value)
+ * @method static Builder|Post whereCategoryId($value)
+ * @method static Builder|Post whereCreatedAt($value)
+ * @method static Builder|Post whereDescription($value)
+ * @method static Builder|Post whereId($value)
+ * @method static Builder|Post whereLocation($value)
+ * @method static Builder|Post whereMediaType($value)
+ * @method static Builder|Post wherePrice($value)
+ * @method static Builder|Post whereUpdatedAt($value)
+ * @method static Builder|Post whereUserId($value)
+ * @method static Builder|Post withIsFollowing()
+ *
+ * @mixin Eloquent
  */
 class Post extends Model implements HasMedia
 {
@@ -60,7 +102,7 @@ class Post extends Model implements HasMedia
     ];
 
     /**
-     * @var array<int, string>
+     * @var array<string, string>
      */
     protected $casts = [
         'can_comment' => 'boolean',
@@ -116,7 +158,8 @@ class Post extends Model implements HasMedia
      */
     public function scopeWithIsFollowing($query)
     {
-        $user = auth('sanctum')->user();
+        /** @var User $user */
+        $user = Auth::user();
 
         if (! $user) {
             return $query;

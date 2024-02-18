@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\User;
 use App\Services\UserBlockService;
 use App\Transformers\UserSimpleTransformer;
+use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -38,6 +40,9 @@ class BlockedUserController extends ApiBaseController
      */
     public function blockedList(): JsonResponse
     {
-        return $this->respondWithCollection(auth('sanctum')->user()->blockedUsers, new UserSimpleTransformer());
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $this->respondWithCollection($user->blockedUsers, new UserSimpleTransformer());
     }
 }

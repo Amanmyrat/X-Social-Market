@@ -3,17 +3,33 @@
 namespace App\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\PostBookmark
  *
- * @mixin Eloquent
+ * @property int $id
+ * @property int $user_id
+ * @property int $post_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Post $post
+ * @property-read User $user
  *
- * @property mixed user_id
- * @property mixed post_id
+ * @method static Builder|PostBookmark newModelQuery()
+ * @method static Builder|PostBookmark newQuery()
+ * @method static Builder|PostBookmark query()
+ * @method static Builder|PostBookmark whereCreatedAt($value)
+ * @method static Builder|PostBookmark whereId($value)
+ * @method static Builder|PostBookmark wherePostId($value)
+ * @method static Builder|PostBookmark whereUpdatedAt($value)
+ * @method static Builder|PostBookmark whereUserId($value)
+ *
+ * @mixin Eloquent
  */
 class PostBookmark extends Model
 {

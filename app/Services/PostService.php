@@ -20,8 +20,8 @@ class PostService
         try {
             DB::transaction(function () use ($postData, $productData, $userId) {
                 $post = Post::create($postData + [
-                        'user_id' => $userId,
-                    ]);
+                    'user_id' => $userId,
+                ]);
 
                 $medias = $postData['media_type'] == 'image'
                     ? 'images'
@@ -43,7 +43,6 @@ class PostService
         } catch (Exception $e) {
             return false;
         }
-
 
     }
 

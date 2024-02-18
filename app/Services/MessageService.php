@@ -8,7 +8,6 @@ use App\Models\Message;
 use App\Models\Post;
 use App\Models\Story;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
 
 class MessageService
 {
@@ -56,7 +55,7 @@ class MessageService
         return $extras;
     }
 
-    private function getStoryDetails($storyId): Builder|Story
+    private function getStoryDetails($storyId): Story
     {
         /** @var Story $story */
         $story = Story::with('user:id,username,last_activity')
@@ -70,9 +69,10 @@ class MessageService
         return $story;
     }
 
-    private function getPostDetails($postId): Builder|Post
+    private function getPostDetails($postId): Post
     {
-        $post = Post::with('user:id,username,last_activity')
+        /** @var Post $post */
+        $post = Post::with(['user:id,username,last_activity', 'media'])
             ->where('id', $postId)
             ->first(['id', 'user_id', 'caption']);
 

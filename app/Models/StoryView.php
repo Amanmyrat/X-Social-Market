@@ -3,17 +3,33 @@
 namespace App\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\StoryView
  *
- * @mixin Eloquent
+ * @property int $id
+ * @property int $user_id
+ * @property int $story_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Story $story
+ * @property-read User $user
  *
- * @property mixed user_id
- * @property mixed story_id
+ * @method static Builder|StoryView newModelQuery()
+ * @method static Builder|StoryView newQuery()
+ * @method static Builder|StoryView query()
+ * @method static Builder|StoryView whereCreatedAt($value)
+ * @method static Builder|StoryView whereId($value)
+ * @method static Builder|StoryView whereStoryId($value)
+ * @method static Builder|StoryView whereUpdatedAt($value)
+ * @method static Builder|StoryView whereUserId($value)
+ *
+ * @mixin Eloquent
  */
 class StoryView extends Model
 {

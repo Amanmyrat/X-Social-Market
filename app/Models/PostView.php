@@ -3,17 +3,33 @@
 namespace App\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\PostView
  *
- * @mixin Eloquent
+ * @property int $id
+ * @property int $user_id
+ * @property int $post_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Post $post
+ * @property-read User $user
  *
- * @property mixed user_id
- * @property mixed post_id
+ * @method static Builder|PostView newModelQuery()
+ * @method static Builder|PostView newQuery()
+ * @method static Builder|PostView query()
+ * @method static Builder|PostView whereCreatedAt($value)
+ * @method static Builder|PostView whereId($value)
+ * @method static Builder|PostView wherePostId($value)
+ * @method static Builder|PostView whereUpdatedAt($value)
+ * @method static Builder|PostView whereUserId($value)
+ *
+ * @mixin Eloquent
  */
 class PostView extends Model
 {

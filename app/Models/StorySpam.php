@@ -3,20 +3,38 @@
 namespace App\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\StorySpam
  *
- * @mixin Eloquent
+ * @property int $id
+ * @property int $user_id
+ * @property int $story_id
+ * @property int $spam_type_id
+ * @property string|null $message
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read SpamType $spamType
+ * @property-read Story $story
+ * @property-read User $user
  *
- * @property int id
- * @property int user_id
- * @property int story_id
- * @property int spam_type_id
- * @property string message
+ * @method static Builder|StorySpam newModelQuery()
+ * @method static Builder|StorySpam newQuery()
+ * @method static Builder|StorySpam query()
+ * @method static Builder|StorySpam whereCreatedAt($value)
+ * @method static Builder|StorySpam whereId($value)
+ * @method static Builder|StorySpam whereMessage($value)
+ * @method static Builder|StorySpam whereSpamTypeId($value)
+ * @method static Builder|StorySpam whereStoryId($value)
+ * @method static Builder|StorySpam whereUpdatedAt($value)
+ * @method static Builder|StorySpam whereUserId($value)
+ *
+ * @mixin Eloquent
  */
 class StorySpam extends Model
 {

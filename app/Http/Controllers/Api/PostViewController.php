@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Post;
 use App\Models\PostView;
+use App\Models\User;
 use App\Transformers\UserSimpleTransformer;
 use Auth;
 use Illuminate\Http\JsonResponse;
@@ -25,6 +26,7 @@ class PostViewController extends ApiBaseController
      */
     public function view(Post $post): JsonResponse
     {
+        /** @var User $user */
         $user = Auth::user();
 
         $existingView = $post->views()->where('user_id', $user->id)->first();

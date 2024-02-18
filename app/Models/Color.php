@@ -3,20 +3,32 @@
 namespace App\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\Color
  *
- * @mixin Eloquent
+ * @property int $id
+ * @property string $title
+ * @property string $code
+ * @property bool $is_active
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  *
- * @property int id
- * @property string title
- * @property string code
- * @property bool is_active
- * @property string created_at
- * @property string updated_at
+ * @method static Builder|Color newModelQuery()
+ * @method static Builder|Color newQuery()
+ * @method static Builder|Color query()
+ * @method static Builder|Color whereCode($value)
+ * @method static Builder|Color whereCreatedAt($value)
+ * @method static Builder|Color whereId($value)
+ * @method static Builder|Color whereIsActive($value)
+ * @method static Builder|Color whereTitle($value)
+ * @method static Builder|Color whereUpdatedAt($value)
+ *
+ * @mixin Eloquent
  */
 class Color extends Model
 {

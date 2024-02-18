@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Post;
 use App\Models\PostRating;
+use Auth;
 use Illuminate\Http\Request;
 
 class PostRatingService
@@ -14,13 +15,13 @@ class PostRatingService
             'rating' => ['required', 'integer', 'between:1,5'],
         ]);
 
-        $rating = PostRating::where(['user_id' => auth('sanctum')->user()->id, 'post_id' => $post->id])->first();
+        $rating = PostRating::where(['user_id' => Auth::id(), 'post_id' => $post->id])->first();
 
         if ($rating) {
             $rating->update($validated);
         } else {
             $rating = new PostRating();
-            $rating->user()->associate(auth('sanctum')->user());
+            $rating->user()->associate(Auth::user());
             $rating->post()->associate($post);
             $rating->rating = $validated['rating'];
             $rating->save();

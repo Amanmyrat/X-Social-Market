@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Post;
 use App\Models\PostComment;
+use Auth;
 use Illuminate\Http\Request;
 
 class PostCommentService
@@ -20,7 +21,7 @@ class PostCommentService
             'parent_id' => $validated['parent_id'] ?? 0,
         ]);
 
-        $comment->user()->associate(auth('sanctum')->user());
+        $comment->user()->associate(Auth::user());
         $comment->post()->associate($post);
         $comment->save();
     }

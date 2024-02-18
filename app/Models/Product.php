@@ -3,23 +3,38 @@
 namespace App\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\Product
  *
- * @mixin Eloquent
+ * @property int $id
+ * @property int $post_id
+ * @property int $brand_id
+ * @property string $gender
+ * @property array $options
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Brand $brand
+ * @property-read Post $post
  *
- * @property int id
- * @property int post_id
- * @property int brand_id
- * @property string gender
- * @property array options
- * @property string created_at
- * @property string updated_at
+ * @method static Builder|Product newModelQuery()
+ * @method static Builder|Product newQuery()
+ * @method static Builder|Product query()
+ * @method static Builder|Product whereBrandId($value)
+ * @method static Builder|Product whereCreatedAt($value)
+ * @method static Builder|Product whereGender($value)
+ * @method static Builder|Product whereId($value)
+ * @method static Builder|Product whereOptions($value)
+ * @method static Builder|Product wherePostId($value)
+ * @method static Builder|Product whereUpdatedAt($value)
+ *
+ * @mixin Eloquent
  */
 class Product extends Model
 {

@@ -6,6 +6,7 @@ use App\Models\Follower;
 use App\Models\User;
 use App\Services\FollowerService;
 use App\Transformers\UserSimpleTransformer;
+use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -24,7 +25,10 @@ class FollowerController extends ApiBaseController
                 'integer',
                 Rule::exists(User::class, 'id'),
                 function ($attribute, $value, $fail) {
-                    if ($value == auth('sanctum')->user()->id) {
+                    /** @var User $user */
+                    $user = Auth::user();
+
+                    if ($value == $user->id) {
                         $fail($attribute.' cannot be the same as your user ID.');
                     }
                 },
@@ -60,7 +64,10 @@ class FollowerController extends ApiBaseController
      */
     public function followers(): JsonResponse
     {
-        return $this->respondWithCollection(auth('sanctum')->user()->followers, new UserSimpleTransformer(true));
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $this->respondWithCollection($user->followers, new UserSimpleTransformer(true));
     }
 
     /**
@@ -76,7 +83,10 @@ class FollowerController extends ApiBaseController
      */
     public function followings(): JsonResponse
     {
-        return $this->respondWithCollection(auth('sanctum')->user()->followings, new UserSimpleTransformer());
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $this->respondWithCollection($user->followings, new UserSimpleTransformer());
     }
 
     /**

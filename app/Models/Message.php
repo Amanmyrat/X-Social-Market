@@ -3,28 +3,52 @@
 namespace App\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * App\Models\Message
  *
- * @mixin Eloquent
+ * @property int $id
+ * @property int $chat_id
+ * @property int $sender_user_id
+ * @property int $receiver_user_id
+ * @property string $type
+ * @property string|null $body
+ * @property array|null $extra
+ * @property string|null $read_at
+ * @property string|null $sender_deleted_at
+ * @property string|null $receiver_deleted_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Chat $chat
+ * @property-read MediaCollection<int, Media> $media
+ * @property-read int|null $media_count
  *
- * @property int id
- * @property int chat_id
- * @property int sender_user_id
- * @property int receiver_user_id
- * @property string type
- * @property string body
- * @property array extra
- * @property string read_at
- * @property string sender_deleted_at
- * @property string receiver_deleted_at
- * @property string created_at
+ * @method static Builder|Message newModelQuery()
+ * @method static Builder|Message newQuery()
+ * @method static Builder|Message query()
+ * @method static Builder|Message whereBody($value)
+ * @method static Builder|Message whereChatId($value)
+ * @method static Builder|Message whereCreatedAt($value)
+ * @method static Builder|Message whereExtra($value)
+ * @method static Builder|Message whereId($value)
+ * @method static Builder|Message whereReadAt($value)
+ * @method static Builder|Message whereReceiverDeletedAt($value)
+ * @method static Builder|Message whereReceiverUserId($value)
+ * @method static Builder|Message whereSenderDeletedAt($value)
+ * @method static Builder|Message whereSenderUserId($value)
+ * @method static Builder|Message whereType($value)
+ * @method static Builder|Message whereUpdatedAt($value)
+ *
+ * @mixin Eloquent
  */
 class Message extends Model implements HasMedia
 {

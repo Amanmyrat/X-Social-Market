@@ -7,6 +7,7 @@ use App\Models\PostSpam;
 use App\Models\SpamType;
 use App\Models\Story;
 use App\Models\StorySpam;
+use Auth;
 use Illuminate\Http\Request;
 
 class SpamService
@@ -26,7 +27,7 @@ class SpamService
             'message' => ['filled', 'string'],
         ]);
         $validated['post_id'] = $post->id;
-        $validated['user_id'] = auth('sanctum')->user()->id;
+        $validated['user_id'] = Auth::id();
         PostSpam::create($validated);
     }
 
@@ -37,7 +38,7 @@ class SpamService
             'message' => ['filled', 'string'],
         ]);
         $validated['story_id'] = $story->id;
-        $validated['user_id'] = auth('sanctum')->user()->id;
+        $validated['user_id'] = Auth::id();
         StorySpam::create($validated);
     }
 }

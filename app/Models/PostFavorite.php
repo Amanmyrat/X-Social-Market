@@ -3,17 +3,34 @@
 namespace App\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\PostFavorite
+
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property int $post_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Post $post
+ * @property-read User $user
+ *
+ * @method static Builder|PostFavorite newModelQuery()
+ * @method static Builder|PostFavorite newQuery()
+ * @method static Builder|PostFavorite query()
+ * @method static Builder|PostFavorite whereCreatedAt($value)
+ * @method static Builder|PostFavorite whereId($value)
+ * @method static Builder|PostFavorite wherePostId($value)
+ * @method static Builder|PostFavorite whereUpdatedAt($value)
+ * @method static Builder|PostFavorite whereUserId($value)
  *
  * @mixin Eloquent
- *
- * @property mixed user_id
- * @property mixed post_id
  */
 class PostFavorite extends Model
 {

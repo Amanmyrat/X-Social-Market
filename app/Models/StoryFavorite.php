@@ -3,17 +3,33 @@
 namespace App\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\StoryFavorite
  *
- * @mixin Eloquent
+ * @property int $id
+ * @property int $user_id
+ * @property int $story_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Story $story
+ * @property-read User $user
  *
- * @property mixed user_id
- * @property mixed story_id
+ * @method static Builder|StoryFavorite newModelQuery()
+ * @method static Builder|StoryFavorite newQuery()
+ * @method static Builder|StoryFavorite query()
+ * @method static Builder|StoryFavorite whereCreatedAt($value)
+ * @method static Builder|StoryFavorite whereId($value)
+ * @method static Builder|StoryFavorite whereStoryId($value)
+ * @method static Builder|StoryFavorite whereUpdatedAt($value)
+ * @method static Builder|StoryFavorite whereUserId($value)
+ *
+ * @mixin Eloquent
  */
 class StoryFavorite extends Model
 {

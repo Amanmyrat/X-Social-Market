@@ -15,6 +15,7 @@ class PostBookmarkService
 
     public function add(Post $post): string
     {
+        /** @var User $user */
         $user = Auth::user();
         $isBookmark = $post->bookmarks()->where('user_id', $user->id)->exists();
 

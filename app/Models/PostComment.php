@@ -3,21 +3,42 @@
 namespace App\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\PostComment
  *
- * @mixin Eloquent
+ * @property int $id
+ * @property int|null $parent_id
+ * @property int $user_id
+ * @property int $post_id
+ * @property string $comment
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, PostComment> $children
+ * @property-read int|null $children_count
+ * @property-read PostComment|null $parent
+ * @property-read Post $post
+ * @property-read User $user
  *
- * @property int id
- * @property int parent_id
- * @property int user_id
- * @property int post_id
- * @property string comment
+ * @method static Builder|PostComment newModelQuery()
+ * @method static Builder|PostComment newQuery()
+ * @method static Builder|PostComment query()
+ * @method static Builder|PostComment whereComment($value)
+ * @method static Builder|PostComment whereCreatedAt($value)
+ * @method static Builder|PostComment whereId($value)
+ * @method static Builder|PostComment whereParentId($value)
+ * @method static Builder|PostComment wherePostId($value)
+ * @method static Builder|PostComment whereUpdatedAt($value)
+ * @method static Builder|PostComment whereUserId($value)
+ *
+ * @mixin Eloquent
  */
 class PostComment extends Model
 {

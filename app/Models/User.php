@@ -3,32 +3,84 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Database\Factories\UserFactory;
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Laravel\Sanctum\PersonalAccessToken;
 
 /**
  * App\Models\User
  *
- * @mixin Eloquent
+ * @property int $id
+ * @property string $phone
+ * @property string $username
+ * @property string|null $email
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property mixed $password
+ * @property string $type
+ * @property string|null $device_token
+ * @property \Illuminate\Support\Carbon|null $last_activity
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property bool $is_online
+ * @property bool $is_active
+ * @property \Illuminate\Support\Carbon|null $blocked_at
+ * @property string|null $block_reason
+ * @property-read Collection<int, User> $blockedUsers
+ * @property-read int|null $blocked_users_count
+ * @property-read Collection<int, PostBookmark> $bookmarks
+ * @property-read int|null $bookmarks_count
+ * @property-read Collection<int, PostFavorite> $favorites
+ * @property-read int|null $favorites_count
+ * @property-read Collection<int, User> $followers
+ * @property-read int|null $followers_count
+ * @property-read Collection<int, User> $followings
+ * @property-read int|null $followings_count
+ * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @property-read Collection<int, PostView> $postViews
+ * @property-read int|null $post_views_count
+ * @property-read Collection<int, Post> $posts
+ * @property-read int|null $posts_count
+ * @property-read UserProfile|null $profile
+ * @property-read Collection<int, Story> $stories
+ * @property-read int|null $stories_count
+ * @property-read Collection<int, PersonalAccessToken> $tokens
+ * @property-read int|null $tokens_count
  *
- * @property int id
- * @property string phone
- * @property string username
- * @property string email
- * @property string password
- * @property string type
- * @property string device_token
- * @property string last_activity
- * @property bool is_online
- * @property bool is_active
- * @property string blocked_at
- * @property string block_reason
+ * @method static UserFactory factory($count = null, $state = [])
+ * @method static Builder|User newModelQuery()
+ * @method static Builder|User newQuery()
+ * @method static Builder|User query()
+ * @method static Builder|User whereBlockReason($value)
+ * @method static Builder|User whereBlockedAt($value)
+ * @method static Builder|User whereCreatedAt($value)
+ * @method static Builder|User whereDeviceToken($value)
+ * @method static Builder|User whereEmail($value)
+ * @method static Builder|User whereEmailVerifiedAt($value)
+ * @method static Builder|User whereId($value)
+ * @method static Builder|User whereIsActive($value)
+ * @method static Builder|User whereIsOnline($value)
+ * @method static Builder|User whereLastActivity($value)
+ * @method static Builder|User wherePassword($value)
+ * @method static Builder|User wherePhone($value)
+ * @method static Builder|User whereRememberToken($value)
+ * @method static Builder|User whereType($value)
+ * @method static Builder|User whereUpdatedAt($value)
+ * @method static Builder|User whereUsername($value)
+ *
+ * @mixin Eloquent
  */
 class User extends Authenticatable
 {
@@ -155,7 +207,7 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'blocked_users', 'user_id', 'blocked_user_id')->withTimestamps();
     }
 
-    public function chats()
+    public function chats(): Builder|Chat
     {
         return Chat::where(function ($query) {
             $query->where('sender_user_id', $this->id)

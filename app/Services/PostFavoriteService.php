@@ -15,7 +15,9 @@ class PostFavoriteService
 
     public function add(Post $post): string
     {
+        /** @var User $user */
         $user = Auth::user();
+
         $isFavorite = $post->favorites()->where('user_id', $user->id)->exists();
 
         if ($isFavorite) {

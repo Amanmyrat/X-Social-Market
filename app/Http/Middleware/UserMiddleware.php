@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
+use Auth;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,9 +17,12 @@ class UserMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth('sanctum')->user()->tokenCan('role:user')) {
-            if (auth('sanctum')->user()->blocked_at) {
-                return response()->json(['message' => 'Your account is blocked. Reason: '.auth('sanctum')->user()->block_reason], 403);
+        /** @var User $user */
+        $user = Auth::user();
+
+        if ($user->tokenCan('role:user')) {
+            if ($user->blocked_at) {
+                return response()->json(['message' => 'Your account is blocked. Reason: '.$user->block_reason], 403);
             }
 
             return $next($request);

@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\StoryService;
 use App\Transformers\StoryTransformer;
 use App\Transformers\UserStoryTransformer;
+use Auth;
 use Illuminate\Http\JsonResponse;
 
 class StoryController extends ApiBaseController
@@ -31,7 +32,10 @@ class StoryController extends ApiBaseController
      */
     public function myStories(): JsonResponse
     {
-        return $this->respondWithCollection(auth('sanctum')->user()->stories, new StoryTransformer());
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $this->respondWithCollection($user->stories, new StoryTransformer());
     }
 
     /**
@@ -47,6 +51,9 @@ class StoryController extends ApiBaseController
      */
     public function followingStories(): JsonResponse
     {
-        return $this->respondWithCollection(auth('sanctum')->user()->followings, new UserStoryTransformer());
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $this->respondWithCollection($user->followings, new UserStoryTransformer());
     }
 }

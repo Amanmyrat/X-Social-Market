@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Story;
 use App\Models\StoryView;
+use Auth;
 
 class StoryViewService
 {
@@ -12,7 +13,7 @@ class StoryViewService
         $message = trans('notification.add_view_success');
         if (! $story->getIsViewed()) {
             $storyView = new StoryView();
-            $storyView->user()->associate(auth('sanctum')->user());
+            $storyView->user()->associate(Auth::user());
             $storyView->story()->associate($story);
             $storyView->save();
         }

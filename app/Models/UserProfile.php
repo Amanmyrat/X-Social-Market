@@ -3,20 +3,54 @@
 namespace App\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\UserProfile
  *
- * @mixin Eloquent
+ * @property int $id
+ * @property int $user_id
+ * @property string|null $full_name
+ * @property string|null $profile_image
+ * @property string|null $bio
+ * @property string|null $website
+ * @property Carbon|null $birthdate
+ * @property string|null $gender
+ * @property int $payment_available
+ * @property int $verified
+ * @property int $private
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property int|null $category_id
+ * @property int|null $location_id
+ * @property-read Category|null $category
+ * @property-read Location|null $location
+ * @property-read User $user
  *
- * @property mixed user_id
- * @property mixed full_name
- * @property mixed verified
- * @property mixed private
- * @property mixed profile_image
+ * @method static Builder|UserProfile newModelQuery()
+ * @method static Builder|UserProfile newQuery()
+ * @method static Builder|UserProfile query()
+ * @method static Builder|UserProfile whereBio($value)
+ * @method static Builder|UserProfile whereBirthdate($value)
+ * @method static Builder|UserProfile whereCategoryId($value)
+ * @method static Builder|UserProfile whereCreatedAt($value)
+ * @method static Builder|UserProfile whereFullName($value)
+ * @method static Builder|UserProfile whereGender($value)
+ * @method static Builder|UserProfile whereId($value)
+ * @method static Builder|UserProfile whereLocationId($value)
+ * @method static Builder|UserProfile wherePaymentAvailable($value)
+ * @method static Builder|UserProfile wherePrivate($value)
+ * @method static Builder|UserProfile whereProfileImage($value)
+ * @method static Builder|UserProfile whereUpdatedAt($value)
+ * @method static Builder|UserProfile whereUserId($value)
+ * @method static Builder|UserProfile whereVerified($value)
+ * @method static Builder|UserProfile whereWebsite($value)
+ *
+ * @mixin Eloquent
  */
 class UserProfile extends Model
 {

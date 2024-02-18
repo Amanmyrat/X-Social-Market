@@ -3,20 +3,32 @@
 namespace App\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\Brand
  *
- * @mixin Eloquent
+ * @property int $id
+ * @property string $title
+ * @property string $type
+ * @property bool $is_active
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  *
- * @property int id
- * @property string title
- * @property string type
- * @property bool is_active
- * @property string created_at
- * @property string updated_at
+ * @method static Builder|Brand newModelQuery()
+ * @method static Builder|Brand newQuery()
+ * @method static Builder|Brand query()
+ * @method static Builder|Brand whereCreatedAt($value)
+ * @method static Builder|Brand whereId($value)
+ * @method static Builder|Brand whereIsActive($value)
+ * @method static Builder|Brand whereTitle($value)
+ * @method static Builder|Brand whereType($value)
+ * @method static Builder|Brand whereUpdatedAt($value)
+ *
+ * @mixin Eloquent
  */
 class Brand extends Model
 {

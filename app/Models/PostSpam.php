@@ -3,20 +3,38 @@
 namespace App\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\PostSpam
  *
- * @mixin Eloquent
+ * @property int $id
+ * @property int $user_id
+ * @property int $post_id
+ * @property int $spam_type_id
+ * @property string|null $message
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Post $post
+ * @property-read SpamType $spamType
+ * @property-read User $user
  *
- * @property int id
- * @property int user_id
- * @property int post_id
- * @property int spam_type_id
- * @property string message
+ * @method static Builder|PostSpam newModelQuery()
+ * @method static Builder|PostSpam newQuery()
+ * @method static Builder|PostSpam query()
+ * @method static Builder|PostSpam whereCreatedAt($value)
+ * @method static Builder|PostSpam whereId($value)
+ * @method static Builder|PostSpam whereMessage($value)
+ * @method static Builder|PostSpam wherePostId($value)
+ * @method static Builder|PostSpam whereSpamTypeId($value)
+ * @method static Builder|PostSpam whereUpdatedAt($value)
+ * @method static Builder|PostSpam whereUserId($value)
+ *
+ * @mixin Eloquent
  */
 class PostSpam extends Model
 {

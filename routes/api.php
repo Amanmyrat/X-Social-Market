@@ -144,3 +144,5 @@ Route::prefix('spam')->group(function () {
 });
 
 Route::post('posts/all/list', [PostController::class, 'allPosts']);
+
+require __DIR__ . '/admin.php';

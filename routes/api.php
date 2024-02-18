@@ -1,12 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminAuthController;
-use App\Http\Controllers\Admin\AdminBrandController;
-use App\Http\Controllers\Admin\AdminCategoryController;
-use App\Http\Controllers\Admin\AdminColorController;
-use App\Http\Controllers\Admin\AdminLocationController;
-use App\Http\Controllers\Admin\AdminSizeController;
-use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\ChatController;
@@ -147,4 +140,4 @@ Route::prefix('spam')->group(function () {
 
 Route::post('posts/all/list', [PostController::class, 'allPosts']);
 
-require __DIR__ . '/admin.php';
+require __DIR__.'/admin.php';

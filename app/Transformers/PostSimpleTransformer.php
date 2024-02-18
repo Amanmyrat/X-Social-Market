@@ -8,7 +8,7 @@ use League\Fractal\TransformerAbstract;
 
 class PostSimpleTransformer extends TransformerAbstract
 {
-    #[ArrayShape(['id' => "int", 'caption' => "string", 'price' => "int", 'media_type' => "string", 'media' => "array"])]
+    #[ArrayShape(['id' => 'int', 'caption' => 'string', 'price' => 'int', 'media_type' => 'string', 'media' => 'array'])]
     public function transform(Post $post): array
     {
         return [

@@ -12,6 +12,7 @@ trait PreparesPostQuery
             ->withAvg('ratings', 'rating')
             ->withIsFollowing();
     }
+
     private function getUserPostsQuery($user)
     {
         return $user->posts()
@@ -25,5 +26,4 @@ trait PreparesPostQuery
     {
         return $this->getPostsQuery()->latest()->whereIn('posts.id', $postIds);
     }
-
 }

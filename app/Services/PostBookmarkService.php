@@ -37,6 +37,7 @@ class PostBookmarkService
         $bookmarkPostIds = $user->bookmarks()->pluck('post_id')->toArray();
 
         $postsQuery = $this->getPostsByIdsQuery($bookmarkPostIds);
+
         return $postsQuery->get();
     }
 }

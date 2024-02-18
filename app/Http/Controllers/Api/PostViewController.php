@@ -16,6 +16,7 @@ class PostViewController extends ApiBaseController
     public function views(Post $post): JsonResponse
     {
         $users = $post->views->pluck('user');
+
         return $this->respondWithCollection($users, new UserSimpleTransformer());
     }
 
@@ -28,7 +29,7 @@ class PostViewController extends ApiBaseController
 
         $existingView = $post->views()->where('user_id', $user->id)->first();
 
-        if (!$existingView) {
+        if (! $existingView) {
             $postView = new PostView();
             $postView->user()->associate($user);
             $postView->post()->associate($post);

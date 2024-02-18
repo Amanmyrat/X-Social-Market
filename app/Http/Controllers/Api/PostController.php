@@ -25,8 +25,7 @@ class PostController extends ApiBaseController
 
     public function __construct(
         protected PostService $service
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -42,7 +41,7 @@ class PostController extends ApiBaseController
 
         $postCreated = $this->service->create(Arr::except($validated, 'product'), $request->user()->id, $productData);
 
-        if (!$postCreated) {
+        if (! $postCreated) {
             return Response::json([
                 'success' => false,
                 'message' => 'Error occurred',
@@ -159,7 +158,6 @@ class PostController extends ApiBaseController
         return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }
 
-
     /**
      * Get category related posts
      */
@@ -169,5 +167,4 @@ class PostController extends ApiBaseController
 
         return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }
-
 }

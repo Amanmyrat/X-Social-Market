@@ -18,13 +18,14 @@ class UserSimpleTransformer extends TransformerAbstract
             'id' => $user->id,
             'username' => $user->username,
             'full_name' => $user->profile?->full_name,
-            'profile_image' => $user->profile?->profile_image ? url('uploads/user/profile/' . $user->profile?->profile_image) : null,
+            'profile_image' => $user->profile?->profile_image ? url('uploads/user/profile/'.$user->profile?->profile_image) : null,
             'last_activity' => $user->last_activity,
         ];
 
         if ($this->isFollowingEnabled) {
             $result['isFollowing'] = Auth::user()->followings()->where('users.id', $user->id)->exists();
         }
+
         return $result;
     }
 }

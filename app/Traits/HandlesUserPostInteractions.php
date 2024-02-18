@@ -9,8 +9,6 @@ trait HandlesUserPostInteractions
 {
     /**
      * Get the current user's favorite post IDs.
-     *
-     * @return array
      */
     public function getUserFavoritePostIds(): array
     {
@@ -19,8 +17,6 @@ trait HandlesUserPostInteractions
 
     /**
      * Get the current user's bookmarked post IDs.
-     *
-     * @return array
      */
     public function getUserBookmarkedPostIds(): array
     {
@@ -29,8 +25,6 @@ trait HandlesUserPostInteractions
 
     /**
      * Get the current user's viewed post IDs.
-     *
-     * @return array
      */
     public function getUserViewedPostIds(): array
     {
@@ -40,20 +34,18 @@ trait HandlesUserPostInteractions
     /**
      * General method to retrieve user post interaction IDs based on a given relationship.
      *
-     * @param string $relationshipMethod The method name of the user's post interaction relationship.
-     * @return array
+     * @param  string  $relationshipMethod  The method name of the user's post interaction relationship.
      */
     protected function getUserPostInteractionIds(string $relationshipMethod): array
     {
         $user = Auth::user();
+
         return $user ? $user->$relationshipMethod()->pluck('post_id')->toArray() : [];
     }
 
     /**
      * Creates and returns a UserPostInteractionsDTO with the current user's
      * post interaction data.
-     *
-     * @return UserPostInteractionsDTO
      */
     protected function getUserInteractionsDTO(): UserPostInteractionsDTO
     {

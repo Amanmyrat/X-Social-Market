@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Post;
 use App\Services\PostBookmarkService;
-use App\Services\PostFavoriteService;
 use App\Traits\HandlesUserPostInteractions;
 use App\Traits\PreparesPostQuery;
 use App\Transformers\PostTransformer;

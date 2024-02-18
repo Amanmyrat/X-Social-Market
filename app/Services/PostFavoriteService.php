@@ -36,6 +36,7 @@ class PostFavoriteService
     {
         $favoritePostIds = $user->favorites()->pluck('post_id')->toArray();
         $postsQuery = $this->getPostsByIdsQuery($favoritePostIds);
+
         return $postsQuery->get();
     }
 }

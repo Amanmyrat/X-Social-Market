@@ -13,7 +13,6 @@ class UserWithProfileTransformer extends TransformerAbstract
     {
     }
 
-
     protected array $defaultIncludes = [
         'profile',
     ];
@@ -36,9 +35,10 @@ class UserWithProfileTransformer extends TransformerAbstract
             'followers_count' => $user->followers_count,
             'followings_count' => $user->followings_count,
         ];
-        if($this->isFollowingEnabled){
+        if ($this->isFollowingEnabled) {
             $result['isFollowing'] = Auth::user()->followings()->where('users.id', $user->id)->exists();
         }
+
         return $result;
     }
 

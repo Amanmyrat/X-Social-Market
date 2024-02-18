@@ -118,7 +118,7 @@ class Post extends Model implements HasMedia
     {
         $user = auth('sanctum')->user();
 
-        if (!$user) {
+        if (! $user) {
             return $query;
         }
 
@@ -127,5 +127,4 @@ class Post extends Model implements HasMedia
                 ->where('followers.user_id', '=', $user->id);
         })->addSelect(['posts.*', DB::raw('IF(followers.user_id IS NOT NULL, true, false) AS is_following')]);
     }
-
 }

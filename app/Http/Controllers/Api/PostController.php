@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\FractalSerializer;
 use App\Http\Requests\PostRequest;
+use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
 use App\Services\PostService;
@@ -135,5 +136,26 @@ class PostController extends ApiBaseController
             ->first();
 
         return $this->respondWithItem($post, new PostTransformer());
+    }
+
+    /**
+     * Get discovery posts
+     */
+    public function discoveryPosts(): JsonResponse
+    {
+        $posts = Post::inRandomOrder()->paginate(25);
+
+        return $this->respondWithPaginator($posts, new PostSimpleTransformer());
+    }
+
+
+    /**
+     * Get category related posts
+     */
+    public function categoryPosts(Category $category): JsonResponse
+    {
+        $posts = $category->posts()->inRandomOrder()->paginate();
+
+        return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }
 }

@@ -74,11 +74,14 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('make/seller', [UserController::class, 'makeAccountBusiness']);
     });
 
+    Route::post('/category/{category}', [PostController::class, 'categoryPosts']);
     Route::prefix('posts')->group(function () {
         Route::post('/', [PostController::class, 'myPosts']);
         Route::post('create', [PostController::class, 'create']);
         Route::post('/{post}/delete', [PostController::class, 'delete']);
         Route::post('/{post}/related', [PostController::class, 'relatedPosts']);
+
+        Route::post('/discovery', [PostController::class, 'discoveryPosts']);
 
         Route::post('/search', [PostController::class, 'search']);
         Route::post('/{post}', [PostController::class, 'postDetails']);

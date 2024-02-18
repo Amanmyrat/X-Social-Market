@@ -22,7 +22,7 @@ class UserSimpleTransformer extends TransformerAbstract
         ];
 
         if($this->isFollowingEnabled){
-            $result['isFollowing'] = Auth::user()->followings()->where('id', $user->id)->exists();
+            $result['isFollowing'] = Auth::user()->followings()->where('users.id', $user->id)->exists();
         }
         return $result;
     }

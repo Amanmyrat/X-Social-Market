@@ -112,8 +112,8 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     });
 
     Route::post('followers', [FollowerController::class, 'followers']);
-    Route::post('users/{user}followers', [FollowerController::class, 'userFollowers']);
-    Route::post('users/{user}followings', [FollowerController::class, 'userFollowings']);
+    Route::post('users/{user}/followers', [FollowerController::class, 'userFollowers']);
+    Route::post('users/{user}/followings', [FollowerController::class, 'userFollowings']);
 
     Route::prefix('followings')->group(function () {
         Route::post('/', [FollowerController::class, 'followings']);

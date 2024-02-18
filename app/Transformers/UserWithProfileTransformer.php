@@ -10,7 +10,9 @@ use League\Fractal\TransformerAbstract;
 class UserWithProfileTransformer extends TransformerAbstract
 {
     public function __construct(protected bool $isFollowingEnabled = false)
-    {}
+    {
+    }
+
 
     protected array $defaultIncludes = [
         'profile',
@@ -35,7 +37,7 @@ class UserWithProfileTransformer extends TransformerAbstract
             'followings_count' => $user->followings_count,
         ];
         if($this->isFollowingEnabled){
-            $result['isFollowing'] = Auth::user()->followings()->where('id', $user->id)->exists();
+            $result['isFollowing'] = Auth::user()->followings()->where('users.id', $user->id)->exists();
         }
         return $result;
     }

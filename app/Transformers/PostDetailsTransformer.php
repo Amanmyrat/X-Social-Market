@@ -7,14 +7,14 @@ use App\Models\Post;
 use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
 
-class PostTransformer extends TransformerAbstract
+class PostDetailsTransformer extends TransformerAbstract
 {
     public function __construct(protected UserPostInteractionsDTO $userInteractions)
     {
     }
 
     protected array $defaultIncludes = [
-        'user',
+        'user', 'product',
     ];
 
     public function transform(Post $post): array
@@ -42,6 +42,9 @@ class PostTransformer extends TransformerAbstract
             'isFavorite' => in_array($post->id, $this->userInteractions->favoritePostIds),
             'isBookmark' => in_array($post->id, $this->userInteractions->bookmarkedPostIds),
             'isViewed' => in_array($post->id, $this->userInteractions->viewedPostIds),
+            'favorites_count' => $post->favorites_count,
+            'comments_count' => $post->comments_count,
+            'views_count' => $post->views_count,
             'is_following' => (bool) $post->is_following ?? false,
         ];
     }
@@ -49,5 +52,14 @@ class PostTransformer extends TransformerAbstract
     public function includeUser(Post $post): Item
     {
         return $this->item($post->user, new UserSimpleTransformer());
+    }
+
+    public function includeProduct(Post $post): ?Item
+    {
+        if ($post->product()->exists()) {
+            return $this->item($post->product, new ProductTransformer());
+        }
+
+        return null;
     }
 }

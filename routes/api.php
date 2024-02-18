@@ -74,7 +74,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('make/seller', [UserController::class, 'makeAccountBusiness']);
     });
 
-    Route::post('/category/{category}', [PostController::class, 'categoryPosts']);
     Route::prefix('posts')->group(function () {
         Route::post('/', [PostController::class, 'myPosts']);
         Route::post('create', [PostController::class, 'create']);
@@ -82,13 +81,14 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/{post}/related', [PostController::class, 'relatedPosts']);
 
         Route::post('/discovery', [PostController::class, 'discoveryPosts']);
+        Route::post('/category/{category}', [PostController::class, 'categoryPosts']);
 
         Route::post('/search', [PostController::class, 'search']);
-        Route::post('/{post}', [PostController::class, 'postDetails']);
+        Route::post('/{post}/details', [PostController::class, 'postDetails']);
 
-        Route::post('favorites', [PostFavoritesController::class, 'favorites']);
         Route::post('/favorites/{post}/change', [PostFavoritesController::class, 'change']);
-        Route::post('favorites/{post}/users', [PostFavoritesController::class, 'favoriteUsers']);
+        Route::post('/favorites/{post}/users', [PostFavoritesController::class, 'favoriteUsers']);
+        Route::post('/favorites', [PostFavoritesController::class, 'favorites']);
 
         Route::post('bookmarks', [PostBookmarkController::class, 'bookmarks']);
         Route::post('/bookmarks/{post}/change', [PostBookmarkController::class, 'change']);
@@ -121,7 +121,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     Route::prefix('followings')->group(function () {
         Route::post('/', [FollowerController::class, 'followings']);
         Route::post('stories', [StoryController::class, 'followingStories']);
-        Route::post('posts', [PostController::class, 'followingPosts']);
     });
 
     Route::post('/chat/create', [ChatController::class, 'createChat']);

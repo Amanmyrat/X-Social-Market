@@ -52,7 +52,7 @@ class PostService
     {
         $limit = $request->get('limit');
 
-        $products = Post::when(isset($request->categories), function ($query) use ($request) {
+        $posts = Post::when(isset($request->categories), function ($query) use ($request) {
             return $query->whereIn('category_id', $request->categories);
         })
             ->when(isset($request->price_min), function ($query) use ($request) {
@@ -77,19 +77,21 @@ class PostService
         if ($s = $request->get('sort')) {
             switch ($s) {
                 case 'most_liked':
-                    $products = $products
+                    $posts = $posts
                         ->withCount('favorites')
                         ->orderByDesc('favorites_count');
                     break;
                 default:
                     $sort = $this->getSort($s);
-                    $products = $products->orderBy('posts.'.$sort[0], $sort[1]);
+                    $posts = $posts->orderBy('posts.'.$sort[0], $sort[1]);
             }
         } else {
-            $products = $products->inRandomOrder();
+            $posts = $posts->inRandomOrder();
         }
 
-        return $products->withCount(['favorites', 'comments', 'views'])->paginate($limit);
+        return $posts->with(['user.profile', 'media'])
+            ->withAvg('ratings', 'rating')
+            ->withIsFollowing()->paginate($limit);
     }
 
     private function getSort($sort): array

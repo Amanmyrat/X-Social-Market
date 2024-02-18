@@ -4,7 +4,6 @@ namespace App\Models;
 
 use DB;
 use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,6 +26,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property string description
  * @property string media_type
  * @property bool can_comment
+ * @property string created_at
  * @property string location
  */
 class Post extends Model implements HasMedia
@@ -66,17 +66,11 @@ class Post extends Model implements HasMedia
         'can_comment' => 'boolean',
     ];
 
-    /**
-     * Get the user that owns the post.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the category that owns the post.
-     */
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -87,26 +81,9 @@ class Post extends Model implements HasMedia
         return $this->belongsToMany(User::class, 'post_favorites', 'post_id', 'user_id');
     }
 
-    public function myFavorites(): HasMany
-    {
-        return $this->hasMany(PostFavorite::class)
-            ->where('user_id', auth('sanctum')->user()->id);
-    }
-
     public function favorites(): HasMany
     {
         return $this->hasMany(PostFavorite::class);
-    }
-
-    public function getIsFavorite(): bool
-    {
-        return auth('sanctum')->user() ? $this->myFavorites->isNotEmpty() : false;
-    }
-
-    public function myBookmarks(): HasMany
-    {
-        return $this->hasMany(PostBookmark::class)
-            ->where('user_id', auth('sanctum')->user()->id);
     }
 
     public function bookmarks(): HasMany
@@ -114,19 +91,9 @@ class Post extends Model implements HasMedia
         return $this->hasMany(PostBookmark::class);
     }
 
-    public function getIsBookmark(): bool
-    {
-        return auth('sanctum')->user() ? $this->myBookmarks->isNotEmpty() : false;
-    }
-
     public function comments(): HasMany
     {
         return $this->hasMany(PostComment::class)->where('parent_id', 0)->orderByDesc('created_at');
-    }
-
-    public function hasComments(): bool
-    {
-        return $this->comments->isNotEmpty();
     }
 
     public function ratings(): HasMany
@@ -134,30 +101,9 @@ class Post extends Model implements HasMedia
         return $this->hasMany(PostRating::class)->orderByDesc('created_at');
     }
 
-    public function hasRating(): bool
-    {
-        return $this->ratings->isNotEmpty();
-    }
-
-    public function rating(): string
-    {
-        return $this->hasRating() ? floatval($this->ratings()->avg('rating')) : '-';
-    }
-
     public function views(): HasMany
     {
         return $this->hasMany(PostView::class)->with('user');
-    }
-
-    public function myViews(): HasMany
-    {
-        return $this->hasMany(PostView::class)
-            ->where('user_id', auth('sanctum')->user()->id);
-    }
-
-    public function getIsViewed(): bool
-    {
-        return auth('sanctum')->user() ? $this->myViews->isNotEmpty() : false;
     }
 
     public function product(): HasOne
@@ -181,4 +127,5 @@ class Post extends Model implements HasMedia
                 ->where('followers.user_id', '=', $user->id);
         })->addSelect(['posts.*', DB::raw('IF(followers.user_id IS NOT NULL, true, false) AS is_following')]);
     }
+
 }

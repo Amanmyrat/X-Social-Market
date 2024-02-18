@@ -26,7 +26,7 @@ class StoryTransformer extends TransformerAbstract
     public function includePost(Story $story): ?Item
     {
         if ($story->post) {
-            return $this->item($story->post, new PostTransformer());
+            return $this->item($story->post, new PostSimpleTransformer());
         } else {
             return null;
         }

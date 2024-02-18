@@ -120,7 +120,7 @@ class User extends Authenticatable
      */
     public function posts(): HasMany
     {
-        return $this->hasMany(Post::class)->withCount(['favorites', 'comments', 'views']);
+        return $this->hasMany(Post::class);
     }
 
     /**
@@ -137,6 +137,14 @@ class User extends Authenticatable
     public function bookmarks(): HasMany
     {
         return $this->hasMany(PostBookmark::class)->orderByDesc('created_at');
+    }
+
+    /**
+     * Get bookmarks associated with the user.
+     */
+    public function postViews(): HasMany
+    {
+        return $this->hasMany(PostView::class)->orderByDesc('created_at');
     }
 
     /**

@@ -2,29 +2,32 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Helpers\FractalSerializer;
 use App\Http\Requests\PostRequest;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
 use App\Services\PostService;
+use App\Traits\HandlesUserPostInteractions;
+use App\Traits\PreparesPostQuery;
+use App\Transformers\PostDetailsTransformer;
 use App\Transformers\PostSimpleTransformer;
 use App\Transformers\PostTransformer;
-use App\Transformers\UserPostTransformer;
 use Arr;
+use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use League\Fractal\Manager;
 use Response;
 use Throwable;
 
 class PostController extends ApiBaseController
 {
+    use HandlesUserPostInteractions, PreparesPostQuery;
+
     public function __construct(
         protected PostService $service
-    ) {
-        $this->fractal = new Manager;
-        $this->fractal->setSerializer(new FractalSerializer());
+    )
+    {
+        parent::__construct();
     }
 
     /**
@@ -39,7 +42,7 @@ class PostController extends ApiBaseController
 
         $postCreated = $this->service->create(Arr::except($validated, 'product'), $request->user()->id, $productData);
 
-        if (! $postCreated) {
+        if (!$postCreated) {
             return Response::json([
                 'success' => false,
                 'message' => 'Error occurred',
@@ -67,7 +70,12 @@ class PostController extends ApiBaseController
      */
     public function relatedPosts(Post $post): JsonResponse
     {
-        $posts = Post::where('id', '!=', $post->id)->where('category_id', $post->category_id)->inRandomOrder()->limit(10)->get();
+        $posts = Post::with('media')
+            ->where('id', '!=', $post->id)
+            ->where('category_id', $post->category_id)
+            ->inRandomOrder()
+            ->limit(10)
+            ->get();
 
         return $this->respondWithCollection($posts, new PostSimpleTransformer());
     }
@@ -77,7 +85,13 @@ class PostController extends ApiBaseController
      */
     public function myPosts(): JsonResponse
     {
-        return $this->respondWithCollection(auth('sanctum')->user()->posts, new PostTransformer());
+        $userInteractionsDTO = $this->getUserInteractionsDTO();
+
+        $user = Auth::user();
+        $postsQuery = $this->getUserPostsQuery($user);
+        $posts = $postsQuery->paginate(10);
+
+        return $this->respondWithPaginator($posts, new PostTransformer($userInteractionsDTO));
     }
 
     /**
@@ -85,9 +99,12 @@ class PostController extends ApiBaseController
      */
     public function allPosts(): JsonResponse
     {
-        $posts = Post::with('product')->withCount(['favorites', 'comments', 'views'])->withIsFollowing()->latest()->paginate(10);
+        $userInteractionsDTO = $this->getUserInteractionsDTO();
 
-        return $this->respondWithPaginator($posts, new PostTransformer());
+        $postsQuery = $this->getPostsQuery();
+        $posts = $postsQuery->inRandomOrder()->paginate(10);
+
+        return $this->respondWithPaginator($posts, new PostTransformer($userInteractionsDTO));
     }
 
     /**
@@ -95,21 +112,12 @@ class PostController extends ApiBaseController
      */
     public function userPosts(User $user): JsonResponse
     {
-        $posts = Post::where('posts.user_id', $user->id)
-            ->with('product')
-            ->withCount(['favorites', 'comments', 'views'])
-            ->withIsFollowing()
-            ->latest()->paginate(10);
+        $userInteractionsDTO = $this->getUserInteractionsDTO();
 
-        return $this->respondWithCollection($posts, new PostTransformer());
-    }
+        $postsQuery = $this->getUserPostsQuery($user);
+        $posts = $postsQuery->paginate(10);
 
-    /**
-     * Following users posts list
-     */
-    public function followingPosts(): JsonResponse
-    {
-        return $this->respondWithCollection(auth('sanctum')->user()->followings, new UserPostTransformer());
+        return $this->respondWithCollection($posts, new PostTransformer($userInteractionsDTO));
     }
 
     /**
@@ -120,8 +128,9 @@ class PostController extends ApiBaseController
         $request->validate(['search_query' => ['required', 'string']]);
 
         $result = $this->service->searchPosts($request);
+        $userInteractionsDTO = $this->getUserInteractionsDTO();
 
-        return $this->respondWithPaginator($result, new PostTransformer());
+        return $this->respondWithPaginator($result, new PostTransformer($userInteractionsDTO));
     }
 
     /**
@@ -129,13 +138,15 @@ class PostController extends ApiBaseController
      */
     public function postDetails(Post $post): JsonResponse
     {
+        $userInteractionsDTO = $this->getUserInteractionsDTO();
         $post = Post::where('posts.id', $post->id)
-            ->with('product')
+            ->with(['user.profile', 'media', 'product'])
+            ->withAvg('ratings', 'rating')
             ->withCount(['favorites', 'comments', 'views'])
             ->withIsFollowing()
             ->first();
 
-        return $this->respondWithItem($post, new PostTransformer());
+        return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO));
     }
 
     /**
@@ -143,7 +154,7 @@ class PostController extends ApiBaseController
      */
     public function discoveryPosts(): JsonResponse
     {
-        $posts = Post::inRandomOrder()->paginate(25);
+        $posts = Post::with('media')->inRandomOrder()->paginate(25);
 
         return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }
@@ -154,8 +165,9 @@ class PostController extends ApiBaseController
      */
     public function categoryPosts(Category $category): JsonResponse
     {
-        $posts = $category->posts()->inRandomOrder()->paginate();
+        $posts = $category->posts()->with('media')->inRandomOrder()->paginate();
 
         return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }
+
 }

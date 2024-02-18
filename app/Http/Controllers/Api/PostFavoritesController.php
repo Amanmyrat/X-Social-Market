@@ -4,20 +4,32 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Post;
 use App\Services\PostFavoriteService;
+use App\Traits\HandlesUserPostInteractions;
+use App\Traits\PreparesPostQuery;
 use App\Transformers\PostTransformer;
 use App\Transformers\UserSimpleTransformer;
+use Auth;
 use Illuminate\Http\JsonResponse;
 
 class PostFavoritesController extends ApiBaseController
 {
+    use HandlesUserPostInteractions, PreparesPostQuery;
+
+    public function __construct(protected PostFavoriteService $service)
+    {
+        parent::__construct();
+    }
+
     /**
      * List of my favorite posts
      */
     public function favorites(): JsonResponse
     {
-        $products = PostFavoriteService::get();
+        $user = Auth::user();
+        $posts = $this->service->getUserFavoritePosts($user);
+        $userInteractionsDTO = $this->getUserInteractionsDTO();
 
-        return $this->respondWithCollection($products, new PostTransformer());
+        return $this->respondWithCollection($posts, new PostTransformer($userInteractionsDTO));
     }
 
     /**
@@ -25,7 +37,7 @@ class PostFavoritesController extends ApiBaseController
      */
     public function change(Post $post): JsonResponse
     {
-        $message = PostFavoriteService::add($post);
+        $message = $this->service->add($post);
 
         return $this->respondWithMessage($message);
     }

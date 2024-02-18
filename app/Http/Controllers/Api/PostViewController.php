@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Post;
 use App\Models\PostView;
 use App\Transformers\UserSimpleTransformer;
+use Auth;
 use Illuminate\Http\JsonResponse;
 
 class PostViewController extends ApiBaseController
@@ -14,7 +15,8 @@ class PostViewController extends ApiBaseController
      */
     public function views(Post $post): JsonResponse
     {
-        return $this->respondWithCollection($post->views->pluck('user'), new UserSimpleTransformer());
+        $users = $post->views->pluck('user');
+        return $this->respondWithCollection($users, new UserSimpleTransformer());
     }
 
     /**
@@ -22,14 +24,17 @@ class PostViewController extends ApiBaseController
      */
     public function view(Post $post): JsonResponse
     {
-        $message = trans('notification.add_view_success');
-        if (! $post->getIsViewed()) {
+        $user = Auth::user();
+
+        $existingView = $post->views()->where('user_id', $user->id)->first();
+
+        if (!$existingView) {
             $postView = new PostView();
-            $postView->user()->associate(auth('sanctum')->user());
+            $postView->user()->associate($user);
             $postView->post()->associate($post);
             $postView->save();
         }
 
-        return $this->respondWithMessage($message);
+        return $this->respondWithMessage('View success');
     }
 }

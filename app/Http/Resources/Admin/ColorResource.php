@@ -22,21 +22,21 @@ class ColorResource extends JsonResource
     public function toArray(Request $request): array
     {
         return $this->detailsEnabled ? [
-            'id' => $this->id,
-            'title' => $this->title,
-            'code' => $this->code,
-            'is_active' => $this->is_active,
+            'id' => $this->resource->id,
+            'title' => $this->resource->title,
+            'code' => $this->resource->code,
+            'is_active' => $this->resource->is_active,
             'products_count' => 0,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_at' => $this->resource->created_at,
+            'updated_at' => $this->resource->updated_at,
 
         ] : [
-            'id' => $this->id,
-            'title' => $this->title,
-            'code' => $this->code,
-            'is_active' => $this->is_active,
+            'id' => $this->resource->id,
+            'title' => $this->resource->title,
+            'code' => $this->resource->code,
+            'is_active' => $this->resource->is_active,
             'products_count' => 0,
-            'created_at' => $this->created_at,
+            'created_at' => $this->resource->created_at,
         ];
     }
 }

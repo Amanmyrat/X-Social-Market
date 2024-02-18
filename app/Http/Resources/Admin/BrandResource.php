@@ -22,18 +22,18 @@ class BrandResource extends JsonResource
     public function toArray(Request $request): array
     {
         return $this->detailsEnabled ? [
-            'id' => $this->id,
-            'title' => $this->title,
-            'type' => $this->type,
-            'is_active' => $this->is_active,
+            'id' => $this->resource->id,
+            'title' => $this->resource->title,
+            'type' => $this->resource->type,
+            'is_active' => $this->resource->is_active,
             'products_count' => 0,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_at' => $this->resource->created_at,
+            'updated_at' => $this->resource->updated_at,
 
         ] : [
-            'id' => $this->id,
-            'title' => $this->title,
-            'is_active' => $this->is_active,
+            'id' => $this->resource->id,
+            'title' => $this->resource->title,
+            'is_active' => $this->resource->is_active,
             'products_count' => 0,
         ];
     }

@@ -22,22 +22,22 @@ class CategoryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return $this->detailsEnabled ? [
-            'id' => $this->id,
-            'title' => $this->title,
-            'description' => $this->description,
-            'icon' => url('uploads/categories/'.$this->icon),
-            'is_active' => $this->is_active,
-            'has_product' => $this->has_product,
-            'posts_count' => $this->posts_count,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'id' => $this->resource->id,
+            'title' => $this->resource->title,
+            'description' => $this->resource->description,
+            'icon' => url('uploads/categories/'.$this->resource->icon),
+            'is_active' => $this->resource->is_active,
+            'has_product' => $this->resource->has_product,
+            'posts_count' => $this->resource->posts_count,
+            'created_at' => $this->resource->created_at,
+            'updated_at' => $this->resource->updated_at,
 
         ] : [
-            'id' => $this->id,
-            'title' => $this->title,
-            'icon' => url('uploads/categories/'.$this->icon),
-            'is_active' => $this->is_active,
-            'posts_count' => $this->posts_count,
+            'id' => $this->resource->id,
+            'title' => $this->resource->title,
+            'icon' => url('uploads/categories/'.$this->resource->icon),
+            'is_active' => $this->resource->is_active,
+            'posts_count' => $this->resource->posts_count,
         ];
     }
 }

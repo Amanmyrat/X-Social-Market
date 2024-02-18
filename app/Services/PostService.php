@@ -18,10 +18,10 @@ class PostService
     public function create(array $postData, int $userId, array $productData = []): bool
     {
         try {
-            $exception = DB::transaction(function () use ($postData, $productData, $userId) {
+            DB::transaction(function () use ($postData, $productData, $userId) {
                 $post = Post::create($postData + [
-                    'user_id' => $userId,
-                ]);
+                        'user_id' => $userId,
+                    ]);
 
                 $medias = $postData['media_type'] == 'image'
                     ? 'images'
@@ -37,14 +37,13 @@ class PostService
                     $product->post()->associate($post);
                     $product->save();
                 }
-
             });
 
-            return is_null($exception) ? true : $exception;
-
+            return true;
         } catch (Exception $e) {
             return false;
         }
+
 
     }
 

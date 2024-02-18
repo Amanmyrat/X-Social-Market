@@ -3,12 +3,10 @@
 namespace App\Transformers;
 
 use App\Models\Product;
-use JetBrains\PhpStorm\ArrayShape;
 use League\Fractal\TransformerAbstract;
 
 class ProductTransformer extends TransformerAbstract
 {
-    #[ArrayShape(['id' => 'int', 'brand' => 'mixed', 'gender' => 'string', 'options' => 'array'])]
     public function transform(Product $product): array
     {
         return [

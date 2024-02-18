@@ -12,7 +12,6 @@ use App\Services\UniversalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use JetBrains\PhpStorm\Pure;
 
 class AdminSizeController extends Controller
 {
@@ -37,7 +36,6 @@ class AdminSizeController extends Controller
     /**
      * Size details
      */
-    #[Pure]
     public function sizeDetails(Size $size): SizeResource
     {
         return new SizeResource($size, true);

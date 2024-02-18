@@ -4,14 +4,12 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use JetBrains\PhpStorm\ArrayShape;
 
 class CategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      */
-    #[ArrayShape(['id' => 'mixed', 'title' => 'mixed', 'description' => 'mixed', 'icon' => 'mixed', 'has_product' => 'mixed'])]
     public function toArray(Request $request): array
     {
         return [

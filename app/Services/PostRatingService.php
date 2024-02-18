@@ -14,7 +14,7 @@ class PostRatingService
             'rating' => ['required', 'integer', 'between:1,5'],
         ]);
 
-        $rating = PostRating::where(['user_id' => auth('sanctum')->user()->id, 'post_id' => $post->id])->get()->first();
+        $rating = PostRating::where(['user_id' => auth('sanctum')->user()->id, 'post_id' => $post->id])->first();
 
         if ($rating) {
             $rating->update($validated);

@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use JetBrains\PhpStorm\ArrayShape;
 
 class StoryRequest extends FormRequest
 {
@@ -15,7 +14,6 @@ class StoryRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      */
-    #[ArrayShape(['type' => 'string[]', 'image' => 'string[]', 'post_id' => 'string[]'])]
     public function rules(): array
     {
         return [

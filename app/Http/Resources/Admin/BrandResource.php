@@ -5,13 +5,11 @@ namespace App\Http\Resources\Admin;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use JetBrains\PhpStorm\Pure;
 
 class BrandResource extends JsonResource
 {
     private bool $detailsEnabled;
 
-    #[Pure]
     public function __construct(Brand $resource, bool $detailsEnabled = false)
     {
         parent::__construct($resource);

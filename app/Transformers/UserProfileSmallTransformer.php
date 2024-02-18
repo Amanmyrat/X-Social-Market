@@ -3,12 +3,10 @@
 namespace App\Transformers;
 
 use App\Models\UserProfile;
-use JetBrains\PhpStorm\ArrayShape;
 use League\Fractal\TransformerAbstract;
 
 class UserProfileSmallTransformer extends TransformerAbstract
 {
-    #[ArrayShape(['user_id' => 'mixed', 'full_name' => 'mixed', 'profile_image' => 'mixed', 'verified' => 'mixed', 'private' => 'mixed'])]
     public function transform(UserProfile $profile): array
     {
         return [

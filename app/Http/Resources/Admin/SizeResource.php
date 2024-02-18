@@ -5,13 +5,11 @@ namespace App\Http\Resources\Admin;
 use App\Models\Size;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use JetBrains\PhpStorm\Pure;
 
 class SizeResource extends JsonResource
 {
     private bool $detailsEnabled;
 
-    #[Pure]
     public function __construct(Size $resource, bool $detailsEnabled = false)
     {
         parent::__construct($resource);

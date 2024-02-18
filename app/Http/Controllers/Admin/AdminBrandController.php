@@ -12,7 +12,6 @@ use App\Services\UniversalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use JetBrains\PhpStorm\Pure;
 
 class AdminBrandController extends Controller
 {
@@ -40,7 +39,6 @@ class AdminBrandController extends Controller
     /**
      * Brand details
      */
-    #[Pure]
     public function brandDetails(Brand $brand): BrandResource
     {
         return new BrandResource($brand, true);

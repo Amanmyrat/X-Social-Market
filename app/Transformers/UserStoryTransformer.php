@@ -4,7 +4,6 @@ namespace App\Transformers;
 
 use App\Models\User;
 use App\Models\UserProfile;
-use JetBrains\PhpStorm\ArrayShape;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
@@ -15,7 +14,6 @@ class UserStoryTransformer extends TransformerAbstract
         'profile', 'stories',
     ];
 
-    #[ArrayShape(['id' => 'mixed', 'phone' => 'mixed', 'username' => 'mixed', 'type' => 'mixed', 'last_activity' => 'mixed'])]
     public function transform(User $user): array
     {
         return [
@@ -29,7 +27,7 @@ class UserStoryTransformer extends TransformerAbstract
 
     public function includeProfile(User $user): ?Item
     {
-        $profile = UserProfile::where('user_id', $user['id'])->get()->first();
+        $profile = UserProfile::where('user_id', $user['id'])->first();
 
         if ($profile) {
             return $this->item($profile, new UserProfileSmallTransformer());

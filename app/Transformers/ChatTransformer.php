@@ -3,7 +3,6 @@
 namespace App\Transformers;
 
 use App\Models\Chat;
-use JetBrains\PhpStorm\ArrayShape;
 use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
 
@@ -13,7 +12,6 @@ class ChatTransformer extends TransformerAbstract
         'receiver', 'last_message',
     ];
 
-    #[ArrayShape(['id' => 'int', 'sender_user_id' => 'int', 'receiver_user_id' => 'int', 'unread_messages' => 'int'])]
     public function transform(Chat $chat): array
     {
         return [

@@ -12,7 +12,6 @@ use App\Services\UniversalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use JetBrains\PhpStorm\Pure;
 
 class AdminColorController extends Controller
 {
@@ -37,7 +36,6 @@ class AdminColorController extends Controller
     /**
      * Color details
      */
-    #[Pure]
     public function colorDetails(Color $color): ColorResource
     {
         return new ColorResource($color, true);

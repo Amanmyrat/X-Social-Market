@@ -5,13 +5,11 @@ namespace App\Http\Resources\Admin;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use JetBrains\PhpStorm\Pure;
 
 class CategoryResource extends JsonResource
 {
     private bool $detailsEnabled;
 
-    #[Pure]
     public function __construct(Category $resource, bool $detailsEnabled = false)
     {
         parent::__construct($resource);

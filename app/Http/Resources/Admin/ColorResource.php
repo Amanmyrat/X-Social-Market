@@ -5,13 +5,11 @@ namespace App\Http\Resources\Admin;
 use App\Models\Color;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use JetBrains\PhpStorm\Pure;
 
 class ColorResource extends JsonResource
 {
     private bool $detailsEnabled;
 
-    #[Pure]
     public function __construct(Color $resource, bool $detailsEnabled = false)
     {
         parent::__construct($resource);

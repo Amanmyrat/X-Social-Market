@@ -3,12 +3,10 @@
 namespace App\Transformers;
 
 use App\Models\Post;
-use JetBrains\PhpStorm\ArrayShape;
 use League\Fractal\TransformerAbstract;
 
 class PostSimpleTransformer extends TransformerAbstract
 {
-    #[ArrayShape(['id' => 'int', 'caption' => 'string', 'price' => 'int', 'media_type' => 'string', 'media' => 'array'])]
     public function transform(Post $post): array
     {
         return [

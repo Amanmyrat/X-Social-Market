@@ -8,7 +8,6 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use JetBrains\PhpStorm\ArrayShape;
 
 class MessageSent implements ShouldBroadcast
 {
@@ -42,7 +41,6 @@ class MessageSent implements ShouldBroadcast
         return 'MessageSent';
     }
 
-    #[ArrayShape(['message' => "\App\Models\Message"])]
     public function broadcastWith(): array
     {
         return ['message' => $this->message];

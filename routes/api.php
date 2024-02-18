@@ -63,8 +63,8 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('follow', [FollowerController::class, 'follow']);
         Route::post('unfollow', [FollowerController::class, 'unfollow']);
 
-        Route::post('{user_id}/stories', [StoryController::class, 'userStories']);
-        Route::post('{user_id}/posts', [PostController::class, 'userPosts']);
+        Route::post('{user}/stories', [StoryController::class, 'userStories']);
+        Route::post('{user}/posts', [PostController::class, 'userPosts']);
 
         Route::post('block', [BlockedUserController::class, 'block']);
         Route::post('unblock', [BlockedUserController::class, 'unblock']);
@@ -112,6 +112,8 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     });
 
     Route::post('followers', [FollowerController::class, 'followers']);
+    Route::post('users/{user}followers', [FollowerController::class, 'userFollowers']);
+    Route::post('users/{user}followings', [FollowerController::class, 'userFollowings']);
 
     Route::prefix('followings')->group(function () {
         Route::post('/', [FollowerController::class, 'followings']);
@@ -142,60 +144,3 @@ Route::prefix('spam')->group(function () {
 });
 
 Route::post('posts/all/list', [PostController::class, 'allPosts']);
-
-Route::prefix('admin')->group(function () {
-
-    Route::post('/login', [AdminAuthController::class, 'login']);
-
-    Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
-        Route::prefix('categories')->group(function () {
-            Route::post('/', [AdminCategoryController::class, 'list']);
-            Route::post('/create', [AdminCategoryController::class, 'create']);
-            Route::get('/{category}', [AdminCategoryController::class, 'categoryDetails']);
-            Route::post('/update/{category}', [AdminCategoryController::class, 'update']);
-            Route::post('/delete', [AdminCategoryController::class, 'delete']);
-        });
-
-        Route::prefix('brands')->group(function () {
-            Route::post('/', [AdminBrandController::class, 'list']);
-            Route::post('/create', [AdminBrandController::class, 'create']);
-            Route::get('/{brand}', [AdminBrandController::class, 'brandDetails']);
-            Route::post('/update/{brand}', [AdminBrandController::class, 'update']);
-            Route::post('/delete', [AdminBrandController::class, 'delete']);
-        });
-
-        Route::prefix('locations')->group(function () {
-            Route::post('/', [AdminLocationController::class, 'list']);
-            Route::post('/create', [AdminLocationController::class, 'create']);
-            Route::get('/{location}', [AdminLocationController::class, 'locationDetails']);
-            Route::post('/update/{location}', [AdminLocationController::class, 'update']);
-            Route::post('/delete', [AdminLocationController::class, 'delete']);
-        });
-
-        Route::prefix('users')->group(function () {
-            Route::post('/', [AdminUserController::class, 'list']);
-            Route::get('/{user}', [AdminUserController::class, 'userDetails']);
-            Route::post('/update/{user}', [AdminUserController::class, 'update']);
-            Route::post('/delete', [AdminUserController::class, 'delete']);
-            Route::post('/block/{user}', [AdminUserController::class, 'blockUser']);
-            Route::post('/unblock/{user}', [AdminUserController::class, 'unBlockUser']);
-        });
-
-        Route::prefix('colors')->group(function () {
-            Route::post('/', [AdminColorController::class, 'list']);
-            Route::post('/create', [AdminColorController::class, 'create']);
-            Route::get('/{color}', [AdminColorController::class, 'colorDetails']);
-            Route::post('/update/{color}', [AdminColorController::class, 'update']);
-            Route::post('/delete', [AdminColorController::class, 'delete']);
-        });
-
-        Route::prefix('sizes')->group(function () {
-            Route::post('/', [AdminSizeController::class, 'list']);
-            Route::post('/create', [AdminSizeController::class, 'create']);
-            Route::get('/{size}', [AdminSizeController::class, 'sizeDetails']);
-            Route::post('/update/{size}', [AdminSizeController::class, 'update']);
-            Route::post('/delete', [AdminSizeController::class, 'delete']);
-        });
-
-    });
-});

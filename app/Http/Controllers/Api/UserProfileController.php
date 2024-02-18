@@ -18,7 +18,7 @@ class UserProfileController extends ApiBaseController
         UserProfileService::update($request->validated(), $request->user());
 
         return $this->respondWithItem(
-            $request->user(['posts', 'followers', 'followings']),
+            $request->user->loadCount(['posts', 'followers', 'followings']),
             new UserWithProfileTransformer()
         );
     }
@@ -30,7 +30,7 @@ class UserProfileController extends ApiBaseController
     {
         return $this->respondWithItem(
             $user->loadCount(['posts', 'followers', 'followings']),
-            new UserWithProfileTransformer()
+            new UserWithProfileTransformer(true)
         );
     }
 }

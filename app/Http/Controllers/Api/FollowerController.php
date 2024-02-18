@@ -60,7 +60,15 @@ class FollowerController extends ApiBaseController
      */
     public function followers(): JsonResponse
     {
-        return $this->respondWithCollection(auth('sanctum')->user()->followers, new UserSimpleTransformer());
+        return $this->respondWithCollection(auth('sanctum')->user()->followers, new UserSimpleTransformer(true));
+    }
+
+    /**
+     * User followers list
+     */
+    public function userFollowers(User $user): JsonResponse
+    {
+        return $this->respondWithCollection($user->followers, new UserSimpleTransformer(true));
     }
 
     /**
@@ -69,5 +77,13 @@ class FollowerController extends ApiBaseController
     public function followings(): JsonResponse
     {
         return $this->respondWithCollection(auth('sanctum')->user()->followings, new UserSimpleTransformer());
+    }
+
+    /**
+     * User followings list
+     */
+    public function userFollowings(User $user): JsonResponse
+    {
+        return $this->respondWithCollection($user->followings, new UserSimpleTransformer(true));
     }
 }

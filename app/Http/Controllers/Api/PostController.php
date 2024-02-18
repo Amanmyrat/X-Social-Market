@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\FractalSerializer;
 use App\Http\Requests\PostRequest;
 use App\Models\Post;
+use App\Models\User;
 use App\Services\PostService;
 use App\Transformers\PostSimpleTransformer;
 use App\Transformers\PostTransformer;
@@ -91,9 +92,9 @@ class PostController extends ApiBaseController
     /**
      * User posts list
      */
-    public function userPosts($user_id): JsonResponse
+    public function userPosts(User $user): JsonResponse
     {
-        $posts = Post::where('posts.user_id', $user_id)
+        $posts = Post::where('posts.user_id', $user->id)
             ->with('product')
             ->withCount(['favorites', 'comments', 'views'])
             ->withIsFollowing()

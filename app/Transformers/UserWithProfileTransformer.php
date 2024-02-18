@@ -3,18 +3,22 @@
 namespace App\Transformers;
 
 use App\Models\User;
+use Auth;
 use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
 
 class UserWithProfileTransformer extends TransformerAbstract
 {
+    public function __construct(protected bool $isFollowingEnabled = false)
+    {}
+
     protected array $defaultIncludes = [
         'profile',
     ];
 
     public function transform(User $user): array
     {
-        return [
+        $result = [
             'id' => $user->id,
             'phone' => $user->phone,
             'username' => $user->username,
@@ -30,6 +34,10 @@ class UserWithProfileTransformer extends TransformerAbstract
             'followers_count' => $user->followers_count,
             'followings_count' => $user->followings_count,
         ];
+        if($this->isFollowingEnabled){
+            $result['isFollowing'] = Auth::user()->followings()->where('id', $user->id)->exists();
+        }
+        return $result;
     }
 
     public function includeProfile(User $user): ?Item

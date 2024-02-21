@@ -4,12 +4,19 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\User;
 use App\Services\UserService;
+use App\Transformers\UserSimpleTransformer;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UserController extends ApiBaseController
 {
+
+    public function __construct(
+        protected UserService $service
+    ) {
+        parent::__construct();
+    }
     /**
      * Update the user password.
      */
@@ -98,5 +105,15 @@ class UserController extends ApiBaseController
     public function getAll(): JsonResponse
     {
         return $this->respondWithCollection(User::latest()->get(), new UserTransformer());
+    }
+
+    /**
+     * Search users
+     */
+    public function search(Request $request): JsonResponse
+    {
+        $request->validate(['search_query' => ['required', 'string']]);
+        $users = $this->service->search($request);
+        return $this->respondWithCollection($users, new UserSimpleTransformer());
     }
 }

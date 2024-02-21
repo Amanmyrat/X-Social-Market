@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Collection;
 
 class ChatService
 {
-    public function findOrCreateChat($receiverUserId): Chat
+    /**
+     * @param int $receiverUserId
+     * @param int|null $postId
+     * @return Chat
+     */
+    public function findOrCreateChat(int $receiverUserId, int $postId = null): Chat
     {
         $existingChat = $this->findExistingChat($receiverUserId);
 
@@ -16,9 +21,13 @@ class ChatService
             return $existingChat;
         }
 
-        return $this->createNewChat($receiverUserId);
+        return $this->createNewChat($receiverUserId, $postId);
     }
 
+    /**
+     * @param $receiverUserId
+     * @return Chat|null
+     */
     private function findExistingChat($receiverUserId): ?Chat
     {
         return Chat::where(function ($query) use ($receiverUserId) {
@@ -30,11 +39,17 @@ class ChatService
         })->first();
     }
 
-    private function createNewChat($receiverUserId): Chat
+    /**
+     * @param int $receiverUserId
+     * @param int|null $postId
+     * @return Chat
+     */
+    private function createNewChat(int $receiverUserId, int $postId = null): Chat
     {
         return Chat::create([
             'sender_user_id' => auth()->id(),
-            'receiver_user_id' => (int) $receiverUserId,
+            'receiver_user_id' => $receiverUserId,
+            'post_id' => $postId,
         ]);
     }
 
@@ -44,7 +59,8 @@ class ChatService
 
         return $user
             ->chats()
+            ->with('post.media')
             ->latest('updated_at')
-            ->get(['id', 'sender_user_id', 'receiver_user_id']);
+            ->get(['id', 'sender_user_id', 'receiver_user_id', 'post_id']);
     }
 }

@@ -20,7 +20,8 @@ class ChatController extends ApiBaseController
     public function createChat(CreateChatRequest $request): JsonResponse
     {
         $receiverUserId = $request->input('receiver_user_id');
-        $chat = $this->chatService->findOrCreateChat($receiverUserId);
+        $postId = $request->input('post_id') ?? null;
+        $chat = $this->chatService->findOrCreateChat($receiverUserId, $postId);
 
         return $this->respondWithItem($chat, new ChatTransformer());
     }

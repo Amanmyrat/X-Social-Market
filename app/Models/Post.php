@@ -153,6 +153,10 @@ class Post extends Model implements HasMedia
         return $this->hasOne(Product::class);
     }
 
+    public function chats(): HasMany
+    {
+        return $this->hasMany(Chat::class);
+    }
     /**
      * Scope a query to add 'is_following' attribute indicating if the post's creator is followed by the given user.
      */

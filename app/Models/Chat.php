@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
@@ -21,6 +22,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Message> $messages
+ * @property-read Post|null $post
  * @property-read int|null $messages_count
  *
  * @method static Builder|Chat newModelQuery()
@@ -43,6 +45,7 @@ class Chat extends Model
     protected $fillable = [
         'sender_user_id',
         'receiver_user_id',
+        'post_id',
     ];
 
     protected $hidden = [
@@ -54,6 +57,11 @@ class Chat extends Model
     public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
+    }
+
+    public function post(): BelongsTo
+    {
+        return $this->belongsTo(Post::class)->withDefault();
     }
 
     public function getReceiver(): Model|User|null

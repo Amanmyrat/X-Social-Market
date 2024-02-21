@@ -16,6 +16,7 @@ class CreateChatRequest extends FormRequest
                 'exists:users,id',
                 Rule::notIn([auth()->id()]),
             ],
+            'post_id' => ['sometimes', 'int', 'exists:posts,id'],
         ];
     }
 }

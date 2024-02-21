@@ -29,7 +29,7 @@ class UserService
     {
         $validated = $request->validate(
             [
-                'phone' => ['required', 'integer', 'unique:' . User::class],
+                'phone' => ['required', 'integer', 'unique:'.User::class],
             ]
         );
         $request->user()->update($validated);
@@ -49,8 +49,8 @@ class UserService
     public static function update(Request $request): void
     {
         $validated = $request->validate([
-            'username' => ['filled', 'string', 'min:3', 'alpha_dash', 'unique:' . User::class],
-            'email' => ['filled', 'email', 'unique:' . User::class],
+            'username' => ['filled', 'string', 'min:3', 'alpha_dash', 'unique:'.User::class],
+            'email' => ['filled', 'email', 'unique:'.User::class],
         ]);
         $request->user()->update($validated);
     }
@@ -61,14 +61,13 @@ class UserService
 
         $users = User::with('profile')
             ->when(isset($request->search_query), function ($query) use ($request) {
-                $search_query = '%' . $request->search_query . '%';
+                $search_query = '%'.$request->search_query.'%';
+
                 return $query->where('username', 'LIKE', $search_query)
                     ->orWhereHas('profile', function ($query) use ($search_query) {
                         $query->where('full_name', 'LIKE', $search_query);
-                    })
-                    ;
+                    });
             });
-
 
         return $users->paginate($limit);
     }
@@ -92,7 +91,7 @@ class UserService
     public function list(string $type, int $limit, ?string $search_query = null): LengthAwarePaginator
     {
         return User::where('type', $type)->when(isset($search_query), function ($query) use ($search_query) {
-            $search_query = '%' . $search_query . '%';
+            $search_query = '%'.$search_query.'%';
 
             return $query->whereHas('profile', function ($q) use ($search_query) {
                 $q->where('full_name', $search_query);
@@ -106,7 +105,7 @@ class UserService
     public function updateWithProfile(User $user, array $data): User
     {
         if (isset($data['profile']['profile_image'])) {
-            $profileImageName = $user->phone . '-' . time() . '.' . $data['profile']['profile_image']->getClientOriginalExtension();
+            $profileImageName = $user->phone.'-'.time().'.'.$data['profile']['profile_image']->getClientOriginalExtension();
             $data['profile']['profile_image']->move(public_path('uploads/user/profile'), $profileImageName);
             $data['profile']['profile_image'] = $profileImageName;
         }

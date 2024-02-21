@@ -32,6 +32,7 @@ class ChatTransformer extends TransformerAbstract
         if ($chat->post->exists) {
             return $this->item($chat->post, new PostSimpleTransformer());
         }
+
         return null;
     }
 

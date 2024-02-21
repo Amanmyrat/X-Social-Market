@@ -47,10 +47,9 @@ class PostDetailsTransformer extends TransformerAbstract
             'comments_count' => $post->comments_count,
             'views_count' => $post->views_count,
             'is_following' => (bool) $post->is_following ?? false,
-            'chat' =>
-                 $post->chats()
-                    ->where('sender_user_id', Auth::id())
-                    ->orWhere('receiver_user_id', Auth::id())->first(['id'])
+            'chat' => $post->chats()
+                ->where('sender_user_id', Auth::id())
+                ->orWhere('receiver_user_id', Auth::id())->first(['id']),
         ];
     }
 

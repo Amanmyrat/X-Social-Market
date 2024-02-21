@@ -11,12 +11,12 @@ use Illuminate\Http\Request;
 
 class UserController extends ApiBaseController
 {
-
     public function __construct(
         protected UserService $service
     ) {
         parent::__construct();
     }
+
     /**
      * Update the user password.
      */
@@ -114,6 +114,7 @@ class UserController extends ApiBaseController
     {
         $request->validate(['search_query' => ['required', 'string']]);
         $users = $this->service->search($request);
+
         return $this->respondWithCollection($users, new UserSimpleTransformer());
     }
 }

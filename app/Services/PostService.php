@@ -50,7 +50,7 @@ class PostService
     {
         $limit = $request->get('limit');
 
-        $posts = Post::when(isset($request->categories), function ($query) use ($request) {
+        $posts = Post::with('media')->select('id', 'caption', 'price', 'media_type')->when(isset($request->categories), function ($query) use ($request) {
             return $query->whereIn('category_id', $request->categories);
         })
             ->when(isset($request->price_min), function ($query) use ($request) {
@@ -87,9 +87,7 @@ class PostService
             $posts = $posts->inRandomOrder();
         }
 
-        return $posts->with(['user.profile', 'media'])
-            ->withAvg('ratings', 'rating')
-            ->withIsFollowing()->paginate($limit);
+        return $posts->paginate($limit);
     }
 
     private function getSort($sort): array

@@ -127,9 +127,8 @@ class PostController extends ApiBaseController
         $request->validate(['search_query' => ['required', 'string']]);
 
         $result = $this->service->searchPosts($request);
-        $userInteractionsDTO = $this->getUserInteractionsDTO();
 
-        return $this->respondWithPaginator($result, new PostTransformer($userInteractionsDTO));
+        return $this->respondWithPaginator($result, new PostSimpleTransformer());
     }
 
     /**

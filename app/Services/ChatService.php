@@ -10,7 +10,7 @@ class ChatService
 {
     public function findOrCreateChat(int $receiverUserId, ?int $postId = null): Chat
     {
-        $existingChat = $this->findExistingChat($receiverUserId);
+        $existingChat = $this->findExistingChat($receiverUserId, $postId);
 
         if ($existingChat) {
             return $existingChat;
@@ -19,9 +19,11 @@ class ChatService
         return $this->createNewChat($receiverUserId, $postId);
     }
 
-    private function findExistingChat($receiverUserId): ?Chat
+    private function findExistingChat($receiverUserId, $postId): ?Chat
     {
-        return Chat::where(function ($query) use ($receiverUserId) {
+        return Chat::when(isset($postId), function ($query) use ($postId) {
+            return $query->where('post_id', $postId);
+        })->where(function ($query) use ($receiverUserId) {
             $query->where('sender_user_id', auth()->id())
                 ->where('receiver_user_id', $receiverUserId);
         })->orWhere(function ($query) use ($receiverUserId) {

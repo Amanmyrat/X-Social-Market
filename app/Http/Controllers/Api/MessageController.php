@@ -9,6 +9,7 @@ use App\Models\Message;
 use App\Services\MessageService;
 use App\Transformers\MessageTransformer;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class MessageController extends ApiBaseController
 {
@@ -62,5 +63,21 @@ class MessageController extends ApiBaseController
         return response()->json([
             'message' => 'All unread messages marked as read',
         ]);
+    }
+
+    /**
+     * Delete message
+     */
+    public function delete(Message $message): JsonResponse
+    {
+        $userId = Auth::id();
+        abort_if(
+            $message->sender_user_id != $userId && $message->receiver_user_id != $userId,
+            403,
+            "Forbidden"
+        );
+
+        $message->delete();
+        return $this->respondWithMessage('Successfully deleted');
     }
 }

@@ -29,7 +29,8 @@ class UserProfileController extends ApiBaseController
     public function get(User $user): JsonResponse
     {
         return $this->respondWithItem(
-            $user->loadCount(['posts', 'followers', 'followings']),
+            $user->loadCount(['posts', 'followers', 'followings'])
+                ->loadAvg('ratings', 'rating'),
             new UserWithProfileTransformer(true)
         );
     }

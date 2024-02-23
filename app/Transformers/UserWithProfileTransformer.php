@@ -37,6 +37,7 @@ class UserWithProfileTransformer extends TransformerAbstract
         ];
         if ($this->isFollowingEnabled) {
             $result['isFollowing'] = Auth::user()->followings()->where('users.id', $user->id)->exists();
+            $result['rating_avg'] = $user->ratings_avg_rating;
         }
 
         return $result;

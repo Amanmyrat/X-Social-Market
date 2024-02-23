@@ -30,7 +30,11 @@ class AdminSizeController extends Controller
 
         $sizes = $this->service->list($limit, $query);
 
-        return SizeResource::collection($sizes);
+        $sizeResources = $sizes->map(function ($size) {
+            return new SizeResource($size, false);
+        });
+
+        return SizeResource::collection($sizeResources);
     }
 
     /**

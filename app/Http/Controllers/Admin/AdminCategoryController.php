@@ -30,7 +30,11 @@ class AdminCategoryController extends Controller
 
         $categories = $this->service->list($limit, $query);
 
-        return CategoryResource::collection($categories);
+        $categoryResources = $categories->map(function ($category) {
+            return new CategoryResource($category, false);
+        });
+
+        return CategoryResource::collection($categoryResources);
     }
 
     /**

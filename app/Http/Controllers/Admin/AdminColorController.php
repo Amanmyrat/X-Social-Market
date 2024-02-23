@@ -30,7 +30,11 @@ class AdminColorController extends Controller
 
         $colors = $this->service->list($limit, $query);
 
-        return ColorResource::collection($colors);
+        $colorResources = $colors->map(function ($color) {
+            return new ColorResource($color, false);
+        });
+
+        return ColorResource::collection($colorResources);
     }
 
     /**

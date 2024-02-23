@@ -33,7 +33,11 @@ class AdminBrandController extends Controller
 
         $brands = $this->service->list($limit, $query, $conditions);
 
-        return BrandResource::collection($brands);
+        $brandResources = $brands->map(function ($brand) {
+            return new BrandResource($brand, false);
+        });
+
+        return BrandResource::collection($brandResources);
     }
 
     /**

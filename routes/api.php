@@ -124,9 +124,10 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     Route::post('/chat/send/message', [MessageController::class, 'sendMessage']);
     Route::post('/chat/{chatId}/messages', [MessageController::class, 'listMessages']);
     Route::post('/chat/{chat}/read', [MessageController::class, 'readAllUnreadMessages']);
-    Route::post('/messages/{message}/delete', [MessageController::class, 'delete']);
 
     Route::post('/message/{message}/read', [MessageController::class, 'readMessage']);
+    Route::post('/messages/{message}/delete', [MessageController::class, 'delete']);
+    Route::post('/message/{message}/image/{media}/delete', [MessageController::class, 'deleteImage']);
 
     Route::post('/categories', [OptionsController::class, 'categories']);
     Route::post('/locations', [OptionsController::class, 'locations']);

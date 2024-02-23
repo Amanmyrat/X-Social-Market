@@ -10,6 +10,7 @@ use App\Services\MessageService;
 use App\Transformers\MessageTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class MessageController extends ApiBaseController
 {
@@ -78,6 +79,45 @@ class MessageController extends ApiBaseController
         );
 
         $message->delete();
-        return $this->respondWithMessage('Successfully deleted');
+        return $this->respondWithMessage('Successfully deleted message');
+    }
+
+    /**
+     * Delete message image
+     */
+    public function deleteImage(Message $message, Media $media): JsonResponse
+    {
+        $userId = Auth::id();
+        abort_if(
+            $message->sender_user_id != $userId && $message->receiver_user_id != $userId,
+            403,
+            "Forbidden"
+        );
+
+        abort_if(
+            $message->type != Message::TYPE_MEDIA,
+            403,
+            "Message type is not media"
+        );
+
+        $medias = $message->extra['medias'];
+        $foundMedia = current(array_filter($medias, fn($item) => $item['id'] === $media->id));
+
+        abort_if(
+            !$foundMedia,
+            400,
+            "Media not found"
+        );
+        $newMediaExtras = array_filter($medias, function ($media) use ($foundMedia) {
+            return $media['id'] !== $foundMedia['id'];
+        });
+        $filteredMedias['medias'] = array_values($newMediaExtras);
+
+        $media->delete();
+
+        $message->extra = $filteredMedias;
+        $message->save();
+
+        return $this->respondWithMessage('Successfully deleted image');
     }
 }

@@ -104,6 +104,7 @@ class MessageService
 
         $medias = $message->getMedia()->map(function ($media) {
             return [
+                'id' => $media->id,
                 'original_url' => $media->original_url,
                 'extension' => $media->extension,
                 'size' => $media->size,

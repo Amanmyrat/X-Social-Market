@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Http\Resources\Admin;
+namespace App\Http\Resources\Admin\Color;
 
-use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BrandResource extends JsonResource
+class ColorResource extends JsonResource
 {
     private bool $detailsEnabled;
 
-    public function __construct(Brand $resource, bool $detailsEnabled = false)
+    public function __construct($resource, bool $detailsEnabled = false)
     {
         parent::__construct($resource);
         $this->detailsEnabled = $detailsEnabled;
@@ -24,7 +23,7 @@ class BrandResource extends JsonResource
         return $this->detailsEnabled ? [
             'id' => $this->resource->id,
             'title' => $this->resource->title,
-            'type' => $this->resource->type,
+            'code' => $this->resource->code,
             'is_active' => $this->resource->is_active,
             'products_count' => 0,
             'created_at' => $this->resource->created_at,
@@ -33,8 +32,10 @@ class BrandResource extends JsonResource
         ] : [
             'id' => $this->resource->id,
             'title' => $this->resource->title,
+            'code' => $this->resource->code,
             'is_active' => $this->resource->is_active,
             'products_count' => 0,
+            'created_at' => $this->resource->created_at,
         ];
     }
 }

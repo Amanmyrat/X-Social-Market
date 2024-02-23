@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Location\LocationCreateRequest;
 use App\Http\Requests\Location\LocationDeleteRequest;
 use App\Http\Requests\Location\LocationUpdateRequest;
-use App\Http\Resources\Admin\LocationResource;
+use App\Http\Resources\Admin\Location\LocationResource;
 use App\Models\Location;
 use App\Services\UniversalService;
 use Illuminate\Http\JsonResponse;

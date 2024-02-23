@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Http\Resources\Admin;
+namespace App\Http\Resources\Admin\Size;
 
-use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryResource extends JsonResource
+class SizeResource extends JsonResource
 {
     private bool $detailsEnabled;
 
-    public function __construct(Category $resource, bool $detailsEnabled = false)
+    public function __construct($resource, bool $detailsEnabled = false)
     {
         parent::__construct($resource);
         $this->detailsEnabled = $detailsEnabled;
@@ -24,20 +23,17 @@ class CategoryResource extends JsonResource
         return $this->detailsEnabled ? [
             'id' => $this->resource->id,
             'title' => $this->resource->title,
-            'description' => $this->resource->description,
-            'icon' => url('uploads/categories/'.$this->resource->icon),
             'is_active' => $this->resource->is_active,
-            'has_product' => $this->resource->has_product,
-            'posts_count' => $this->resource->posts_count,
+            'products_count' => 0,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
 
         ] : [
             'id' => $this->resource->id,
             'title' => $this->resource->title,
-            'icon' => url('uploads/categories/'.$this->resource->icon),
             'is_active' => $this->resource->is_active,
-            'posts_count' => $this->resource->posts_count,
+            'products_count' => 0,
+            'created_at' => $this->resource->created_at,
         ];
     }
 }

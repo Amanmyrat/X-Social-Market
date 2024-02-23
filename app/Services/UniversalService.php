@@ -31,15 +31,18 @@ class UniversalService
     }
 
     /**
-    /**
+     * /**
      * Get a list of model instances with optional search query and filtering.
      *
      * @param  string|null  $search_query  Optional search query for filtering.
      * @param  array  $conditions  Optional conditions for additional filtering.
+     * @param  array  $relationsCount  Optional conditions for additional relations count.
      */
-    public function list(int $limit, ?string $search_query = null, array $conditions = []): LengthAwarePaginator
+    public function list(int $limit, ?string $search_query = null, array $conditions = [], array $relationsCount = []): LengthAwarePaginator
     {
         $query = $this->model::query();
+
+        $query->withCount($relationsCount);
 
         // Apply conditions
         foreach ($conditions as $field => $value) {

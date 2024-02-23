@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Color\ColorCreateRequest;
 use App\Http\Requests\Color\ColorDeleteRequest;
 use App\Http\Requests\Color\ColorUpdateRequest;
-use App\Http\Resources\Admin\ColorResource;
+use App\Http\Resources\Admin\Color\ColorResource;
+use App\Http\Resources\Admin\Color\ColorResourceCollection;
 use App\Models\Color;
 use App\Services\UniversalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AdminColorController extends Controller
 {
@@ -23,18 +23,14 @@ class AdminColorController extends Controller
     /**
      * Colors list
      */
-    public function list(Request $request): AnonymousResourceCollection
+    public function list(Request $request): ColorResourceCollection
     {
         $limit = $request->limit ?? 10;
         $query = $request->search_query ?? null;
 
         $colors = $this->service->list($limit, $query);
 
-        $colorResources = $colors->map(function ($color) {
-            return new ColorResource($color, false);
-        });
-
-        return ColorResource::collection($colorResources);
+        return new ColorResourceCollection($colors);
     }
 
     /**

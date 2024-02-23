@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Brand\BrandCreateRequest;
 use App\Http\Requests\Brand\BrandDeleteRequest;
 use App\Http\Requests\Brand\BrandUpdateRequest;
-use App\Http\Resources\Admin\BrandResource;
+use App\Http\Resources\Admin\Brand\BrandResource;
+use App\Http\Resources\Admin\Brand\BrandResourceCollection;
 use App\Models\Brand;
 use App\Services\UniversalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AdminBrandController extends Controller
 {
@@ -23,7 +23,7 @@ class AdminBrandController extends Controller
     /**
      * Brands list
      */
-    public function list(Request $request): AnonymousResourceCollection
+    public function list(Request $request): BrandResourceCollection
     {
         $limit = $request->limit ?? 10;
         $query = $request->search_query ?? null;
@@ -31,13 +31,14 @@ class AdminBrandController extends Controller
 
         $conditions['type'] = $type;
 
-        $brands = $this->service->list($limit, $query, $conditions);
+        $brands = $this->service->list(
+            limit: $limit,
+            search_query: $query,
+            conditions: $conditions,
+            relationsCount: ['products']
+        );
 
-        $brandResources = $brands->map(function ($brand) {
-            return new BrandResource($brand, false);
-        });
-
-        return BrandResource::collection($brandResources);
+        return new BrandResourceCollection($brands);
     }
 
     /**

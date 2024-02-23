@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Resources\Admin\LocationResource;
 use App\Http\Resources\BrandResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\ColorResource;
+use App\Http\Resources\LocationResource;
 use App\Http\Resources\SizeResource;
 use App\Models\Brand;
 use App\Models\Category;

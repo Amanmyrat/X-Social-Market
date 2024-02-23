@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Category\CategoryCreateRequest;
 use App\Http\Requests\Category\CategoryDeleteRequest;
 use App\Http\Requests\Category\CategoryUpdateRequest;
-use App\Http\Resources\Admin\CategoryResource;
+use App\Http\Resources\Admin\Category\CategoryResource;
+use App\Http\Resources\Admin\Category\CategoryResourceCollection;
 use App\Models\Category;
 use App\Services\UniversalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AdminCategoryController extends Controller
 {
@@ -23,18 +23,18 @@ class AdminCategoryController extends Controller
     /**
      * Categories list
      */
-    public function list(Request $request): AnonymousResourceCollection
+    public function list(Request $request): CategoryResourceCollection
     {
         $limit = $request->limit ?? 10;
         $query = $request->search_query ?? null;
 
-        $categories = $this->service->list($limit, $query);
+        $categories = $this->service->list(
+            limit: $limit,
+            search_query: $query,
+            relationsCount: ['posts']
+        );
 
-        $categoryResources = $categories->map(function ($category) {
-            return new CategoryResource($category, false);
-        });
-
-        return CategoryResource::collection($categoryResources);
+        return new CategoryResourceCollection($categories);
     }
 
     /**

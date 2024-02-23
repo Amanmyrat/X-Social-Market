@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -17,6 +19,8 @@ use Illuminate\Support\Carbon;
  * @property bool $is_active
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read Collection<int, Product> $products
+ * @property-read int|null $products_count
  *
  * @method static Builder|Brand newModelQuery()
  * @method static Builder|Brand newQuery()
@@ -58,11 +62,11 @@ class Brand extends Model
         'is_active' => 'bool',
     ];
 
-    //    /**
-    //     * Get products record associated with the brand.
-    //     */
-    //    public function products(): HasMany
-    //    {
-    //        return $this->hasMany(Post::class);
-    //    }
+    /**
+     * Get products record associated with the brand.
+     */
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
 }

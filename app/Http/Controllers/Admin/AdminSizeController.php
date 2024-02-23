@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Size\SizeCreateRequest;
 use App\Http\Requests\Size\SizeDeleteRequest;
 use App\Http\Requests\Size\SizeUpdateRequest;
-use App\Http\Resources\Admin\SizeResource;
+use App\Http\Resources\Admin\Size\SizeResource;
+use App\Http\Resources\Admin\Size\SizeResourceCollection;
 use App\Models\Size;
 use App\Services\UniversalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AdminSizeController extends Controller
 {
@@ -23,18 +23,14 @@ class AdminSizeController extends Controller
     /**
      * Sizes list
      */
-    public function list(Request $request): AnonymousResourceCollection
+    public function list(Request $request): SizeResourceCollection
     {
         $limit = $request->limit ?? 10;
         $query = $request->search_query ?? null;
 
         $sizes = $this->service->list($limit, $query);
 
-        $sizeResources = $sizes->map(function ($size) {
-            return new SizeResource($size, false);
-        });
-
-        return SizeResource::collection($sizeResources);
+        return new SizeResourceCollection($sizes);
     }
 
     /**

@@ -104,7 +104,7 @@ class UserController extends ApiBaseController
      */
     public function getAll(): JsonResponse
     {
-        return $this->respondWithCollection(User::latest()->get(), new UserTransformer());
+        return $this->respondWithPaginator(User::latest()->paginate(10), new UserTransformer());
     }
 
     /**

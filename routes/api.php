@@ -131,8 +131,8 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     Route::post('/colors', [OptionsController::class, 'colors']);
     Route::post('/sizes', [OptionsController::class, 'sizes']);
 
-    Route::post('/users/all/list', [UserController::class, 'getAll']);
 });
+Route::post('/users/all/list', [UserController::class, 'getAll']);
 
 Route::prefix('spam')->group(function () {
     Route::post('types/create', [SpamTypeController::class, 'create']);

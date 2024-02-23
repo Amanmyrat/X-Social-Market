@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\PostService;
 use App\Traits\HandlesUserPostInteractions;
 use App\Traits\PreparesPostQuery;
+use App\Transformers\GuestPostTransformer;
 use App\Transformers\PostDetailsTransformer;
 use App\Transformers\PostSimpleTransformer;
 use App\Transformers\PostTransformer;
@@ -104,6 +105,18 @@ class PostController extends ApiBaseController
         $posts = $postsQuery->inRandomOrder()->paginate(10);
 
         return $this->respondWithPaginator($posts, new PostTransformer($userInteractionsDTO));
+    }
+
+
+    /**
+     * Guest All posts list
+     */
+    public function guestAllPosts(): JsonResponse
+    {
+        $postsQuery = $this->getPostsQuery();
+        $posts = $postsQuery->inRandomOrder()->paginate(10);
+
+        return $this->respondWithPaginator($posts, new GuestPostTransformer());
     }
 
     /**

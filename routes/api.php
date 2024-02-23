@@ -97,6 +97,8 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
 
         Route::post('/{post}/views', [PostViewController::class, 'views']);
         Route::post('/views/{story}/view', [PostViewController::class, 'view']);
+
+        Route::post('/all/list', [PostController::class, 'allPosts']);
     });
 
     Route::prefix('stories')->group(function () {
@@ -143,6 +145,6 @@ Route::prefix('spam')->group(function () {
     Route::post('types', [SpamTypeController::class, 'types']);
 });
 
-Route::post('posts/all/list', [PostController::class, 'allPosts']);
+Route::post('guest/posts/all/list', [PostController::class, 'guestAllPosts']);
 
 require __DIR__.'/admin.php';

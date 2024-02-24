@@ -38,9 +38,8 @@ class PostController extends ApiBaseController
     public function create(PostRequest $request): JsonResponse
     {
         $validated = $request->validated();
-        $productData = Arr::only($validated, 'product')['product'] ?? [];
 
-        $postCreated = $this->service->create(Arr::except($validated, 'product'), $request->user()->id, $productData);
+        $postCreated = $this->service->create($validated,$request->user()->id);
 
         if (! $postCreated) {
             return Response::json([
@@ -52,6 +51,30 @@ class PostController extends ApiBaseController
         return Response::json([
             'success' => true,
             'message' => 'Successfully created a new post',
+        ]);
+    }
+
+    /**
+     * Update post
+     *
+     * @throws Throwable
+     */
+    public function update(Post $post, PostRequest $request): JsonResponse
+    {
+        $validated = $request->validated();
+
+        $postUpdated = $this->service->update($post, $validated);
+
+        if (!$postUpdated) {
+            return Response::json([
+                'success' => false,
+                'message' => 'Error occurred',
+            ], 400);
+        }
+
+        return Response::json([
+            'success' => true,
+            'message' => 'Successfully updated',
         ]);
     }
 

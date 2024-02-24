@@ -76,6 +76,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     Route::prefix('posts')->group(function () {
         Route::post('/', [PostController::class, 'myPosts']);
         Route::post('create', [PostController::class, 'create']);
+        Route::post('/{post}/update', [PostController::class, 'update']);
         Route::post('/{post}/delete', [PostController::class, 'delete']);
         Route::post('/{post}/related', [PostController::class, 'relatedPosts']);
 

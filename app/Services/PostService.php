@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Post;
 use App\Models\Product;
+use Arr;
 use DB;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -15,8 +16,11 @@ class PostService
     /**
      * @throws Throwable
      */
-    public function create(array $postData, int $userId, array $productData = []): bool
+    public function create(array $validated, int $userId): bool
     {
+        $postData = Arr::except($validated, 'product');
+        $productData = Arr::only($validated, 'product')['product'] ?? [];
+
         try {
             DB::transaction(function () use ($postData, $productData, $userId) {
                 $post = Post::create($postData + [
@@ -37,6 +41,43 @@ class PostService
                     $product->post()->associate($post);
                     $product->save();
                 }
+            });
+
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+
+    }
+
+
+    /**
+     * @throws Throwable
+     */
+    public function update(Post $post, array $validated): bool
+    {
+        $postData = Arr::except($validated, 'product');
+        $productData = Arr::only($validated, 'product')['product'] ?? [];
+
+        try {
+            DB::transaction(function () use ($postData, $productData, $post) {
+                $medias = $postData['media_type'] == 'image'
+                    ? 'images'
+                    : 'videos';
+
+                $post->clearMediaCollection();
+
+                $post->addMultipleMediaFromRequest([$medias])
+                    ->each(function ($fileAdder) {
+                        $fileAdder->toMediaCollection();
+                    });
+
+                if ($post->category->has_product) {
+                    $post->product->update($productData);
+                }elseif ($post->product()->exists()){
+                    $post->product->delete();
+                }
+                $post->update($postData);
             });
 
             return true;

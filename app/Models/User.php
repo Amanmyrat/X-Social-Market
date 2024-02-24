@@ -62,6 +62,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property-read Collection<int, PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
  * @property-read float $ratings_avg_rating
+ * @property-read UserProfile|null $product
  *
  * @method static UserFactory factory($count = null, $state = [])
  * @method static Builder|User newModelQuery()

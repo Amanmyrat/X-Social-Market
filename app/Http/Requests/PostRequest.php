@@ -46,4 +46,20 @@ class PostRequest extends FormRequest
             'product' => [new ProductDetailsValidation((int) request('category_id'))],
         ];
     }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $category_id = $this->category_id;
+            $product = $this->product;
+
+            // Instantiate your custom rule manually
+            $rule = new ProductDetailsValidation($category_id);
+
+            // Manually call the passes method
+            if (!$rule->passes('product', $product)) {
+                $validator->errors()->add('product', $rule->message());
+            }
+        });
+    }
 }

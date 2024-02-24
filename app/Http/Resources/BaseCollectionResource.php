@@ -11,10 +11,8 @@ class BaseCollectionResource extends ResourceCollection
         return [
             'meta' => [
                 'current_page' => $paginated['current_page'],
-                'from' => $paginated['from'],
                 'last_page' => $paginated['last_page'],
                 'per_page' => $paginated['per_page'],
-                'to' => $paginated['to'],
                 'total' => $paginated['total'],
             ],
         ];

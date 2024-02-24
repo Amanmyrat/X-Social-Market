@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use League\Fractal\Pagination\PaginatorInterface;
 use League\Fractal\Serializer\ArraySerializer;
 
 class FractalSerializer extends ArraySerializer
@@ -22,5 +23,17 @@ class FractalSerializer extends ArraySerializer
         }
 
         return $data;
+    }
+
+    public function paginator(PaginatorInterface $paginator): array
+    {
+        $pagination = [
+            'current_page' => $paginator->getCurrentPage(),
+            'last_page' => $paginator->getLastPage(),
+            'per_page' => $paginator->getPerPage(),
+            'total' => $paginator->getTotal(),
+        ];
+
+        return ['pagination' => $pagination];
     }
 }

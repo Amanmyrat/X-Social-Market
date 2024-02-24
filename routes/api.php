@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\FollowerController;
+use App\Http\Controllers\Api\FollowerRequestController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\OptionsController;
 use App\Http\Controllers\Api\OtpController;
@@ -55,6 +56,10 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
 
         Route::post('follow', [FollowerController::class, 'follow']);
         Route::post('unfollow', [FollowerController::class, 'unfollow']);
+
+        Route::post('follow/request', [FollowerRequestController::class, 'followRequest']);
+        Route::post('follow/request/{user}/accept', [FollowerRequestController::class, 'accept']);
+        Route::post('follow/request/{user}/decline', [FollowerRequestController::class, 'decline']);
 
         Route::post('{user}/stories', [StoryController::class, 'userStories']);
         Route::post('{user}/posts', [PostController::class, 'userPosts']);
@@ -118,6 +123,9 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/', [FollowerController::class, 'followings']);
         Route::post('stories', [StoryController::class, 'followingStories']);
     });
+
+    Route::post('follow/outgoing/requests', [FollowerRequestController::class, 'followerRequests']);
+    Route::post('follow/incoming/requests', [FollowerRequestController::class, 'followingRequests']);
 
     Route::post('/chat/create', [ChatController::class, 'createChat']);
     Route::post('/chat/list', [ChatController::class, 'listChats']);

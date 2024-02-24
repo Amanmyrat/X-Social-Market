@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enum\ErrorMessage;
 use App\Models\User;
 use Auth;
 use Closure;
@@ -22,12 +23,16 @@ class UserMiddleware
 
         if ($user->tokenCan('role:user')) {
             if ($user->blocked_at) {
-                return response()->json(['message' => 'Your account is blocked. Reason: '.$user->block_reason], 403);
+                return response()->json(
+                    [
+                        'message' => ErrorMessage::ACCOUNT_BLOCKED_ERROR->value,
+                        'reason' => $user->block_reason,
+                    ], 403);
             }
 
             return $next($request);
         }
 
-        return response()->json(['message' => 'Unauthenticated.'], 401);
+        return response()->json(['message' => 'Unauthenticated'], 401);
     }
 }

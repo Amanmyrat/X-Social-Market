@@ -33,7 +33,7 @@ class LoginRequest extends FormRequest
              *
              * @example 65021734
              */
-            'login' => 'required|string',
+            'login' => 'required|integer',
 
             /**
              * Admin password.

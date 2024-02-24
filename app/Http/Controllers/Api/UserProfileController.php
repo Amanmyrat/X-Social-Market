@@ -18,7 +18,7 @@ class UserProfileController extends ApiBaseController
         UserProfileService::update($request->validated(), $request->user());
 
         return $this->respondWithItem(
-            $request->user->loadCount(['posts', 'followers', 'followings']),
+            $request->user()->loadCount(['posts', 'followers', 'followings']),
             new UserWithProfileTransformer()
         );
     }

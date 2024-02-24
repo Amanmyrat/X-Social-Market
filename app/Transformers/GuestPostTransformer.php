@@ -2,7 +2,6 @@
 
 namespace App\Transformers;
 
-use App\DTOs\UserPostInteractionsDTO;
 use App\Models\Post;
 use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enum\ErrorMessage;
+use App\Http\Requests\FollowerRequest;
 use App\Models\Follower;
 use App\Models\User;
 use App\Services\FollowerService;
@@ -9,33 +11,26 @@ use App\Transformers\UserSimpleTransformer;
 use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class FollowerController extends ApiBaseController
 {
+    public function __construct(protected FollowerService $service)
+    {
+        parent::__construct();
+    }
+
     /**
      * Follow user
      */
-    public function follow(Request $request): JsonResponse
+    public function follow(FollowerRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            //            'following_id' => ['required', 'integer', 'exists:'. User::class.',id', 'not_in:'. $request->user()->id],
-            'following_id' => [
-                'required',
-                'integer',
-                Rule::exists(User::class, 'id'),
-                function ($attribute, $value, $fail) {
-                    /** @var User $user */
-                    $user = Auth::user();
+        $validated = $request->validated();
 
-                    if ($value == $user->id) {
-                        $fail($attribute.' cannot be the same as your user ID.');
-                    }
-                },
-            ],
-        ]);
+        $user = User::with('profile')->firstWhere('id', $validated['following_id']);
 
-        FollowerService::follow($validated['following_id']);
+        abort_if($user->profile?->private, 403, ErrorMessage::USER_PRIVATE_ERROR->value);
+
+        $this->service->follow($validated['following_id'], Auth::user());
 
         return $this->respondWithArray([
             'success' => true,
@@ -49,10 +44,10 @@ class FollowerController extends ApiBaseController
     {
         $validated = $request->validate(
             [
-                'following_id' => ['required', 'integer', 'exists:'.User::class.',id', 'exists:'.Follower::class.',followed_user_id'],
+                'following_id' => ['required', 'integer', 'exists:'.User::class.',id', 'exists:'.Follower::class.',following_user_id'],
             ]
         );
-        FollowerService::unfollow($validated['following_id']);
+        $this->service->unfollow($validated['following_id'], Auth::user());
 
         return $this->respondWithArray([
             'success' => true,
@@ -60,7 +55,7 @@ class FollowerController extends ApiBaseController
     }
 
     /**
-     * Followers list
+     * My Followers list
      */
     public function followers(): JsonResponse
     {
@@ -79,7 +74,7 @@ class FollowerController extends ApiBaseController
     }
 
     /**
-     * Followings list
+     * My Followings list
      */
     public function followings(): JsonResponse
     {

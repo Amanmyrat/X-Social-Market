@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Requests\SendMessageRequest;
+use App\Http\Requests\MessageSendRequest;
 use App\Jobs\ProcessMessageSent;
 use App\Models\Chat;
 use App\Models\Message;
@@ -25,7 +25,7 @@ class MessageController extends ApiBaseController
     /**
      * Send message
      */
-    public function sendMessage(SendMessageRequest $request): JsonResponse
+    public function sendMessage(MessageSendRequest $request): JsonResponse
     {
         $message = $this->messageService->sendMessage($request->validated());
 
@@ -75,10 +75,11 @@ class MessageController extends ApiBaseController
         abort_if(
             $message->sender_user_id != $userId && $message->receiver_user_id != $userId,
             403,
-            "Forbidden"
+            'Forbidden'
         );
 
         $message->delete();
+
         return $this->respondWithMessage('Successfully deleted message');
     }
 
@@ -91,22 +92,22 @@ class MessageController extends ApiBaseController
         abort_if(
             $message->sender_user_id != $userId && $message->receiver_user_id != $userId,
             403,
-            "Forbidden"
+            'Forbidden'
         );
 
         abort_if(
             $message->type != Message::TYPE_MEDIA,
             403,
-            "Message type is not media"
+            'Message type is not media'
         );
 
         $medias = $message->extra['medias'];
-        $foundMedia = current(array_filter($medias, fn($item) => $item['id'] === $media->id));
+        $foundMedia = current(array_filter($medias, fn ($item) => $item['id'] === $media->id));
 
         abort_if(
-            !$foundMedia,
+            ! $foundMedia,
             400,
-            "Media not found"
+            'Media not found'
         );
         $newMediaExtras = array_filter($medias, function ($media) use ($foundMedia) {
             return $media['id'] !== $foundMedia['id'];

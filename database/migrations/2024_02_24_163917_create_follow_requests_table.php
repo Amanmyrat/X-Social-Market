@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('followers', function (Blueprint $table) {
+        Schema::create('follow_requests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('following_user_id')
                 ->constrained('users')
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('followers');
+        Schema::dropIfExists('follow_requests');
     }
 };

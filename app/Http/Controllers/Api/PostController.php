@@ -107,7 +107,6 @@ class PostController extends ApiBaseController
         return $this->respondWithPaginator($posts, new PostTransformer($userInteractionsDTO));
     }
 
-
     /**
      * Guest All posts list
      */

@@ -3,20 +3,26 @@
 namespace App\Services;
 
 use App\Models\User;
-use Auth;
 
 class FollowerService
 {
-    public static function follow($followed_user_id): void
+    public function follow($following_user_id, User $user): void
     {
-        $following = User::find($followed_user_id);
+        $following = User::find($following_user_id);
 
-        Auth::user()->followings()->syncWithoutDetaching($following);
+        $user->followings()->syncWithoutDetaching($following);
     }
 
-    public static function unfollow($following_id): void
+    public function unfollow($following_id, User $user): void
     {
         $following = User::find($following_id);
-        Auth::user()->followings()->detach($following);
+        $user->followings()->detach($following);
+    }
+
+    public function followRequest($following_user_id, User $user): void
+    {
+        $following = User::find($following_user_id);
+
+        $user->outgoingRequests()->syncWithoutDetaching($following);
     }
 }

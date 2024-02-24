@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Requests\CreateChatRequest;
+use App\Http\Requests\ChatCreateRequest;
 use App\Models\Chat;
 use App\Services\ChatService;
 use App\Transformers\ChatTransformer;
@@ -19,7 +19,7 @@ class ChatController extends ApiBaseController
     /**
      * Create chat
      */
-    public function createChat(CreateChatRequest $request): JsonResponse
+    public function createChat(ChatCreateRequest $request): JsonResponse
     {
         $receiverUserId = $request->input('receiver_user_id');
         $postId = $request->input('post_id') ?? null;
@@ -47,10 +47,11 @@ class ChatController extends ApiBaseController
         abort_if(
             $chat->sender_user_id != $userId && $chat->receiver_user_id != $userId,
             403,
-            "Forbidden"
+            'Forbidden'
         );
 
         $chat->delete();
+
         return $this->respondWithMessage('Successfully deleted');
     }
 }

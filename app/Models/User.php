@@ -45,8 +45,10 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property-read Collection<int, PostFavorite> $favorites
  * @property-read int|null $favorites_count
  * @property-read Collection<int, User> $followers
+ * @property-read Collection<int, User> $outgoingRequests
  * @property-read int|null $followers_count
  * @property-read Collection<int, User> $followings
+ * @property-read Collection<int, User> $incomingRequests
  * @property-read int|null $followings_count
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
@@ -59,7 +61,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property-read int|null $stories_count
  * @property-read Collection<int, PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
- * @property-read int ratings_avg_rating
+ * @property-read float $ratings_avg_rating
  *
  * @method static UserFactory factory($count = null, $state = [])
  * @method static Builder|User newModelQuery()
@@ -158,7 +160,7 @@ class User extends Authenticatable
      */
     public function followers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'followers', 'followed_user_id', 'user_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'followers', 'following_user_id', 'followed_user_id')->withTimestamps();
     }
 
     /**
@@ -166,7 +168,23 @@ class User extends Authenticatable
      */
     public function followings(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'followers', 'user_id', 'followed_user_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'followers', 'followed_user_id', 'following_user_id')->withTimestamps();
+    }
+
+    /**
+     * Get user outgoing follow requests
+     */
+    public function outgoingRequests(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'follow_requests', 'following_user_id', 'followed_user_id')->withTimestamps();
+    }
+
+    /**
+     * Get user incoming follow requests
+     */
+    public function incomingRequests(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'follow_requests', 'followed_user_id', 'following_user_id')->withTimestamps();
     }
 
     /**

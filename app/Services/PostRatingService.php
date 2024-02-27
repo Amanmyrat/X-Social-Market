@@ -9,12 +9,8 @@ use Illuminate\Http\Request;
 
 class PostRatingService
 {
-    public static function addRating(Request $request, Post $post): void
+    public static function addRating($validated, Post $post): void
     {
-        $validated = $request->validate([
-            'rating' => ['required', 'integer', 'between:1,5'],
-        ]);
-
         $rating = PostRating::where(['user_id' => Auth::id(), 'post_id' => $post->id])->first();
 
         if ($rating) {
@@ -25,6 +21,9 @@ class PostRatingService
             $rating->post()->associate($post);
             $rating->rating = $validated['rating'];
             $rating->save();
+
+            NotificationService::createPostNotification($rating, $rating->post_id);
+
         }
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\FollowerController;
 use App\Http\Controllers\Api\FollowerRequestController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OptionsController;
 use App\Http\Controllers\Api\OtpController;
 use App\Http\Controllers\Api\PostBookmarkController;
@@ -71,11 +72,13 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
 
         Route::post('make/seller', [UserController::class, 'makeAccountBusiness']);
         Route::post('search', [UserController::class, 'search']);
+        Route::post('/notifications', [NotificationController::class, 'list']);
+
     });
 
     Route::prefix('posts')->group(function () {
         Route::post('/', [PostController::class, 'myPosts']);
-        Route::post('create', [PostController::class, 'create']);
+        Route::post('/create', [PostController::class, 'create']);
         Route::post('/{post}/update', [PostController::class, 'update']);
         Route::post('/{post}/delete', [PostController::class, 'delete']);
         Route::post('/{post}/related', [PostController::class, 'relatedPosts']);
@@ -106,6 +109,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
 
         Route::post('/all/list', [PostController::class, 'allPosts']);
     });
+
 
     Route::prefix('stories')->group(function () {
         Route::post('/', [StoryController::class, 'myStories']);

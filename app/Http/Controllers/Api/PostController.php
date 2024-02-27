@@ -41,7 +41,7 @@ class PostController extends ApiBaseController
 
         $postCreated = $this->service->create($validated,$request->user()->id);
 
-        if (! $postCreated) {
+        if (!$postCreated) {
             return Response::json([
                 'success' => false,
                 'message' => 'Error occurred',

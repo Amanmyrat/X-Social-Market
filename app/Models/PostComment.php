@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -83,5 +84,10 @@ class PostComment extends Model
     public function children(): HasMany
     {
         return $this->hasMany(PostComment::class, 'parent_id');
+    }
+
+    public function notifications(): MorphMany
+    {
+        return $this->morphMany(PostNotification::class, 'notifiable');
     }
 }

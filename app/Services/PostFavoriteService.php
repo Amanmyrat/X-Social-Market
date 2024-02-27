@@ -29,6 +29,8 @@ class PostFavoriteService
             $favorite->post()->associate($post);
             $favorite->save();
             $message = 'Favorite success';
+
+            NotificationService::createPostNotification($favorite, $favorite->post_id);
         }
 
         return $message;

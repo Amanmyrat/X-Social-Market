@@ -19,11 +19,15 @@ class PostRatingController extends ApiBaseController
     }
 
     /**
-     * Add comment to given product
+     * Add rating to given product
      */
     public function addRating(Post $post, Request $request): JsonResponse
     {
-        PostRatingService::addRating($request, $post);
+        $validated = $request->validate([
+            'rating' => ['required', 'integer', 'between:1,5'],
+        ]);
+
+        PostRatingService::addRating($validated, $post);
 
         return $this->respondWithMessage(trans('notification.rating_success'));
     }

@@ -12,8 +12,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * App\Models\PostNotification
 
  *
-* @mixin Eloquent
-*/
+ * @mixin Eloquent
+ */
 class PostNotification extends Model
 {
     use HasFactory;
@@ -29,5 +29,4 @@ class PostNotification extends Model
     {
         return $this->belongsTo(Post::class);
     }
-
 }

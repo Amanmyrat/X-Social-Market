@@ -29,10 +29,10 @@ class PostCommentController extends ApiBaseController
             'parent_id' => [
                 'sometimes',
                 'int',
-                function ($attribute, $value, $fail) use ($request, $post) {
-                    if ($value !== 0 && !is_null($value)) {
+                function ($attribute, $value, $fail) use ($post) {
+                    if ($value !== 0 && ! is_null($value)) {
                         $parentComment = DB::table('post_comments')->where('id', $value)->first(['post_id']);
-                        if (!$parentComment) {
+                        if (! $parentComment) {
                             $fail('The selected '.$attribute.' is invalid.');
                         } elseif ($parentComment->post_id != $post->id) {
                             $fail('The '.$attribute.' does not belong to the provided post.');

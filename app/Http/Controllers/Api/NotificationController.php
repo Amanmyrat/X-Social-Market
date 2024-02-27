@@ -12,8 +12,6 @@ class NotificationController
 {
     /**
      * User notifications list for 7 days
-     *
-     * @return JsonResponse
      */
     public function list(): JsonResponse
     {
@@ -23,7 +21,7 @@ class NotificationController
             $query->where('user_id', $userId);
         })
             ->where('created_at', '>=', Carbon::now()->subDays(7))
-            ->with(['post.user','post.media', 'notifiable'])
+            ->with(['post.user', 'post.media', 'notifiable'])
             ->orderByDesc('created_at')
             ->get()
             ->groupBy(function ($date) {

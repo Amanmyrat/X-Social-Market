@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Post;
 use App\Models\PostRating;
 use Auth;
-use Illuminate\Http\Request;
 
 class PostRatingService
 {

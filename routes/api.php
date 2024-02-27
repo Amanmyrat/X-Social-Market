@@ -110,7 +110,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/all/list', [PostController::class, 'allPosts']);
     });
 
-
     Route::prefix('stories')->group(function () {
         Route::post('/', [StoryController::class, 'myStories']);
         Route::post('/create', [StoryController::class, 'create']);

@@ -10,9 +10,8 @@ class NotificationService
     /**
      * Create a post notification.
      *
-     * @param Model $notifiable The instance that triggered the notification.
-     * @param int $postId The ID of the related post.
-     * @return PostNotification
+     * @param  Model  $notifiable  The instance that triggered the notification.
+     * @param  int  $postId  The ID of the related post.
      */
     public static function createPostNotification(Model $notifiable, int $postId): PostNotification
     {

@@ -13,7 +13,6 @@ use App\Transformers\GuestPostTransformer;
 use App\Transformers\PostDetailsTransformer;
 use App\Transformers\PostSimpleTransformer;
 use App\Transformers\PostTransformer;
-use Arr;
 use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -39,9 +38,9 @@ class PostController extends ApiBaseController
     {
         $validated = $request->validated();
 
-        $postCreated = $this->service->create($validated,$request->user()->id);
+        $postCreated = $this->service->create($validated, $request->user()->id);
 
-        if (!$postCreated) {
+        if (! $postCreated) {
             return Response::json([
                 'success' => false,
                 'message' => 'Error occurred',
@@ -65,7 +64,7 @@ class PostController extends ApiBaseController
 
         $postUpdated = $this->service->update($post, $validated);
 
-        if (!$postUpdated) {
+        if (! $postUpdated) {
             return Response::json([
                 'success' => false,
                 'message' => 'Error occurred',

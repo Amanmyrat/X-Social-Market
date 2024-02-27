@@ -12,6 +12,7 @@ class PostNotificationResource extends JsonResource
      * Transform the resource into an array.
      *
      * @return array<string, mixed>
+     *
      * @throws ReflectionException
      */
     public function toArray($request): array
@@ -44,7 +45,7 @@ class PostNotificationResource extends JsonResource
                 'id' => $this->resource->post->user->id,
                 'username' => $this->resource->post->user->username,
                 'full_name' => $this->resource->post->user->profile?->full_name,
-                'profile_image' => $this->resource->post->user->profile?->profile_image ? url('uploads/user/profile/' . $this->resource->post->user->profile?->profile_image) : null,
+                'profile_image' => $this->resource->post->user->profile?->profile_image ? url('uploads/user/profile/'.$this->resource->post->user->profile?->profile_image) : null,
             ],
             'created_at' => $this->resource->created_at,
         ];

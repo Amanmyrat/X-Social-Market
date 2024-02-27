@@ -81,7 +81,7 @@ class ApiBaseController extends Controller
     /**
      * Respond the collection data.
      *
-     * @param null $extras
+     * @param  null  $extras
      */
     public function respondWithCollection($collection, $callback, string $message = 'Successfully', $extras = null): JsonResponse
     {
@@ -102,7 +102,7 @@ class ApiBaseController extends Controller
     /**
      * Respond the collection data with pagination.
      */
-    public function respondWithPaginator($paginator, $callback, string $message = null): JsonResponse
+    public function respondWithPaginator($paginator, $callback, ?string $message = null): JsonResponse
     {
         $resource = new Collection($paginator->getCollection(), $callback, 'data');
 
@@ -114,6 +114,7 @@ class ApiBaseController extends Controller
         }
 
         $data['meta'] = $data['meta']['pagination'];
+
         return $this->respondWithArray($data);
     }
 

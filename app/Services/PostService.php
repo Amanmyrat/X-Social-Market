@@ -24,8 +24,8 @@ class PostService
         try {
             DB::transaction(function () use ($postData, $productData, $userId) {
                 $post = Post::create($postData + [
-                        'user_id' => $userId,
-                    ]);
+                    'user_id' => $userId,
+                ]);
 
                 $medias = $postData['media_type'] == 'image'
                     ? 'images'
@@ -48,7 +48,6 @@ class PostService
             throw new Exception($e->getMessage());
         }
     }
-
 
     /**
      * @throws Throwable
@@ -106,7 +105,7 @@ class PostService
                 return $query->where('created_at', '<=', $request->date_end);
             })
             ->when(isset($request->search_query), function ($query) use ($request) {
-                $search_query = '%' . $request->search_query . '%';
+                $search_query = '%'.$request->search_query.'%';
 
                 return $query->where('caption', 'LIKE', $search_query)
                     ->orWhere('description', 'LIKE', $search_query);
@@ -121,7 +120,7 @@ class PostService
                     break;
                 default:
                     $sort = $this->getSort($s);
-                    $posts = $posts->orderBy('posts.' . $sort[0], $sort[1]);
+                    $posts = $posts->orderBy('posts.'.$sort[0], $sort[1]);
             }
         } else {
             $posts = $posts->inRandomOrder();

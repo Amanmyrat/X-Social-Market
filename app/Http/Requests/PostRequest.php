@@ -57,7 +57,7 @@ class PostRequest extends FormRequest
             $rule = new ProductDetailsValidation($category_id);
 
             // Manually call the passes method
-            if (!$rule->passes('product', $product)) {
+            if (! $rule->passes('product', $product)) {
                 $validator->errors()->add('product', $rule->message());
             }
         });

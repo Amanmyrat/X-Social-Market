@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 /**
- * App\Models\OtpCOde
+ * App\Models\OtpCode
  *
  * @property int $id
  * @property string $phone

@@ -2,18 +2,18 @@
 
 namespace App\Services;
 
+use App\Contracts\NotifiableModel;
 use App\Models\PostNotification;
-use Illuminate\Database\Eloquent\Model;
 
 class NotificationService
 {
     /**
      * Create a post notification.
      *
-     * @param  Model  $notifiable  The instance that triggered the notification.
+     * @param  NotifiableModel  $notifiable  The instance that triggered the notification.
      * @param  int  $postId  The ID of the related post.
      */
-    public static function createPostNotification(Model $notifiable, int $postId): PostNotification
+    public static function createPostNotification(NotifiableModel $notifiable, int $postId): PostNotification
     {
         return $notifiable->notifications()->create(['post_id' => $postId]);
     }

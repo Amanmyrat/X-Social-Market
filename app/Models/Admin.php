@@ -18,7 +18,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property string $name
  * @property string $email
  * @property string $password
- * @property int $is_super
+ * @property bool $is_super
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, PersonalAccessToken> $tokens

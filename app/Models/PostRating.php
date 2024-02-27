@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Contracts\NotifiableModel;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 
 /**
- * App\Models\PostComment
+ * App\Models\PostRating
  *
  * @property int $id
  * @property int $user_id
@@ -19,6 +21,8 @@ use Illuminate\Support\Carbon;
  * @property int $rating
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read Collection<int, PostNotification> $notifications
+ * @property-read int|null $notifications_count
  * @property-read Post $post
  * @property-read User $user
  *
@@ -34,7 +38,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class PostRating extends Model
+class PostRating extends Model implements NotifiableModel
 {
     use HasFactory;
 

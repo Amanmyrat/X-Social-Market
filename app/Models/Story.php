@@ -17,11 +17,11 @@ use Illuminate\Support\Carbon;
  *
  * @property int $id
  * @property int $user_id
- * @property int|null $post_id
  * @property string|null $image
  * @property Carbon $valid_until
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property int|null $post_id
  * @property-read Collection<int, StoryFavorite> $favorites
  * @property-read int|null $favorites_count
  * @property-read Post|null $post

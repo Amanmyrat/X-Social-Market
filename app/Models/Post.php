@@ -33,16 +33,18 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property bool $can_comment
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property MediaCollection<int, Media> $media
  * @property-read Collection<int, PostBookmark> $bookmarks
  * @property-read int|null $bookmarks_count
  * @property-read Category $category
+ * @property-read Collection<int, Chat> $chats
+ * @property-read int|null $chats_count
  * @property-read Collection<int, PostComment> $comments
  * @property-read int|null $comments_count
  * @property-read Collection<int, User> $favoriteByUsers
  * @property-read int|null $favorite_by_users_count
  * @property-read Collection<int, PostFavorite> $favorites
  * @property-read int|null $favorites_count
- * @property MediaCollection<int, Media> $media
  * @property-read int|null $media_count
  * @property-read Product|null $product
  * @property-read Collection<int, PostRating> $ratings

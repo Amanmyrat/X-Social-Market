@@ -45,24 +45,27 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property-read Collection<int, PostFavorite> $favorites
  * @property-read int|null $favorites_count
  * @property-read Collection<int, User> $followers
- * @property-read Collection<int, User> $outgoingRequests
  * @property-read int|null $followers_count
  * @property-read Collection<int, User> $followings
- * @property-read Collection<int, User> $incomingRequests
  * @property-read int|null $followings_count
+ * @property-read Collection<int, User> $incomingRequests
+ * @property-read int|null $incoming_requests_count
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
+ * @property-read Collection<int, User> $outgoingRequests
+ * @property-read int|null $outgoing_requests_count
  * @property-read Collection<int, PostView> $postViews
  * @property-read int|null $post_views_count
  * @property-read Collection<int, Post> $posts
  * @property-read int|null $posts_count
  * @property-read UserProfile|null $profile
+ * @property-read Collection<int, PostRating> $ratings
+ * @property-read int|null $ratings_count
  * @property-read Collection<int, Story> $stories
  * @property-read int|null $stories_count
  * @property-read Collection<int, PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
  * @property-read float $ratings_avg_rating
- * @property-read UserProfile|null $product
  *
  * @method static UserFactory factory($count = null, $state = [])
  * @method static Builder|User newModelQuery()

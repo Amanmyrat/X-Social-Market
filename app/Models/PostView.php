@@ -17,8 +17,8 @@ use Illuminate\Support\Carbon;
  * @property int $post_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Post $post
- * @property-read User $user
+ * @property-read \App\Models\Post $post
+ * @property-read \App\Models\User $user
  *
  * @method static Builder|PostView newModelQuery()
  * @method static Builder|PostView newQuery()

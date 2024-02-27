@@ -20,9 +20,9 @@ use Illuminate\Support\Carbon;
  * @property string|null $website
  * @property Carbon|null $birthdate
  * @property string|null $gender
- * @property int $payment_available
- * @property int $verified
- * @property int $private
+ * @property bool $payment_available
+ * @property bool $verified
+ * @property bool $private
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int|null $category_id

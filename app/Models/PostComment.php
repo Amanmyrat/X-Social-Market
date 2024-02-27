@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Contracts\NotifiableModel;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -24,6 +25,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, PostComment> $children
  * @property-read int|null $children_count
+ * @property-read Collection<int, PostNotification> $notifications
+ * @property-read int|null $notifications_count
  * @property-read PostComment|null $parent
  * @property-read Post $post
  * @property-read User $user
@@ -41,7 +44,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class PostComment extends Model
+class PostComment extends Model implements NotifiableModel
 {
     use HasFactory;
 

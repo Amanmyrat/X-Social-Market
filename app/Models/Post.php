@@ -108,6 +108,7 @@ class Post extends Model implements HasMedia
      */
     protected $casts = [
         'can_comment' => 'boolean',
+        'ratings_avg_rating' => 'float',
     ];
 
     public function user(): BelongsTo

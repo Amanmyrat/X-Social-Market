@@ -9,7 +9,7 @@ use App\Http\Requests\Color\ColorUpdateRequest;
 use App\Http\Resources\Admin\Color\ColorResource;
 use App\Http\Resources\Admin\Color\ColorResourceCollection;
 use App\Models\Color;
-use App\Services\UniversalService;
+use App\Services\Admin\UniversalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

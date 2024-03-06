@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  * App\Models\Product
@@ -119,5 +120,21 @@ class Product extends Model
                 return $options;
             }
         );
+    }
+
+    public function getUniqueColorsAttribute(): Collection
+    {
+        return collect($this->options)->flatMap(function ($option) {
+            return collect($option['colors'])->pluck('color');
+        })->unique()->values();
+    }
+
+    public function getUniqueSizesAttribute(): Collection
+    {
+        return collect($this->options)->flatMap(function ($option) {
+            return collect($option['colors'])->flatMap(function ($color) {
+                return collect($color['sizes'])->pluck('size');
+            });
+        })->unique()->values();
     }
 }

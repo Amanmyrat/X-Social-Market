@@ -8,7 +8,7 @@ use App\Http\Requests\Location\LocationDeleteRequest;
 use App\Http\Requests\Location\LocationUpdateRequest;
 use App\Http\Resources\Admin\Location\LocationResource;
 use App\Models\Location;
-use App\Services\UniversalService;
+use App\Services\Admin\UniversalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;

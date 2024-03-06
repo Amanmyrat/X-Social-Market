@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminBrandController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminColorController;
 use App\Http\Controllers\Admin\AdminLocationController;
+use App\Http\Controllers\Admin\AdminPostController;
 use App\Http\Controllers\Admin\AdminSizeController;
 use App\Http\Controllers\Admin\AdminUserController;
 use Illuminate\Support\Facades\Route;
@@ -43,15 +44,6 @@ Route::prefix('admin')->group(function () {
             Route::post('/delete', [AdminLocationController::class, 'delete']);
         });
 
-        Route::prefix('users')->group(function () {
-            Route::post('/', [AdminUserController::class, 'list']);
-            Route::get('/{user}', [AdminUserController::class, 'userDetails']);
-            Route::post('/update/{user}', [AdminUserController::class, 'update']);
-            Route::post('/delete', [AdminUserController::class, 'delete']);
-            Route::post('/block/{user}', [AdminUserController::class, 'blockUser']);
-            Route::post('/unblock/{user}', [AdminUserController::class, 'unBlockUser']);
-        });
-
         Route::prefix('colors')->group(function () {
             Route::post('/', [AdminColorController::class, 'list']);
             Route::post('/create', [AdminColorController::class, 'create']);
@@ -68,5 +60,19 @@ Route::prefix('admin')->group(function () {
             Route::post('/delete', [AdminSizeController::class, 'delete']);
         });
 
+        Route::prefix('users')->group(function () {
+            Route::post('/', [AdminUserController::class, 'list']);
+            Route::get('/{user}', [AdminUserController::class, 'userDetails']);
+            Route::post('/update/{user}', [AdminUserController::class, 'update']);
+            Route::post('/delete', [AdminUserController::class, 'delete']);
+            Route::post('/block/{user}', [AdminUserController::class, 'blockUser']);
+            Route::post('/unblock/{user}', [AdminUserController::class, 'unBlockUser']);
+        });
+
+        Route::prefix('posts')->group(function () {
+            Route::post('/', [AdminPostController::class, 'list']);
+            Route::get('/{post}', [AdminPostController::class, 'postDetails']);
+            Route::post('/delete', [AdminPostController::class, 'delete']);
+        });
     });
 });

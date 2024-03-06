@@ -9,7 +9,7 @@ use App\Http\Requests\Category\CategoryUpdateRequest;
 use App\Http\Resources\Admin\Category\CategoryResource;
 use App\Http\Resources\Admin\Category\CategoryResourceCollection;
 use App\Models\Category;
-use App\Services\UniversalService;
+use App\Services\Admin\UniversalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

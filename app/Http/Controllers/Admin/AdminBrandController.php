@@ -9,7 +9,7 @@ use App\Http\Requests\Brand\BrandUpdateRequest;
 use App\Http\Resources\Admin\Brand\BrandResource;
 use App\Http\Resources\Admin\Brand\BrandResourceCollection;
 use App\Models\Brand;
-use App\Services\UniversalService;
+use App\Services\Admin\UniversalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

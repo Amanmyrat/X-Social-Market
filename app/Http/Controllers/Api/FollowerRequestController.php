@@ -35,7 +35,7 @@ class FollowerRequestController extends ApiBaseController
 
         $this->service->followRequest($validated['following_id'], Auth::user());
 
-        return $this->respondWithArray([
+        return new JsonResponse([
             'success' => true,
         ]);
     }
@@ -76,7 +76,7 @@ class FollowerRequestController extends ApiBaseController
 
         $followingRequest->delete();
 
-        return $this->respondWithArray([
+        return new JsonResponse([
             'success' => true,
         ]);
     }
@@ -93,7 +93,7 @@ class FollowerRequestController extends ApiBaseController
 
         $followingRequest->delete();
 
-        return $this->respondWithArray([
+        return new JsonResponse([
             'success' => true,
         ]);
     }

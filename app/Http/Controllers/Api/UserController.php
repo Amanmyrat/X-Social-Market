@@ -24,7 +24,7 @@ class UserController extends ApiBaseController
     {
         UserService::updatePassword($request);
 
-        return $this->respondWithArray([
+        return new JsonResponse([
             'success' => true,
         ]);
     }
@@ -36,7 +36,7 @@ class UserController extends ApiBaseController
     {
         UserService::updatePhone($request);
 
-        return $this->respondWithArray([
+        return new JsonResponse([
             'success' => true,
         ]);
     }
@@ -48,7 +48,7 @@ class UserController extends ApiBaseController
     {
         UserService::newPassword($request);
 
-        return $this->respondWithArray([
+        return new JsonResponse([
             'success' => true,
         ]);
     }
@@ -73,7 +73,7 @@ class UserController extends ApiBaseController
     {
         $request->user()->delete();
 
-        return $this->respondWithArray([
+        return new JsonResponse([
             'success' => true,
         ]);
     }
@@ -94,7 +94,7 @@ class UserController extends ApiBaseController
 
         $request->user()->profile()->update($validated);
 
-        return $this->respondWithArray([
+        return new JsonResponse([
             'success' => true,
         ]);
     }

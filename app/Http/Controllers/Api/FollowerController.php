@@ -32,7 +32,8 @@ class FollowerController extends ApiBaseController
 
         $this->service->follow($validated['following_id'], Auth::user());
 
-        return $this->respondWithArray([
+
+        return new JsonResponse([
             'success' => true,
         ]);
     }
@@ -49,7 +50,7 @@ class FollowerController extends ApiBaseController
         );
         $this->service->unfollow($validated['following_id'], Auth::user());
 
-        return $this->respondWithArray([
+        return new JsonResponse([
             'success' => true,
         ]);
     }

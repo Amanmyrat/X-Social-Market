@@ -14,11 +14,10 @@ use App\Http\Controllers\Api\PostCommentController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\PostFavoritesController;
 use App\Http\Controllers\Api\PostRatingController;
-use App\Http\Controllers\Api\PostSpamController;
+use App\Http\Controllers\Api\PostReportController;
 use App\Http\Controllers\Api\PostViewController;
-use App\Http\Controllers\Api\SpamTypeController;
 use App\Http\Controllers\Api\StoryController;
-use App\Http\Controllers\Api\StorySpamController;
+use App\Http\Controllers\Api\StoryReportController;
 use App\Http\Controllers\Api\StoryViewController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserProfileController;
@@ -102,7 +101,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/{post}/ratings', [PostRatingController::class, 'ratings']);
         Route::post('/{post}/rating', [PostRatingController::class, 'addRating']);
 
-        Route::post('/{post}/spam', [PostSpamController::class, 'spamPost']);
+        Route::post('/{post}/report', [PostReportController::class, 'reportPost']);
 
         Route::post('/{post}/views', [PostViewController::class, 'views']);
         Route::post('/views/{story}/view', [PostViewController::class, 'view']);
@@ -114,7 +113,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/', [StoryController::class, 'myStories']);
         Route::post('/create', [StoryController::class, 'create']);
 
-        Route::post('/{story}/spam', [StorySpamController::class, 'spamStory']);
+        Route::post('/{story}/report', [StoryReportController::class, 'reportStory']);
         Route::post('/{story}/views', [StoryViewController::class, 'views']);
         Route::post('/views/{story}/view', [StoryViewController::class, 'view']);
     });
@@ -148,14 +147,11 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     Route::post('/brands', [OptionsController::class, 'brands']);
     Route::post('/colors', [OptionsController::class, 'colors']);
     Route::post('/sizes', [OptionsController::class, 'sizes']);
+    Route::post('/report/types', [OptionsController::class, 'reportTypes']);
 
 });
 Route::post('/users/all/list', [UserController::class, 'getAll']);
 
-Route::prefix('spam')->group(function () {
-    Route::post('types/create', [SpamTypeController::class, 'create']);
-    Route::post('types', [SpamTypeController::class, 'types']);
-});
 
 Route::post('guest/posts/all/list', [PostController::class, 'guestAllPosts']);
 

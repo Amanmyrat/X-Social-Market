@@ -21,7 +21,7 @@ class OtpController extends ApiBaseController
         $code = OtpService::sendOtp($request);
 
         if ($code != -1) {
-            return $this->respondWithArray([
+            return new JsonResponse([
                 'success' => true,
                 'data' => [
                     'code' => $code,
@@ -52,7 +52,7 @@ class OtpController extends ApiBaseController
             return $this->respondWithError('OTP timeout', 400);
         }
 
-        return $this->respondWithArray([
+        return new JsonResponse([
             'success' => true,
         ]);
 

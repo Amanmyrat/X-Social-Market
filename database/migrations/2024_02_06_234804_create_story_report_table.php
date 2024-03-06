@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('story_spam', function (Blueprint $table) {
+        Schema::create('story_reports', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')
                 ->constrained()
@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('story_id')
                 ->constrained()
                 ->onDelete('cascade');
-            $table->foreignId('spam_type_id')
+            $table->foreignId('report_type_id')
                 ->constrained()
                 ->onDelete('cascade');
             $table->text('message')->nullable();
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('story_spam');
+        Schema::dropIfExists('story_report');
     }
 };

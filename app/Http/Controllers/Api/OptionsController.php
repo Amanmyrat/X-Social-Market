@@ -7,10 +7,12 @@ use App\Http\Resources\CategoryResource;
 use App\Http\Resources\ColorResource;
 use App\Http\Resources\LocationResource;
 use App\Http\Resources\SizeResource;
+use App\Http\Resources\ReportTypeResource;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Location;
+use App\Models\ReportType;
 use App\Models\Size;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -64,5 +66,15 @@ class OptionsController extends ApiBaseController
         $sizes = Size::where('is_active', true)->get();
 
         return SizeResource::collection($sizes);
+    }
+
+    /**
+     * Report types list
+     */
+    public function reportTypes(): AnonymousResourceCollection
+    {
+        $types = ReportType::where('is_active', true)->get();
+
+        return ReportTypeResource::collection($types);
     }
 }

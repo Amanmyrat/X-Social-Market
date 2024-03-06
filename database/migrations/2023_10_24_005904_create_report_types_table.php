@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('spam_types', function (Blueprint $table) {
+        Schema::create('report_types', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('title');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('spam_types');
+        Schema::dropIfExists('report_types');
     }
 };

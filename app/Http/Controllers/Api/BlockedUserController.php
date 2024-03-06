@@ -18,7 +18,7 @@ class BlockedUserController extends ApiBaseController
     {
         UserBlockService::block($request);
 
-        return $this->respondWithArray([
+        return new JsonResponse([
             'success' => true,
         ]);
     }
@@ -30,7 +30,7 @@ class BlockedUserController extends ApiBaseController
     {
         UserBlockService::unblock($request);
 
-        return $this->respondWithArray([
+        return new JsonResponse([
             'success' => true,
         ]);
     }

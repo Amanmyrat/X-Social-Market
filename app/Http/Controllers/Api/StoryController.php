@@ -20,11 +20,10 @@ class StoryController extends ApiBaseController
     {
         StoryService::create($request);
 
-        return $this->respondWithArray([
+        return new JsonResponse([
             'success' => true,
             'message' => 'Successfully created a new story',
-        ]
-        );
+        ]);
     }
 
     /**

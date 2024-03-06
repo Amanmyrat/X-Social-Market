@@ -10,33 +10,33 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
- * App\Models\StorySpam
+ * App\Models\PostReport
  *
  * @property int $id
  * @property int $user_id
- * @property int $story_id
- * @property int $spam_type_id
+ * @property int $post_id
+ * @property int $report_type_id
  * @property string|null $message
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read SpamType $spamType
- * @property-read Story $story
+ * @property-read Post $post
+ * @property-read ReportType $reportType
  * @property-read User $user
  *
- * @method static Builder|StorySpam newModelQuery()
- * @method static Builder|StorySpam newQuery()
- * @method static Builder|StorySpam query()
- * @method static Builder|StorySpam whereCreatedAt($value)
- * @method static Builder|StorySpam whereId($value)
- * @method static Builder|StorySpam whereMessage($value)
- * @method static Builder|StorySpam whereSpamTypeId($value)
- * @method static Builder|StorySpam whereStoryId($value)
- * @method static Builder|StorySpam whereUpdatedAt($value)
- * @method static Builder|StorySpam whereUserId($value)
+ * @method static Builder|PostReport newModelQuery()
+ * @method static Builder|PostReport newQuery()
+ * @method static Builder|PostReport query()
+ * @method static Builder|PostReport whereCreatedAt($value)
+ * @method static Builder|PostReport whereId($value)
+ * @method static Builder|PostReport whereMessage($value)
+ * @method static Builder|PostReport wherePostId($value)
+ * @method static Builder|PostReport whereReportTypeId($value)
+ * @method static Builder|PostReport whereUpdatedAt($value)
+ * @method static Builder|PostReport whereUserId($value)
  *
  * @mixin Eloquent
  */
-class StorySpam extends Model
+class PostReport extends Model
 {
     use HasFactory;
 
@@ -47,8 +47,8 @@ class StorySpam extends Model
      */
     protected $fillable = [
         'user_id',
-        'story_id',
-        'spam_type_id',
+        'post_id',
+        'report_type_id',
         'message',
     ];
 
@@ -67,13 +67,13 @@ class StorySpam extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function story(): BelongsTo
+    public function post(): BelongsTo
     {
-        return $this->belongsTo(Story::class);
+        return $this->belongsTo(Post::class);
     }
 
-    public function spamType(): BelongsTo
+    public function reportType(): BelongsTo
     {
-        return $this->belongsTo(SpamType::class);
+        return $this->belongsTo(ReportType::class);
     }
 }

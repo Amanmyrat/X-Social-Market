@@ -67,9 +67,6 @@ class Category extends Model
         'has_product' => 'bool',
     ];
 
-    /**
-     * Get posts record associated with the category.
-     */
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class);

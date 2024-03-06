@@ -65,11 +65,10 @@ class AdminUserController extends ApiBaseController
     {
         User::whereIn('id', $request->users)->delete();
 
-        return $this->respondWithArray([
+        return new JsonResponse([
             'success' => true,
             'message' => 'Successfully deleted',
-        ]
-        );
+        ]);
     }
 
     /**
@@ -85,11 +84,10 @@ class AdminUserController extends ApiBaseController
         $user->block_reason = $request->reason;
         $user->save();
 
-        return $this->respondWithArray([
+        return new JsonResponse([
             'success' => true,
             'message' => 'User blocked successfully',
-        ]
-        );
+        ]);
     }
 
     /**
@@ -101,10 +99,9 @@ class AdminUserController extends ApiBaseController
         $user->block_reason = null;
         $user->save();
 
-        return $this->respondWithArray([
+        return new JsonResponse([
             'success' => true,
             'message' => 'User unblocked successfully',
-        ]
-        );
+        ]);
     }
 }

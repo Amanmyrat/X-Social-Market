@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminColorController;
 use App\Http\Controllers\Admin\AdminLocationController;
 use App\Http\Controllers\Admin\AdminPostController;
+use App\Http\Controllers\Admin\AdminPostReportController;
 use App\Http\Controllers\Admin\AdminReportTypeController;
 use App\Http\Controllers\Admin\AdminSizeController;
 use App\Http\Controllers\Admin\AdminUserController;
@@ -82,6 +83,11 @@ Route::prefix('admin')->group(function () {
             Route::post('/', [AdminPostController::class, 'list']);
             Route::get('/{post}', [AdminPostController::class, 'postDetails']);
             Route::post('/delete', [AdminPostController::class, 'delete']);
+        });
+
+        Route::prefix('post/reports')->group(function () {
+            Route::post('/', [AdminPostReportController::class, 'list']);
+            Route::post('/{post}/users', [AdminPostReportController::class, 'reportUsers']);
         });
     });
 });

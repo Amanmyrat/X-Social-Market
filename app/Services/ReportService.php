@@ -4,11 +4,9 @@ namespace App\Services;
 
 use App\Models\Post;
 use App\Models\PostReport;
-use App\Models\ReportType;
 use App\Models\Story;
 use App\Models\StoryReport;
 use Auth;
-use Illuminate\Http\Request;
 
 class ReportService
 {

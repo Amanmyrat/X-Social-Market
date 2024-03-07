@@ -32,7 +32,6 @@ class FollowerController extends ApiBaseController
 
         $this->service->follow($validated['following_id'], Auth::user());
 
-
         return new JsonResponse([
             'success' => true,
         ]);

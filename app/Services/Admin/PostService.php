@@ -18,5 +18,4 @@ class PostService
                 ->orWhere('description', 'LIKE', $search_query);
         })->latest()->paginate($limit);
     }
-
 }

@@ -152,7 +152,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
 });
 Route::post('/users/all/list', [UserController::class, 'getAll']);
 
-
 Route::post('guest/posts/all/list', [PostController::class, 'guestAllPosts']);
 
 require __DIR__.'/admin.php';

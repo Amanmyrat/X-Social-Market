@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Api\ApiBaseController;
 use App\Http\Requests\User\UserDeleteRequest;
+use App\Http\Requests\User\UserListRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Models\User;
 use App\Services\UserService;
@@ -22,13 +23,15 @@ class AdminUserController extends ApiBaseController
     /**
      * Users list
      */
-    public function list(Request $request): JsonResponse
+    public function list(UserListRequest $request): JsonResponse
     {
-        $limit = $request->limit ?? 10;
-        $query = $request->search_query ?? null;
-        $type = $request->type ?? User::TYPE_USER;
+        $validated = $request->validated();
+        $limit = $validated['limit'] ?? 10;
+        $query = $validated['search_query'] ?? null;
+        $type = $validated['type'] ?? User::TYPE_USER;
+        $sort = $validated['sort'] ?? null;
 
-        $brands = $this->service->list($type, $limit, $query);
+        $brands = $this->service->list($type, $limit, $query, $sort);
 
         return $this->respondWithPaginator($brands, new UserListTransformer($type == User::TYPE_SELLER));
     }

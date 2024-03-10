@@ -88,15 +88,35 @@ class UserService
     /**
      * Get user list
      */
-    public function list(string $type, int $limit, ?string $search_query = null): LengthAwarePaginator
+    public function list(string $type, int $limit, ?string $search_query = null, ?string $sort = null): LengthAwarePaginator
     {
-        return User::where('type', $type)->when(isset($search_query), function ($query) use ($search_query) {
+        $query = User::where('type', $type)->when(isset($search_query), function ($query) use ($search_query) {
             $search_query = '%'.$search_query.'%';
 
             return $query->whereHas('profile', function ($q) use ($search_query) {
                 $q->where('full_name', $search_query);
             })->where('phone', 'LIKE', $search_query)->orWhere('username', 'LIKE', $search_query);
-        })->latest()->paginate($limit);
+        });
+
+        // Sorting logic
+        if (! is_null($sort)) {
+            // Initialize sorting direction based on the presence of "-" prefix
+            $direction = str_starts_with($sort, '-') ? 'desc' : 'asc';
+
+            // If sorting by 'is_active', adjust direction for natural boolean order preference
+            if (in_array(ltrim($sort, '-'), ['is_active'])) {
+                $direction = $direction === 'asc' ? 'desc' : 'asc'; // Flip direction
+            }
+
+            // Remove "-" prefix from sort parameter if present
+            $sort = ltrim($sort, '-');
+            if (in_array($sort, ['username', 'is_active', 'created_at'])) {
+                $query->orderBy($sort, $direction);
+            }
+        } else {
+            $query->latest();
+        }
+        return $query->latest()->paginate($limit);
     }
 
     /**

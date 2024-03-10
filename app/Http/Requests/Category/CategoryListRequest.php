@@ -14,7 +14,11 @@ class CategoryListRequest extends FormRequest
         return [
             'limit' => ['filled', 'integer'],
             'search_query' => ['filled', 'string'],
-            'sort' => ['filled', 'string'],
+            'sort' => ['filled', 'string', 'in:default,
+                        title,-title,
+                        is_active,-is_active,
+                        posts_count,-posts_count'
+            ],
         ];
     }
 }

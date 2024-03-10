@@ -26,7 +26,7 @@ class BrandListRequest extends FormRequest
             'limit' => ['filled', 'integer'],
             'search_query' => ['filled', 'string'],
             'type' => ['filled', 'in:simple,clothing'],
-            'sort' => ['filled', 'string', 'in:' . $allowedSortOptionsString],
+            'sort' => ['filled', 'string', 'in:'.$allowedSortOptionsString],
         ];
     }
 }

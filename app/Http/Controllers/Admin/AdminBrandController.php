@@ -12,7 +12,6 @@ use App\Http\Resources\Admin\Brand\BrandResourceCollection;
 use App\Models\Brand;
 use App\Services\Admin\UniversalService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class AdminBrandController extends Controller
 {

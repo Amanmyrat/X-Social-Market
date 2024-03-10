@@ -25,7 +25,7 @@ class SizeListRequest extends FormRequest
         return [
             'limit' => ['filled', 'integer'],
             'search_query' => ['filled', 'string'],
-            'sort' => ['filled', 'string', 'in:' . $allowedSortOptionsString
+            'sort' => ['filled', 'string', 'in:'.$allowedSortOptionsString,
             ],
         ];
     }

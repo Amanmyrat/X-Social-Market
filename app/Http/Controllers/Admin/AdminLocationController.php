@@ -11,7 +11,6 @@ use App\Http\Resources\Admin\Location\LocationResource;
 use App\Models\Location;
 use App\Services\Admin\UniversalService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AdminLocationController extends Controller

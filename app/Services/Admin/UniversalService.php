@@ -56,7 +56,7 @@ class UniversalService
         }
 
         // Sorting logic
-        if (! is_null($sort)) {
+        if (! is_null($sort) && $sort != 'default') {
             // Initialize sorting direction based on the presence of "-" prefix
             $direction = str_starts_with($sort, '-') ? 'desc' : 'asc';
 

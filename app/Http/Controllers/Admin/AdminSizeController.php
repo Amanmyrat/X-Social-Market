@@ -12,7 +12,6 @@ use App\Http\Resources\Admin\Size\SizeResourceCollection;
 use App\Models\Size;
 use App\Services\Admin\UniversalService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class AdminSizeController extends Controller
 {

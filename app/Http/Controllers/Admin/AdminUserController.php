@@ -7,7 +7,7 @@ use App\Http\Requests\User\UserDeleteRequest;
 use App\Http\Requests\User\UserListRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Models\User;
-use App\Services\UserService;
+use App\Services\Admin\UserService;
 use App\Transformers\UserListTransformer;
 use App\Transformers\UserWithProfileTransformer;
 use Illuminate\Http\JsonResponse;

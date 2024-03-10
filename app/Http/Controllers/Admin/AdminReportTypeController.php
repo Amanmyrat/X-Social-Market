@@ -12,7 +12,6 @@ use App\Http\Resources\Admin\ReportType\ReportTypeResourceCollection;
 use App\Models\ReportType;
 use App\Services\Admin\UniversalService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class AdminReportTypeController extends Controller
 {

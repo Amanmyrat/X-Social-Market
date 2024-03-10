@@ -31,6 +31,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property string $description
  * @property string $location
  * @property bool $can_comment
+ * @property bool $is_active
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property MediaCollection<int, Media> $media
@@ -92,6 +93,7 @@ class Post extends Model implements HasMedia
         'description',
         'location',
         'can_comment',
+        'is_active',
     ];
 
     /**

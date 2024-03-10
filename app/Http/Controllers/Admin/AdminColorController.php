@@ -12,7 +12,6 @@ use App\Http\Resources\Admin\Color\ColorResourceCollection;
 use App\Models\Color;
 use App\Services\Admin\UniversalService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class AdminColorController extends Controller
 {

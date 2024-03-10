@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\ReportRequest;
-use App\Models\Post;
 use App\Models\User;
 use App\Services\ReportService;
 use Auth;

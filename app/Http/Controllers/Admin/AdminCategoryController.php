@@ -12,7 +12,6 @@ use App\Http\Resources\Admin\Category\CategoryResourceCollection;
 use App\Models\Category;
 use App\Services\Admin\UniversalService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class AdminCategoryController extends Controller
 {

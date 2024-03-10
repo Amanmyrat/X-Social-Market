@@ -18,14 +18,14 @@ class UserListRequest extends FormRequest
             'is_active',
             '-is_active',
             'created_at',
-            '-created_at'
+            '-created_at',
         ];
         $allowedSortOptionsString = implode(',', $allowedSortOptions);
 
         return [
             'limit' => ['filled', 'integer'],
             'search_query' => ['filled', 'string'],
-            'sort' => ['filled', 'in:' . $allowedSortOptionsString
+            'sort' => ['filled', 'in:'.$allowedSortOptionsString,
             ],
         ];
     }

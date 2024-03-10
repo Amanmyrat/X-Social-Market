@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Location;
+namespace App\Http\Requests\Post;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LocationListRequest extends FormRequest
+class PostListRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -13,8 +13,10 @@ class LocationListRequest extends FormRequest
     {
         $allowedSortOptions = [
             'default',
-            'title',
-            '-title',
+            'caption',
+            '-caption',
+            'price',
+            '-price',
             'is_active',
             '-is_active',
             'created_at',
@@ -25,7 +27,7 @@ class LocationListRequest extends FormRequest
         return [
             'limit' => ['filled', 'integer'],
             'search_query' => ['filled', 'string'],
-            'sort' => ['filled', 'string', 'in:'.$allowedSortOptionsString,
+            'sort' => ['filled', 'in:'.$allowedSortOptionsString,
             ],
         ];
     }

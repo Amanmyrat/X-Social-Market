@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\PostDeleteRequest;
+use App\Http\Requests\Post\PostListRequest;
 use App\Http\Resources\Admin\Post\PostResource;
 use App\Http\Resources\Admin\Post\PostResourceCollection;
 use App\Models\Post;
 use App\Services\Admin\PostService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class AdminPostController extends Controller
 {
@@ -20,12 +20,14 @@ class AdminPostController extends Controller
     /**
      * Posts list
      */
-    public function list(Request $request): PostResourceCollection
+    public function list(PostListRequest $request): PostResourceCollection
     {
-        $limit = $request->limit ?? 10;
-        $query = $request->search_query ?? null;
+        $validated = $request->validated();
+        $limit = $validated['limit'] ?? 10;
+        $query = $validated['search_query'] ?? null;
+        $sort = $validated['sort'] ?? null;
 
-        $posts = $this->service->list($limit, $query);
+        $posts = $this->service->list($limit, $query, $sort);
 
         return new PostResourceCollection($posts);
     }

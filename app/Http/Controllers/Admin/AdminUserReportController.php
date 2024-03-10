@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserReport\UserReportListRequest;
 use App\Http\Resources\Admin\UserReport\UserReportResource;
 use App\Http\Resources\Admin\UserReport\UserReportUserResource;
 use App\Models\User;
 use App\Services\Admin\UserReportService;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AdminUserReportController extends Controller
@@ -19,12 +19,14 @@ class AdminUserReportController extends Controller
     /**
      * User report list
      */
-    public function list(Request $request): AnonymousResourceCollection
+    public function list(UserReportListRequest $request): AnonymousResourceCollection
     {
-        $limit = $request->limit ?? 10;
-        $query = $request->search_query ?? null;
+        $validated = $request->validated();
+        $limit = $validated['limit'] ?? 10;
+        $query = $validated['search_query'] ?? null;
+        $sort = $validated['sort'] ?? null;
 
-        $users = $this->service->list($limit, $query);
+        $users = $this->service->list($limit, $query, $sort);
 
         return UserReportResource::collection($users);
     }

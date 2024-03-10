@@ -3,14 +3,17 @@
 namespace App\Services\Admin;
 
 use App\Models\User;
+use App\Traits\SortableTrait;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserReportService
 {
-    public function list(int $limit, ?string $search_query = null): LengthAwarePaginator
+    use SortableTrait;
+
+    public function list(int $limit, ?string $search_query = null, ?string $sort = null): LengthAwarePaginator
     {
-        return User::withCount(['reportsAgainst as reports_count'])
+        $query = User::withCount(['reportsAgainst as reports_count'])
             ->with(['profile', 'latestReportAgainst' => function ($query) {
                 $query->with(['reportType']);
             }])
@@ -22,9 +25,15 @@ class UserReportService
                     ->orWhereHas('profile', function ($query) use ($search_query) {
                         $query->where('full_name', 'LIKE', $search_query);
                     });
-            })
-            ->orderByDesc('reports_count')
-            ->paginate($limit);
+            });
+
+        if (($sort == 'default')) {
+            $query->orderByDesc('reports_count');
+        } else {
+            $this->applySorting($query, $sort, ['username', 'is_active', 'created_at', 'reports_count']);
+        }
+
+        return $query->paginate($limit);
     }
 
     public function getUsersWhoReportedUser(User $user): Collection

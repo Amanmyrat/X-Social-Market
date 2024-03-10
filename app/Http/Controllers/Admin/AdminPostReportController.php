@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PostReport\PostReportListRequest;
 use App\Http\Resources\Admin\PostReport\PostReportResource;
 use App\Http\Resources\Admin\PostReport\PostReportUserResource;
 use App\Models\Post;
 use App\Services\Admin\PostReportService;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AdminPostReportController extends Controller
@@ -19,12 +19,14 @@ class AdminPostReportController extends Controller
     /**
      * Post report list
      */
-    public function list(Request $request): AnonymousResourceCollection
+    public function list(PostReportListRequest $request): AnonymousResourceCollection
     {
-        $limit = $request->limit ?? 10;
-        $query = $request->search_query ?? null;
+        $validated = $request->validated();
+        $limit = $validated['limit'] ?? 10;
+        $query = $validated['search_query'] ?? null;
+        $sort = $validated['sort'] ?? null;
 
-        $posts = $this->service->list($limit, $query);
+        $posts = $this->service->list($limit, $query, $sort);
 
         return PostReportResource::collection($posts);
     }

@@ -57,21 +57,16 @@ class UniversalService
 
         // Sorting logic
         if (! is_null($sort)) {
-            $direction = 'asc';
-            $isDescending = str_starts_with($sort, '-');
-            if ($isDescending) {
-                $direction = 'desc';
-                $sort = substr($sort, 1); // Remove "-" prefix
+            // Initialize sorting direction based on the presence of "-" prefix
+            $direction = str_starts_with($sort, '-') ? 'desc' : 'asc';
+
+            // If sorting by 'is_active', adjust direction for natural boolean order preference
+            if (in_array(ltrim($sort, '-'), ['is_active'])) {
+                $direction = $direction === 'asc' ? 'desc' : 'asc'; // Flip direction
             }
 
-            // Adjust for boolean fields to reverse the default sort order
-            if ($sort === 'is_active' && !$isDescending) {
-                // For ascending sort on boolean, flip to descending to get true values first
-                $direction = 'desc';
-            } else if ($sort === 'is_active' && $isDescending) {
-                // For descending sort on boolean, flip to ascending to get false values first
-                $direction = 'asc';
-            }
+            // Remove "-" prefix from sort parameter if present
+            $sort = ltrim($sort, '-');
 
             // Check for direct attribute sorting
             if (in_array($sort, ['title', 'is_active', 'created_at'])) {
@@ -91,7 +86,7 @@ class UniversalService
             $query->latest();
         }
 
-        return $query->latest()->paginate($limit);
+        return $query->paginate($limit);
     }
 
     /**

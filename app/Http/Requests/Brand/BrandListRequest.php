@@ -11,15 +11,22 @@ class BrandListRequest extends FormRequest
      */
     public function rules(): array
     {
+        $allowedSortOptions = [
+            'default',
+            'title',
+            '-title',
+            'is_active',
+            '-is_active',
+            'products_count',
+            '-products_count',
+        ];
+        $allowedSortOptionsString = implode(',', $allowedSortOptions);
+
         return [
             'limit' => ['filled', 'integer'],
             'search_query' => ['filled', 'string'],
             'type' => ['filled', 'in:simple,clothing'],
-            'sort' => ['filled', 'string', 'in:default,
-                        title,-title,
-                        is_active,-is_active,
-                        products_count,-products_count'
-            ],
+            'sort' => ['filled', 'string', 'in:' . $allowedSortOptionsString],
         ];
     }
 }

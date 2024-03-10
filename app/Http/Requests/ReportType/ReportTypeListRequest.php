@@ -11,16 +11,27 @@ class ReportTypeListRequest extends FormRequest
      */
     public function rules(): array
     {
+        $allowedSortOptions = [
+            'default',
+            'title',
+            '-title',
+            'is_active',
+            '-is_active',
+            'created_at',
+            '-created_at',
+            'story_reports_count',
+            '-story_reports_count',
+            'post_reports_count',
+            '-post_reports_count',
+            'user_reports_count',
+            '-user_reports_count',
+        ];
+        $allowedSortOptionsString = implode(',', $allowedSortOptions);
+
         return [
             'limit' => ['filled', 'integer'],
             'search_query' => ['filled', 'string'],
-            'sort' => ['filled', 'string', 'in:default,
-                        title,-title,
-                        is_active,-is_active,
-                        created_at,-created_at,
-                        story_reports_count,-story_reports_count,
-                        post_reports_count,-post_reports_count,
-                        user_reports_count,-user_reports_count',
+            'sort' => ['filled', 'string', 'in:' . $allowedSortOptionsString,
             ],
         ];
     }

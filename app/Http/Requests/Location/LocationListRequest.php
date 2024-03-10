@@ -11,13 +11,21 @@ class LocationListRequest extends FormRequest
      */
     public function rules(): array
     {
+        $allowedSortOptions = [
+            'default',
+            'title',
+            '-title',
+            'is_active',
+            '-is_active',
+            'created_at',
+            '-created_at',
+        ];
+        $allowedSortOptionsString = implode(',', $allowedSortOptions);
+
         return [
             'limit' => ['filled', 'integer'],
             'search_query' => ['filled', 'string'],
-            'sort' => ['filled', 'string', 'in:default,
-                        title,-title,
-                        is_active,-is_active,
-                        created_at,-created_at'
+            'sort' => ['filled', 'string', 'in:' . $allowedSortOptionsString
             ],
         ];
     }

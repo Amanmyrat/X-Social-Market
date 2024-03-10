@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Size\SizeCreateRequest;
 use App\Http\Requests\Size\SizeDeleteRequest;
+use App\Http\Requests\Size\SizeListRequest;
 use App\Http\Requests\Size\SizeUpdateRequest;
 use App\Http\Resources\Admin\Size\SizeResource;
 use App\Http\Resources\Admin\Size\SizeResourceCollection;
@@ -23,12 +24,14 @@ class AdminSizeController extends Controller
     /**
      * Sizes list
      */
-    public function list(Request $request): SizeResourceCollection
+    public function list(SizeListRequest $request): SizeResourceCollection
     {
-        $limit = $request->limit ?? 10;
-        $query = $request->search_query ?? null;
+        $validated = $request->validated();
+        $limit = $validated['limit'] ?? 10;
+        $query = $validated['search_query'] ?? null;
+        $sort = $validated['sort'] ?? null;
 
-        $sizes = $this->service->list($limit, $query);
+        $sizes = $this->service->list(limit: $limit, search_query: $query, sort: $sort);
 
         return new SizeResourceCollection($sizes);
     }

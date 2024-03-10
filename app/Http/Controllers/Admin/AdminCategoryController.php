@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Category\CategoryCreateRequest;
 use App\Http\Requests\Category\CategoryDeleteRequest;
+use App\Http\Requests\Category\CategoryListRequest;
 use App\Http\Requests\Category\CategoryUpdateRequest;
 use App\Http\Resources\Admin\Category\CategoryResource;
 use App\Http\Resources\Admin\Category\CategoryResourceCollection;
@@ -23,15 +24,18 @@ class AdminCategoryController extends Controller
     /**
      * Categories list
      */
-    public function list(Request $request): CategoryResourceCollection
+    public function list(CategoryListRequest $request): CategoryResourceCollection
     {
-        $limit = $request->limit ?? 10;
-        $query = $request->search_query ?? null;
+        $validated = $request->validated();
+        $limit = $validated['limit'] ?? 10;
+        $query = $validated['search_query'] ?? null;
+        $sort = $validated['sort'] ?? null;
 
         $categories = $this->service->list(
             limit: $limit,
             search_query: $query,
-            relationsCount: ['posts']
+            relationsCount: ['posts'],
+            sort: $sort
         );
 
         return new CategoryResourceCollection($categories);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Location\LocationCreateRequest;
 use App\Http\Requests\Location\LocationDeleteRequest;
+use App\Http\Requests\Location\LocationListRequest;
 use App\Http\Requests\Location\LocationUpdateRequest;
 use App\Http\Resources\Admin\Location\LocationResource;
 use App\Models\Location;
@@ -23,12 +24,14 @@ class AdminLocationController extends Controller
     /**
      * Locations list
      */
-    public function list(Request $request): AnonymousResourceCollection
+    public function list(LocationListRequest $request): AnonymousResourceCollection
     {
-        $limit = $request->limit ?? 10;
-        $query = $request->search_query ?? null;
+        $validated = $request->validated();
+        $limit = $validated['limit'] ?? 10;
+        $query = $validated['search_query'] ?? null;
+        $sort = $validated['sort'] ?? null;
 
-        $locations = $this->service->list($limit, $query);
+        $locations = $this->service->list(limit: $limit, search_query: $query, sort: $sort);
 
         return LocationResource::collection($locations);
     }

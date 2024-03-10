@@ -26,6 +26,7 @@ class ReportTypeResource extends JsonResource
             'is_active' => $this->resource->is_active,
             'post_reports_count' => $this->resource->post_reports_count,
             'story_reports_count' => $this->resource->story_reports_count,
+            'user_reports_count' => $this->resource->user_reports_count,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
 
@@ -35,6 +36,7 @@ class ReportTypeResource extends JsonResource
             'is_active' => $this->resource->is_active,
             'post_reports_count' => $this->resource->post_reports_count,
             'story_reports_count' => $this->resource->story_reports_count,
+            'user_reports_count' => $this->resource->user_reports_count,
             'created_at' => $this->resource->created_at,
         ];
     }

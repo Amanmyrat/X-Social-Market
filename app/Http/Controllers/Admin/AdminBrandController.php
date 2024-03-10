@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Brand\BrandCreateRequest;
 use App\Http\Requests\Brand\BrandDeleteRequest;
+use App\Http\Requests\Brand\BrandListRequest;
 use App\Http\Requests\Brand\BrandUpdateRequest;
 use App\Http\Resources\Admin\Brand\BrandResource;
 use App\Http\Resources\Admin\Brand\BrandResourceCollection;
@@ -23,11 +24,13 @@ class AdminBrandController extends Controller
     /**
      * Brands list
      */
-    public function list(Request $request): BrandResourceCollection
+    public function list(BrandListRequest $request): BrandResourceCollection
     {
-        $limit = $request->limit ?? 10;
-        $query = $request->search_query ?? null;
-        $type = $request->type ?? Brand::TYPE_SIMPLE;
+        $validated = $request->validated();
+        $limit = $validated['limit'] ?? 10;
+        $query = $validated['search_query'] ?? null;
+        $type = $validated['type'] ?? Brand::TYPE_SIMPLE;
+        $sort = $validated['sort'] ?? null;
 
         $conditions['type'] = $type;
 
@@ -35,7 +38,8 @@ class AdminBrandController extends Controller
             limit: $limit,
             search_query: $query,
             conditions: $conditions,
-            relationsCount: ['products']
+            relationsCount: ['products'],
+            sort: $sort
         );
 
         return new BrandResourceCollection($brands);

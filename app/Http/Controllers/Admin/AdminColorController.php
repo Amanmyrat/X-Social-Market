@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Color\ColorCreateRequest;
 use App\Http\Requests\Color\ColorDeleteRequest;
+use App\Http\Requests\Color\ColorListRequest;
 use App\Http\Requests\Color\ColorUpdateRequest;
 use App\Http\Resources\Admin\Color\ColorResource;
 use App\Http\Resources\Admin\Color\ColorResourceCollection;
@@ -23,12 +24,14 @@ class AdminColorController extends Controller
     /**
      * Colors list
      */
-    public function list(Request $request): ColorResourceCollection
+    public function list(ColorListRequest $request): ColorResourceCollection
     {
-        $limit = $request->limit ?? 10;
-        $query = $request->search_query ?? null;
+        $validated = $request->validated();
+        $limit = $validated['limit'] ?? 10;
+        $query = $validated['search_query'] ?? null;
+        $sort = $validated['sort'] ?? null;
 
-        $colors = $this->service->list($limit, $query);
+        $colors = $this->service->list(limit: $limit, search_query: $query, sort: $sort);
 
         return new ColorResourceCollection($colors);
     }

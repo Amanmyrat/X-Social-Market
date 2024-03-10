@@ -59,4 +59,9 @@ class ReportType extends Model
     {
         return $this->hasMany(StoryReport::class);
     }
+
+    public function userReports(): HasMany
+    {
+        return $this->hasMany(UserReport::class);
+    }
 }

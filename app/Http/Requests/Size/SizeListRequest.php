@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Http\Requests\Size;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class SizeListRequest extends FormRequest
+{
+    /**
+     * Get the validation rules that apply to the request.
+     */
+    public function rules(): array
+    {
+        return [
+            'limit' => ['filled', 'integer'],
+            'search_query' => ['filled', 'string'],
+            'sort' => ['filled', 'string'],
+        ];
+    }
+}

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReportType\ReportTypeCreateRequest;
 use App\Http\Requests\ReportType\ReportTypeDeleteRequest;
+use App\Http\Requests\ReportType\ReportTypeListRequest;
 use App\Http\Requests\ReportType\ReportTypeUpdateRequest;
 use App\Http\Resources\Admin\ReportType\ReportTypeResource;
 use App\Http\Resources\Admin\ReportType\ReportTypeResourceCollection;
@@ -23,15 +24,18 @@ class AdminReportTypeController extends Controller
     /**
      * Report types list
      */
-    public function list(Request $request): ReportTypeResourceCollection
+    public function list(ReportTypeListRequest $request): ReportTypeResourceCollection
     {
-        $limit = $request->limit ?? 10;
-        $query = $request->search_query ?? null;
+        $validated = $request->validated();
+        $limit = $validated['limit'] ?? 10;
+        $query = $validated['search_query'] ?? null;
+        $sort = $validated['sort'] ?? null;
 
         $types = $this->service->list(
             limit: $limit,
             search_query: $query,
-            relationsCount: ['postReports', 'storyReports']
+            relationsCount: ['postReports', 'storyReports', 'userReports'],
+            sort: $sort
         );
 
         return new ReportTypeResourceCollection($types);
@@ -43,7 +47,7 @@ class AdminReportTypeController extends Controller
     public function reportTypeDetails(ReportType $reportType): ReportTypeResource
     {
         return new ReportTypeResource(
-            $reportType->loadCount(['postReports', 'storyReports']),
+            $reportType->loadCount(['postReports', 'storyReports', 'userReports']),
             true
         );
     }
@@ -69,7 +73,7 @@ class AdminReportTypeController extends Controller
         $type = $this->service->update($reportType, $request->validated());
 
         return new ReportTypeResource(
-            $type->loadCount(['postReports', 'storyReports']),
+            $type->loadCount(['postReports', 'storyReports', 'userReports']),
             true
         );
     }

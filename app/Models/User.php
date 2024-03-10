@@ -243,4 +243,21 @@ class User extends Authenticatable
     {
         return $this->hasManyThrough(PostRating::class, Post::class);
     }
+
+    // Reports this user has made
+    public function reportsMade(): HasMany
+    {
+        return $this->hasMany(UserReport::class, 'user_id');
+    }
+
+    // Reports where this user is reported by others
+    public function reportsAgainst(): HasMany
+    {
+        return $this->hasMany(UserReport::class, 'reported_user_id');
+    }
+
+    public function latestReportAgainst(): HasOne
+    {
+        return $this->hasOne(UserReport::class, 'reported_user_id')->latestOfMany();
+    }
 }

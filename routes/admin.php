@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\AdminPostReportController;
 use App\Http\Controllers\Admin\AdminReportTypeController;
 use App\Http\Controllers\Admin\AdminSizeController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminUserReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -88,6 +89,11 @@ Route::prefix('admin')->group(function () {
         Route::prefix('post/reports')->group(function () {
             Route::post('/', [AdminPostReportController::class, 'list']);
             Route::post('/{post}/users', [AdminPostReportController::class, 'reportUsers']);
+        });
+
+        Route::prefix('user/reports')->group(function () {
+            Route::post('/', [AdminUserReportController::class, 'list']);
+            Route::post('/{user}/users', [AdminUserReportController::class, 'reportUsers']);
         });
     });
 });

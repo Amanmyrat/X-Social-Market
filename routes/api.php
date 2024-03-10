@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\StoryReportController;
 use App\Http\Controllers\Api\StoryViewController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserProfileController;
+use App\Http\Controllers\Api\UserReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -73,6 +74,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('search', [UserController::class, 'search']);
         Route::post('/notifications', [NotificationController::class, 'list']);
 
+        Route::post('/{user}/report', [UserReportController::class, 'reportUser']);
     });
 
     Route::prefix('posts')->group(function () {

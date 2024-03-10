@@ -12,8 +12,7 @@ class PostReportService
     {
         return Post::withCount(['postReports as reports_count'])
             ->with(['media', 'user', 'latestReport' => function ($query) {
-                // Optionally, you can add conditions or select specific fields
-                $query->with(['reportType']); // Assuming you might want details about the report type
+                $query->with(['reportType']);
             }])
             ->has('postReports')
             ->when($search_query, function ($query) use ($search_query) {
@@ -26,6 +25,6 @@ class PostReportService
 
     public function getUsersWhoReportedPost(Post $post): Collection
     {
-        return $post->postReports()->with(['user', 'reportType'])->get();
+        return $post->postReports()->with(['user.profile', 'reportType'])->get();
     }
 }

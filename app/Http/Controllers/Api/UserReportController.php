@@ -4,22 +4,23 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\ReportRequest;
 use App\Models\Post;
+use App\Models\User;
 use App\Services\ReportService;
 use Auth;
 use Illuminate\Http\JsonResponse;
 
-class PostReportController
+class UserReportController
 {
     public function __construct(protected ReportService $service)
     {
     }
 
     /**
-     * Report a post
+     * Report user
      */
-    public function reportPost(Post $post, ReportRequest $request): JsonResponse
+    public function reportUser(User $user, ReportRequest $request): JsonResponse
     {
-        $this->service->reportPost($post, $request->validated(), Auth::id());
+        $this->service->reportUser($user, $request->validated(), Auth::id());
 
         return new JsonResponse([
             'success' => true,

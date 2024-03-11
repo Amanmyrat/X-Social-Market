@@ -17,7 +17,7 @@ class AdminLoginRequest extends FormRequest
              *
              * @var string
              *
-             * @example admin@gmail.com
+             * @example super_admin@gmail.com
              */
             'email' => 'required|email',
 

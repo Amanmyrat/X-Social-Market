@@ -28,6 +28,8 @@ use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleMiddleware;
 
 class Kernel extends HttpKernel
 {
@@ -91,5 +93,7 @@ class Kernel extends HttpKernel
         'verified' => EnsureEmailIsVerified::class,
         'type.admin' => AdminMiddleware::class,
         'type.user' => UserMiddleware::class,
+        'permission' => PermissionMiddleware::class,
+        'role' => RoleMiddleware::class,
     ];
 }

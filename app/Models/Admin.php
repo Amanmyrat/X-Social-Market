@@ -10,15 +10,18 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\PersonalAccessToken;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * App\Models\Admin
  *
  * @property int $id
  * @property string $name
+ * @property string $surname
+ * @property string $phone
  * @property string $email
  * @property string $password
- * @property bool $is_super
+ * @property bool $is_active
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, PersonalAccessToken> $tokens
@@ -39,7 +42,9 @@ use Laravel\Sanctum\PersonalAccessToken;
  */
 class Admin extends Authenticatable
 {
-    use HasApiTokens, HasFactory;
+    use HasApiTokens, HasFactory, HasRoles;
+
+    protected string $guard_name = 'admin';
 
     /**
      * The attributes that are mass assignable.
@@ -48,8 +53,11 @@ class Admin extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'surname',
+        'phone',
         'email',
         'password',
+        'is_active',
     ];
 
     /**

@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Admin;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\PermissionRegistrar;
 
 class AdminSeeder extends Seeder
 {
@@ -13,11 +14,16 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('admins')->insert([
-            'name' => 'admin',
-            'email' => 'admin@gmail.com',
-            'password' => Hash::make(12345678),
-            'is_super' => true,
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
+        $superAdmin = Admin::create([
+            'name' => 'Super Admin',
+            'email' => 'super_admin@gmail.com',
+            'password' => Hash::make('12345678'),
         ]);
+
+        // Assign the "super-admin" role to this user
+        $superAdmin->assignRole('super-admin');
+
     }
 }

@@ -37,41 +37,41 @@ use Illuminate\Support\Facades\Route;
 //Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
 Route::prefix('users')->group(function () {
-    Route::post('otp/send', [OtpController::class, 'sendOTP']);
-    Route::post('otp/confirm', [OtpController::class, 'confirmOTP']);
+    Route::post('/otp/send', [OtpController::class, 'sendOTP']);
+    Route::post('/otp/confirm', [OtpController::class, 'confirmOTP']);
 
-    Route::post('register', [AuthController::class, 'register']);
-    Route::post('login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
 });
 
 Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     Route::prefix('users')->group(function () {
-        Route::post('update', [UserController::class, 'update']);
-        Route::post('password/update', [UserController::class, 'updatePassword']);
-        Route::post('password/new', [UserController::class, 'newPassword']);
-        Route::post('delete', [UserController::class, 'delete']);
-        Route::post('phone/update', [UserController::class, 'updatePhone']);
+        Route::post('/update', [UserController::class, 'update']);
+        Route::post('/password/update', [UserController::class, 'updatePassword']);
+        Route::post('/password/new', [UserController::class, 'newPassword']);
+        Route::post('/delete', [UserController::class, 'delete']);
+        Route::post('/phone/update', [UserController::class, 'updatePhone']);
 
-        Route::post('profile/update', [UserProfileController::class, 'update']);
-        Route::post('profile/get/{user}', [UserProfileController::class, 'get']);
+        Route::post('/profile/update', [UserProfileController::class, 'update']);
+        Route::post('/profile/get/{user}', [UserProfileController::class, 'get']);
 
-        Route::post('follow', [FollowerController::class, 'follow']);
-        Route::post('unfollow', [FollowerController::class, 'unfollow']);
+        Route::post('/follow', [FollowerController::class, 'follow']);
+        Route::post('/unfollow', [FollowerController::class, 'unfollow']);
 
-        Route::post('follow/request', [FollowerRequestController::class, 'followRequest']);
-        Route::post('follow/request/{user}/accept', [FollowerRequestController::class, 'accept']);
-        Route::post('follow/request/{user}/decline', [FollowerRequestController::class, 'decline']);
+        Route::post('/follow/request', [FollowerRequestController::class, 'followRequest']);
+        Route::post('/follow/request/{user}/accept', [FollowerRequestController::class, 'accept']);
+        Route::post('/follow/request/{user}/decline', [FollowerRequestController::class, 'decline']);
 
-        Route::post('{user}/stories', [StoryController::class, 'userStories']);
-        Route::post('{user}/posts', [PostController::class, 'userPosts']);
+        Route::post('/{user}/stories', [StoryController::class, 'userStories']);
+        Route::post('/{user}/posts', [PostController::class, 'userPosts']);
 
-        Route::post('block', [BlockedUserController::class, 'block']);
-        Route::post('unblock', [BlockedUserController::class, 'unblock']);
+        Route::post('/block', [BlockedUserController::class, 'block']);
+        Route::post('/unblock', [BlockedUserController::class, 'unblock']);
 
-        Route::post('block/list', [BlockedUserController::class, 'blockedList']);
+        Route::post('/block/list', [BlockedUserController::class, 'blockedList']);
 
-        Route::post('make/seller', [UserController::class, 'makeAccountBusiness']);
-        Route::post('search', [UserController::class, 'search']);
+        Route::post('/make/seller', [UserController::class, 'makeAccountBusiness']);
+        Route::post('/search', [UserController::class, 'search']);
         Route::post('/notifications', [NotificationController::class, 'list']);
 
         Route::post('/{user}/report', [UserReportController::class, 'reportUser']);
@@ -94,7 +94,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/favorites/{post}/users', [PostFavoritesController::class, 'favoriteUsers']);
         Route::post('/favorites', [PostFavoritesController::class, 'favorites']);
 
-        Route::post('bookmarks', [PostBookmarkController::class, 'bookmarks']);
+        Route::post('/bookmarks', [PostBookmarkController::class, 'bookmarks']);
         Route::post('/bookmarks/{post}/change', [PostBookmarkController::class, 'change']);
 
         Route::post('/{post}/comments', [PostCommentController::class, 'comments']);
@@ -120,17 +120,17 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/views/{story}/view', [StoryViewController::class, 'view']);
     });
 
-    Route::post('followers', [FollowerController::class, 'followers']);
-    Route::post('users/{user}/followers', [FollowerController::class, 'userFollowers']);
-    Route::post('users/{user}/followings', [FollowerController::class, 'userFollowings']);
+    Route::post('/followers', [FollowerController::class, 'followers']);
+    Route::post('/users/{user}/followers', [FollowerController::class, 'userFollowers']);
+    Route::post('/users/{user}/followings', [FollowerController::class, 'userFollowings']);
 
     Route::prefix('followings')->group(function () {
         Route::post('/', [FollowerController::class, 'followings']);
-        Route::post('stories', [StoryController::class, 'followingStories']);
+        Route::post('/stories', [StoryController::class, 'followingStories']);
     });
 
-    Route::post('follow/outgoing/requests', [FollowerRequestController::class, 'followerRequests']);
-    Route::post('follow/incoming/requests', [FollowerRequestController::class, 'followingRequests']);
+    Route::post('/follow/outgoing/requests', [FollowerRequestController::class, 'followerRequests']);
+    Route::post('/follow/incoming/requests', [FollowerRequestController::class, 'followingRequests']);
 
     Route::post('/chat/create', [ChatController::class, 'createChat']);
     Route::post('/chat/list', [ChatController::class, 'listChats']);
@@ -154,6 +154,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
 });
 Route::post('/users/all/list', [UserController::class, 'getAll']);
 
-Route::post('guest/posts/all/list', [PostController::class, 'guestAllPosts']);
+Route::post('/guest/posts/all/list', [PostController::class, 'guestAllPosts']);
 
 require __DIR__.'/admin.php';

@@ -14,7 +14,9 @@ class UserMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param Request $request
+     * @param Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @return Response
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -29,7 +31,12 @@ class UserMiddleware
                         'reason' => $user->block_reason,
                     ], 403);
             }
-
+            if (!$user->is_active) {
+                return response()->json(
+                    [
+                        'message' => ErrorMessage::ACCOUNT_DISABLED_ERROR->value,
+                    ], 403);
+            }
             return $next($request);
         }
 

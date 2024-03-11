@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Enum\ErrorMessage;
+use App\Models\Admin;
 use Auth;
 use Closure;
 use Illuminate\Http\Request;
@@ -12,11 +14,22 @@ class AdminMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param Request $request
+     * @param Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @return Response
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user()->tokenCan('role:admin')) {
+        /** @var Admin $user */
+        $user = Auth::user();
+
+        if ($user->tokenCan('role:admin')) {
+            if (!$user->is_active) {
+                return response()->json(
+                    [
+                        'message' => ErrorMessage::ACCOUNT_DISABLED_ERROR->value,
+                    ], 403);
+            }
             return $next($request);
         }
 

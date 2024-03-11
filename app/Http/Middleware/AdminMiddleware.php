@@ -14,9 +14,7 @@ class AdminMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
-     * @param Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     * @return Response
+     * @param  Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -24,12 +22,14 @@ class AdminMiddleware
         $user = Auth::user();
 
         if ($user->tokenCan('role:admin')) {
-            if (!$user->is_active) {
+            if (! $user->is_active) {
                 return response()->json(
                     [
                         'message' => ErrorMessage::ACCOUNT_DISABLED_ERROR->value,
                     ], 403);
             }
+            $user->update(['last_activity' => now()]);
+
             return $next($request);
         }
 

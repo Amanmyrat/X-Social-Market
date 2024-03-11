@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminLoginRequest;
-use App\Http\Resources\Admin\AdminResource;
+use App\Http\Resources\Admin\Admin\AdminLoginResource;
 use App\Models\Admin;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
@@ -28,7 +28,7 @@ class AdminAuthController extends Controller
         }
 
         return response()->json([
-            'admin' => new AdminResource($admin),
+            'admin' => new AdminLoginResource($admin),
             'token' => $admin->createToken('mobile', ['role:admin'])->plainTextToken,
             'success' => true,
         ]);

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAdminController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminBrandController;
 use App\Http\Controllers\Admin\AdminCategoryController;
@@ -102,6 +103,17 @@ Route::group(['prefix' => 'admin', 'middleware' => ['role:super-admin|admin']], 
                 Route::post('/', [AdminPostController::class, 'list']);
                 Route::get('/{post}', [AdminPostController::class, 'postDetails']);
                 Route::post('/delete', [AdminPostController::class, 'delete']);
+            });
+
+        Route::prefix('admins')->middleware('role:super-admin')
+            ->group(function () {
+                Route::post('/', [AdminAdminController::class, 'list']);
+                Route::post('/create', [AdminAdminController::class, 'create']);
+                Route::get('/{admin}', [AdminAdminController::class, 'adminDetails']);
+                Route::post('/update/{admin}', [AdminAdminController::class, 'update']);
+                Route::post('/delete', [AdminAdminController::class, 'delete']);
+                Route::post('/roles', [AdminAdminController::class, 'roles']);
+                Route::post('/permissions', [AdminAdminController::class, 'permissions']);
             });
     });
 });

@@ -16,13 +16,9 @@ class OtpService
     {
         $code = random_int(1000, 9999);
         $phoneNumber = '+993'.$validated['phone'];
-        $message = "Siziň gysga wagtlaýyn tassyklaak üçin koduňyz: $code";
+        $message = "Siziň Tanat koduňyz: $code";
 
-        $command = sprintf(
-            'gammu sendsms TEXT %s -text "%s"',
-            escapeshellarg($phoneNumber),
-            escapeshellarg($message)
-        );
+        $command = 'gammu sendsms TEXT ' . escapeshellarg($phoneNumber) . ' -text ' . escapeshellarg($message);
 
         // Execute the command
         exec($command, $output, $returnVar);

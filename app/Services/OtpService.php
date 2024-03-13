@@ -2,61 +2,58 @@
 
 namespace App\Services;
 
+use App\Enum\ErrorMessage;
 use App\Models\OtpCode;
 use Carbon\Carbon;
 use Exception;
-use Http;
-use Illuminate\Http\Request;
 
 class OtpService
 {
     /**
      * @throws Exception
      */
-    public static function sendOTP(Request $request): int
+    public function sendOTP(array $validated): int
     {
-        $validated = $request->validate(
-            [
-                'phone' => ['required', 'integer'],
-            ]
+        $code = random_int(1000, 9999);
+        $phoneNumber = '+993'.$validated['phone'];
+        $message = "Siziň gysga wagtlaýyn tassyklaak üçin koduňyz: $code";
+
+        $command = sprintf(
+            'gammu sendsms TEXT %s -text "%s"',
+            escapeshellarg($phoneNumber),
+            escapeshellarg($message)
         );
 
-        $code = random_int(1000, 9999);
-        $response = Http::post(config('otp.url'), [
-            'phoneNumber' => '+993'.$validated['phone'],
-            'code' => 'Siziň gysga wagtlaýyn tassyklaak üçin koduňyz: '.$code,
-        ]);
+        // Execute the command
+        exec($command, $output, $returnVar);
 
-        if ($response->status() == 200) {
-            OtpCode::create(['phone' => $validated['phone'], 'code' => $code, 'valid_until' => Carbon::now()->addMinutes(config('otp.timeout'))]);
+        if ($returnVar === 0) {
+            OtpCode::create([
+                'phone' => $validated['phone'],
+                'code' => $code,
+                'valid_until' => Carbon::now()->addMinutes(config('otp.timeout')),
+            ]);
 
             return $code;
         }
 
-        return -1;
+        throw new Exception(ErrorMessage::OTP_DID_NOT_SENT_ERROR);
     }
 
-    public static function confirmOTP(Request $request): int
+    /**
+     * @throws Exception
+     */
+    public static function confirmOTP(array $validated): void
     {
-        $validated = $request->validate(
-            [
-                'code' => ['required', 'integer', 'between:1000,9999'],
-                'phone' => ['required', 'integer'],
-            ]
-        );
-
         $otpCode = OtpCode::where('phone', $validated['phone'])->first();
 
-        if (! isset($otpCode)) {
-            return -1;
-        }
-        if ($otpCode->code != $validated['code']) {
-            return -1;
-        }
-        if (Carbon::now() > $otpCode->valid_until) {
-            return 0;
+        if (! $otpCode || $otpCode->code != $validated['code']) {
+            throw new Exception(ErrorMessage::OTP_DID_NOT_MATCH_ERROR);
         }
 
-        return 1;
+        if (Carbon::now() > $otpCode->valid_until) {
+            throw new Exception(ErrorMessage::OTP_TIMEOUT_ERROR);
+        }
+
     }
 }

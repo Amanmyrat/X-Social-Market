@@ -2,59 +2,53 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\Otp\OtpConfirmRequest;
+use App\Http\Requests\Otp\OtpSendRequest;
 use App\Services\OtpService;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
-class OtpController extends ApiBaseController
+class OtpController
 {
+    public function __construct(protected OtpService $service)
+    {
+    }
+
     /**
-     * Send otp code to the given phone
+     * Send otp code
      *
      * @unauthenticated
      *
      * @throws Exception
      */
-    public function sendOTP(Request $request): JsonResponse
+    public function sendOTP(OtpSendRequest $request): JsonResponse
     {
-        $code = OtpService::sendOtp($request);
+        try {
+            $code = $this->service->sendOtp($request->validated());
 
-        if ($code != -1) {
-            return new JsonResponse([
+            return response()->json([
                 'success' => true,
-                'data' => [
-                    'code' => $code,
-                ],
+                'data' => ['code' => $code],
             ]);
-        } else {
-            return $this->respondWithError('Error occurred', 400);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
         }
-
     }
 
     /**
-     * Confirm otp code to the given phone
+     * Confirm otp code
      *
      * @unauthenticated
      */
-    public function confirmOTP(Request $request): JsonResponse
+    public function confirmOTP(OtpConfirmRequest $request): JsonResponse
     {
-        $confirmed = OtpService::confirmOtp($request);
+        try {
+            $this->service->confirmOtp($request->validated());
 
-        if ($confirmed == -1) {
-            $this->setStatusCode(400);
-
-            return $this->respondWithError('OTP did not match', 400);
-        } elseif ($confirmed == 0) {
-            $this->setStatusCode(400);
-
-            return $this->respondWithError('OTP timeout', 400);
+            return response()->json(['success' => true]);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
         }
-
-        return new JsonResponse([
-            'success' => true,
-        ]);
 
     }
 }

@@ -25,7 +25,7 @@ class ColorResource extends JsonResource
             'title' => $this->resource->title,
             'code' => $this->resource->code,
             'is_active' => $this->resource->is_active,
-            'products_count' => 0,
+            'products_count' => $this->resource->products_count,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
 
@@ -34,7 +34,7 @@ class ColorResource extends JsonResource
             'title' => $this->resource->title,
             'code' => $this->resource->code,
             'is_active' => $this->resource->is_active,
-            'products_count' => 0,
+            'products_count' => $this->resource->products_count,
             'created_at' => $this->resource->created_at,
         ];
     }

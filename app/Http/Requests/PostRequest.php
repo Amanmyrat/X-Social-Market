@@ -30,7 +30,7 @@ class PostRequest extends FormRequest
              *   "product": {
              *     "brand_id": 1,
              *     "gender": "male",
-             *     "options": [{
+             *     "options": {
              *       "colors": [{
              *         "color_id": 1,
              *         "sizes": [{
@@ -39,7 +39,7 @@ class PostRequest extends FormRequest
              *           "stock": 101
              *         }]
              *       }]
-             *     }]
+             *     }
              *   }
              * }
              */

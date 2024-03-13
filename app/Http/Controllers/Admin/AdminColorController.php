@@ -30,7 +30,7 @@ class AdminColorController extends Controller
         $query = $validated['search_query'] ?? null;
         $sort = $validated['sort'] ?? null;
 
-        $colors = $this->service->list(limit: $limit, search_query: $query, sort: $sort);
+        $colors = $this->service->list(limit: $limit, search_query: $query, relationsCount: ['products'], sort: $sort);
 
         return new ColorResourceCollection($colors);
     }
@@ -40,7 +40,7 @@ class AdminColorController extends Controller
      */
     public function colorDetails(Color $color): ColorResource
     {
-        return new ColorResource($color, true);
+        return new ColorResource($color->loadCount('products'), true);
     }
 
     /**
@@ -64,7 +64,7 @@ class AdminColorController extends Controller
         /** @var Color $color */
         $color = $this->service->update($color, $request->validated());
 
-        return new ColorResource($color, true);
+        return new ColorResource($color->loadCount('products'), true);
     }
 
     /**

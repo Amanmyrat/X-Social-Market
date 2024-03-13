@@ -24,7 +24,7 @@ class SizeResource extends JsonResource
             'id' => $this->resource->id,
             'title' => $this->resource->title,
             'is_active' => $this->resource->is_active,
-            'products_count' => 0,
+            'products_count' => $this->resource->products_count,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
 
@@ -32,7 +32,7 @@ class SizeResource extends JsonResource
             'id' => $this->resource->id,
             'title' => $this->resource->title,
             'is_active' => $this->resource->is_active,
-            'products_count' => 0,
+            'products_count' => $this->resource->products_count,
             'created_at' => $this->resource->created_at,
         ];
     }

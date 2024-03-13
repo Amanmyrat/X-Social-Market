@@ -30,7 +30,7 @@ class AdminSizeController extends Controller
         $query = $validated['search_query'] ?? null;
         $sort = $validated['sort'] ?? null;
 
-        $sizes = $this->service->list(limit: $limit, search_query: $query, sort: $sort);
+        $sizes = $this->service->list(limit: $limit, search_query: $query, relationsCount: ['products'], sort: $sort);
 
         return new SizeResourceCollection($sizes);
     }
@@ -40,7 +40,7 @@ class AdminSizeController extends Controller
      */
     public function sizeDetails(Size $size): SizeResource
     {
-        return new SizeResource($size, true);
+        return new SizeResource($size->loadCount('products'), true);
     }
 
     /**
@@ -64,7 +64,7 @@ class AdminSizeController extends Controller
         /** @var Size $size */
         $size = $this->service->update($size, $request->validated());
 
-        return new SizeResource($size, true);
+        return new SizeResource($size->loadCount('products'), true);
     }
 
     /**

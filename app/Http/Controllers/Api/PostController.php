@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\Post\PostFilterRequest;
 use App\Http\Requests\PostRequest;
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\Product;
 use App\Models\User;
 use App\Services\PostService;
 use App\Traits\HandlesUserPostInteractions;
@@ -14,6 +16,7 @@ use App\Transformers\PostDetailsTransformer;
 use App\Transformers\PostSimpleTransformer;
 use App\Transformers\PostTransformer;
 use Auth;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
@@ -25,7 +28,8 @@ class PostController extends ApiBaseController
 
     public function __construct(
         protected PostService $service
-    ) {
+    )
+    {
         parent::__construct();
     }
 
@@ -38,19 +42,17 @@ class PostController extends ApiBaseController
     {
         $validated = $request->validated();
 
-        $postCreated = $this->service->create($validated, $request->user()->id);
+        try {
+            $this->service->create($validated, $request->user()->id);
 
-        if (! $postCreated) {
             return Response::json([
-                'success' => false,
-                'message' => 'Error occurred',
-            ], 400);
+                'success' => true,
+                'message' => 'Successfully created a new post',
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
         }
 
-        return Response::json([
-            'success' => true,
-            'message' => 'Successfully created a new post',
-        ]);
     }
 
     /**
@@ -62,19 +64,16 @@ class PostController extends ApiBaseController
     {
         $validated = $request->validated();
 
-        $postUpdated = $this->service->update($post, $validated);
+        try {
+            $this->service->update($post, $validated);
 
-        if (! $postUpdated) {
             return Response::json([
-                'success' => false,
-                'message' => 'Error occurred',
-            ], 400);
+                'success' => true,
+                'message' => 'Successfully updated',
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
         }
-
-        return Response::json([
-            'success' => true,
-            'message' => 'Successfully updated',
-        ]);
     }
 
     /**
@@ -163,6 +162,17 @@ class PostController extends ApiBaseController
         $result = $this->service->searchPosts($request);
 
         return $this->respondWithPaginator($result, new PostSimpleTransformer());
+    }
+
+    /**
+     * Filter posts
+     */
+    public function filter(PostFilterRequest $request): JsonResponse
+    {
+        $filters = $request->validated();
+        $posts = $this->service->filter($filters)->with('media')->paginate(20);
+
+        return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }
 
     /**

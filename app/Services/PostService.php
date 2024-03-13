@@ -8,7 +8,9 @@ use Arr;
 use DB;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Str;
 use Throwable;
 
 class PostService
@@ -16,7 +18,7 @@ class PostService
     /**
      * @throws Throwable
      */
-    public function create(array $validated, int $userId): bool
+    public function create(array $validated, int $userId): void
     {
         $postData = Arr::except($validated, 'product');
         $productData = Arr::only($validated, 'product')['product'] ?? [];
@@ -24,8 +26,8 @@ class PostService
         try {
             DB::transaction(function () use ($postData, $productData, $userId) {
                 $post = Post::create($postData + [
-                    'user_id' => $userId,
-                ]);
+                        'user_id' => $userId,
+                    ]);
 
                 $medias = $postData['media_type'] == 'image'
                     ? 'images'
@@ -38,12 +40,24 @@ class PostService
 
                 if ($post->category->has_product) {
                     $product = new Product($productData);
+
+                    $uniqueColorIds = collect($productData['options']['colors'] ?? [])
+                        ->pluck('color_id')->unique()->values()->all();
+
+                    $uniqueSizeIds = collect($productData['options']['colors'] ?? [])
+                        ->flatMap(function ($color) {
+                            return collect($color['sizes'])->pluck('size_id');
+                        })->unique()->values()->all();
+
+                    $product->colors()->attach($uniqueColorIds);
+                    $product->sizes()->attach($uniqueSizeIds);
+
+
                     $product->post()->associate($post);
                     $product->save();
                 }
             });
 
-            return true;
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
@@ -52,7 +66,7 @@ class PostService
     /**
      * @throws Throwable
      */
-    public function update(Post $post, array $validated): bool
+    public function update(Post $post, array $validated): void
     {
         $postData = Arr::except($validated, 'product');
         $productData = Arr::only($validated, 'product')['product'] ?? [];
@@ -69,18 +83,39 @@ class PostService
                     ->each(function ($fileAdder) {
                         $fileAdder->toMediaCollection();
                     });
-
                 if ($post->category->has_product) {
-                    $post->product->update($productData);
+                    $product = $post->product;
+
+                    $uniqueColorIds = collect($productData['options']['colors'] ?? [])
+                        ->pluck('color_id')->unique()->values()->all();
+
+                    $uniqueSizeIds = collect($productData['options']['colors'] ?? [])
+                        ->flatMap(function ($color) {
+                            return collect($color['sizes'])->pluck('size_id');
+                        })->unique()->values()->all();
+
+                    if ($product) {
+                        $product->colors()->sync($uniqueColorIds);
+                        $product->sizes()->sync($uniqueSizeIds);
+                        $product->update($productData);
+                    } else {
+                        $product = new Product($productData);
+
+                        $product->post()->associate($post);
+                        $product->colors()->attach($uniqueColorIds);
+                        $product->sizes()->attach($uniqueSizeIds);
+                        $product->save();
+
+                    }
+
                 } elseif ($post->product()->exists()) {
                     $post->product->delete();
                 }
                 $post->update($postData);
             });
 
-            return true;
         } catch (Exception $e) {
-            return false;
+            throw new Exception($e->getMessage());
         }
 
     }
@@ -105,7 +140,7 @@ class PostService
                 return $query->where('created_at', '<=', $request->date_end);
             })
             ->when(isset($request->search_query), function ($query) use ($request) {
-                $search_query = '%'.$request->search_query.'%';
+                $search_query = '%' . $request->search_query . '%';
 
                 return $query->where('caption', 'LIKE', $search_query)
                     ->orWhere('description', 'LIKE', $search_query);
@@ -120,13 +155,56 @@ class PostService
                     break;
                 default:
                     $sort = $this->getSort($s);
-                    $posts = $posts->orderBy('posts.'.$sort[0], $sort[1]);
+                    $posts = $posts->orderBy('posts.' . $sort[0], $sort[1]);
             }
         } else {
             $posts = $posts->inRandomOrder();
         }
 
         return $posts->paginate($limit);
+    }
+
+    public function filter(array $filters): Builder
+    {
+        $query = Post::query();
+
+        if (isset($filters['price_min'], $filters['price_max'])) {
+            $query->whereBetween('price', [$filters['price_min'], $filters['price_max']]);
+        }
+
+        if (!empty($filters['brands']) || !empty($filters['colors']) || !empty($filters['sizes'])) {
+
+            $query->whereHas('product', function ($query) use ($filters) {
+                if (!empty($filters['brands'])) {
+                    $query->whereIn('brand_id', $filters['brands']);
+                }
+
+                if (!empty($filters['colors'])) {
+                    $query->whereHas('colors', function ($query) use ($filters) {
+                        $query->whereIn('colors.id', $filters['colors']);
+                    });
+                }
+
+                if (!empty($filters['sizes'])) {
+                    $query->whereHas('sizes', function ($query) use ($filters) {
+                        $query->whereIn('sizes.id', $filters['sizes']);
+                    });
+                }
+            });
+        }
+
+        if (!empty($filters['sort'])) {
+            $direction = Str::startsWith($filters['sort'], '-') ? 'desc' : 'asc';
+            $sortField = ltrim($filters['sort'], '-');
+
+            switch ($sortField) {
+                case 'price':
+                    $query->orderBy('price', $direction);
+                    break;
+            }
+        }
+
+        return $query;
     }
 
     private function getSort($sort): array

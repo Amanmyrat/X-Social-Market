@@ -18,6 +18,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Str;
 
 /**
  * App\Models\Post
@@ -190,4 +191,5 @@ class Post extends Model implements HasMedia
                 ->where('followers.followed_user_id', '=', $user->id);
         })->addSelect(['posts.*', DB::raw('CASE WHEN followers.followed_user_id IS NOT NULL THEN true ELSE false END')]);
     }
+
 }

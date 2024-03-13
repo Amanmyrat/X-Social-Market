@@ -88,6 +88,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/category/{category}', [PostController::class, 'categoryPosts']);
 
         Route::post('/search', [PostController::class, 'search']);
+        Route::post('/filter', [PostController::class, 'filter']);
         Route::post('/{post}/details', [PostController::class, 'postDetails']);
 
         Route::post('/favorites/{post}/change', [PostFavoritesController::class, 'change']);

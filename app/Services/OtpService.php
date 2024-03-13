@@ -37,7 +37,7 @@ class OtpService
             return $code;
         }
 
-        throw new Exception(ErrorMessage::OTP_DID_NOT_SENT_ERROR);
+        throw new Exception(ErrorMessage::OTP_DID_NOT_SENT_ERROR->value);
     }
 
     /**
@@ -48,11 +48,11 @@ class OtpService
         $otpCode = OtpCode::where('phone', $validated['phone'])->first();
 
         if (! $otpCode || $otpCode->code != $validated['code']) {
-            throw new Exception(ErrorMessage::OTP_DID_NOT_MATCH_ERROR);
+            throw new Exception(ErrorMessage::OTP_DID_NOT_MATCH_ERROR->value);
         }
 
         if (Carbon::now() > $otpCode->valid_until) {
-            throw new Exception(ErrorMessage::OTP_TIMEOUT_ERROR);
+            throw new Exception(ErrorMessage::OTP_TIMEOUT_ERROR->value);
         }
 
     }

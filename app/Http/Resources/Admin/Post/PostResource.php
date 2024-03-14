@@ -38,7 +38,7 @@ class PostResource extends JsonResource
                 'price' => $this->resource->price,
                 'description' => $this->resource->description,
                 'location' => $this->resource->location,
-                'media_type' => $this->resource->media_type,
+                'is_active' => $this->resource->is_active,
                 'can_comment' => $this->resource->can_comment,
                 'created_at' => $this->resource->created_at,
                 'rating' => $this->resource->ratings_avg_rating,
@@ -48,6 +48,7 @@ class PostResource extends JsonResource
                 'user' => $this->resource->user->username,
                 'category' => $this->resource->category->title,
                 'product' => new ProductResource($this->resource->product),
+                'media_type' => $this->resource->media_type,
                 'media' => $medias,
             ];
         } else {
@@ -56,6 +57,7 @@ class PostResource extends JsonResource
                 'caption' => $this->resource->caption,
                 'user' => $this->resource->user->username,
                 'price' => $this->resource->price,
+                'is_active' => $this->resource->is_active,
                 'category' => $this->resource->category->title,
                 'media_type' => $this->resource->media_type,
                 'media' => [

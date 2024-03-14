@@ -14,6 +14,7 @@ use Illuminate\Support\Carbon;
  *
  * @property int $id
  * @property string $title
+ * @property bool $is_active
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
@@ -38,6 +39,7 @@ class ReportType extends Model
      */
     protected $fillable = [
         'title',
+        'is_active',
     ];
 
     /**
@@ -48,6 +50,15 @@ class ReportType extends Model
     protected $hidden = [
         'created_at',
         'updated_at',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'is_active' => 'bool',
     ];
 
     public function postReports(): HasMany

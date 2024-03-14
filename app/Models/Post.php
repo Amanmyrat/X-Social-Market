@@ -111,6 +111,7 @@ class Post extends Model implements HasMedia
      */
     protected $casts = [
         'can_comment' => 'boolean',
+        'is_active' => 'boolean',
         'ratings_avg_rating' => 'float',
     ];
 

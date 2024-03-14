@@ -24,7 +24,7 @@ class PostRatingController extends ApiBaseController
     public function addRating(Post $post, Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'rating' => ['required', 'integer', 'between:1,5'],
+            'rating' => ['required', 'integer', 'between:1,5']
         ]);
 
         PostRatingService::addRating($validated, $post);

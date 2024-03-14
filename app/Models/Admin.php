@@ -65,6 +65,13 @@ class Admin extends Authenticatable
     ];
 
     /**
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>

@@ -102,6 +102,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['role:super-admin|admin']], 
             ->group(function () {
                 Route::post('/', [AdminPostController::class, 'list']);
                 Route::get('/{post}', [AdminPostController::class, 'postDetails']);
+                Route::post('/update/{post}', [AdminPostController::class, 'update']);
                 Route::post('/delete', [AdminPostController::class, 'delete']);
             });
 

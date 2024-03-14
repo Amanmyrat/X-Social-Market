@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\PostDeleteRequest;
 use App\Http\Requests\Post\PostListRequest;
+use App\Http\Requests\Post\PostUpdateRequest;
 use App\Http\Resources\Admin\Post\PostResource;
 use App\Http\Resources\Admin\Post\PostResourceCollection;
 use App\Models\Post;
@@ -42,6 +43,20 @@ class AdminPostController extends Controller
             ->loadAvg('ratings', 'rating');
 
         return new PostResource($postDetails, true);
+    }
+
+    /**
+     * Update post
+     */
+    public function update(Post $post, PostUpdateRequest $request): PostResource
+    {
+        $post->update($request->validated());
+
+        $post = $post->load(['user', 'media', 'product', 'category'])
+            ->loadCount(['favorites', 'comments', 'views'])
+            ->loadAvg('ratings', 'rating');
+
+        return new PostResource($post, true);
     }
 
     /**

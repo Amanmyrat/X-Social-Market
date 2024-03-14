@@ -61,7 +61,7 @@ class UniversalService
             $direction = str_starts_with($sort, '-') ? 'desc' : 'asc';
 
             // If sorting by 'is_active', adjust direction for natural boolean order preference
-            if (in_array(ltrim($sort, '-'), ['is_active'])) {
+            if (ltrim($sort, '-') == 'is_active') {
                 $direction = $direction === 'asc' ? 'desc' : 'asc'; // Flip direction
             }
 

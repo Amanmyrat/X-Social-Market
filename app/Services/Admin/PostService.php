@@ -17,7 +17,7 @@ class PostService
 
             return $query->whereHas('user', function ($q) use ($search_query) {
                 $q->where('username', $search_query);
-            })->where('caption', 'LIKE', $search_query)
+            })->orWhere('caption', 'LIKE', $search_query)
                 ->orWhere('description', 'LIKE', $search_query);
         });
 

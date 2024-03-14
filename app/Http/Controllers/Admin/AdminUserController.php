@@ -27,7 +27,7 @@ class AdminUserController extends ApiBaseController
     {
         $validated = $request->validated();
         $limit = $validated['limit'] ?? 10;
-        $query = $validated['search_query'] ?? null;
+        $query = $request->get('search_query') ?? null;
         $type = $validated['type'] ?? User::TYPE_USER;
         $sort = $validated['sort'] ?? null;
 

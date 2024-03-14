@@ -18,7 +18,7 @@ class UserService
 
             return $query->whereHas('profile', function ($q) use ($search_query) {
                 $q->where('full_name', $search_query);
-            })->where('phone', 'LIKE', $search_query)->orWhere('username', 'LIKE', $search_query);
+            })->orWhere('phone', 'LIKE', $search_query)->orWhere('username', 'LIKE', $search_query);
         });
 
         $this->applySorting($query, $sort, ['username', 'is_active', 'created_at']);

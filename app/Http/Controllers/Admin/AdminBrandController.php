@@ -27,7 +27,7 @@ class AdminBrandController extends Controller
     {
         $validated = $request->validated();
         $limit = $validated['limit'] ?? 10;
-        $query = $validated['search_query'] ?? null;
+        $query = $request->get('search_query') ?? null;
         $type = $validated['type'] ?? Brand::TYPE_SIMPLE;
         $sort = $validated['sort'] ?? null;
 

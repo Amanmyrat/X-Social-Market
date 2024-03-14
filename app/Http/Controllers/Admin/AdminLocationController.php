@@ -27,7 +27,7 @@ class AdminLocationController extends Controller
     {
         $validated = $request->validated();
         $limit = $validated['limit'] ?? 10;
-        $query = $validated['search_query'] ?? null;
+        $query = $request->get('search_query') ?? null;
         $sort = $validated['sort'] ?? null;
 
         $locations = $this->service->list(limit: $limit, search_query: $query, sort: $sort);

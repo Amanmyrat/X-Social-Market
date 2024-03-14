@@ -23,7 +23,7 @@ class AdminUserReportController extends Controller
     {
         $validated = $request->validated();
         $limit = $validated['limit'] ?? 10;
-        $query = $validated['search_query'] ?? null;
+        $query = $request->get('search_query') ?? null;
         $sort = $validated['sort'] ?? null;
 
         $users = $this->service->list($limit, $query, $sort);

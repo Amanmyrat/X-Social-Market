@@ -27,7 +27,7 @@ class AdminCategoryController extends Controller
     {
         $validated = $request->validated();
         $limit = $validated['limit'] ?? 10;
-        $query = $validated['search_query'] ?? null;
+        $query = $request->get('search_query') ?? null;
         $sort = $validated['sort'] ?? null;
 
         $categories = $this->service->list(

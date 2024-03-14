@@ -18,7 +18,7 @@ class OtpService
         $phoneNumber = '+993'.$validated['phone'];
         $message = "Sizin Tanat kodunyz: $code";
 
-        $command = 'gammu sendsms TEXT ' . escapeshellarg($phoneNumber) . ' -text ' . escapeshellarg($message);
+        $command = 'gammu sendsms TEXT '.escapeshellarg($phoneNumber).' -text '.escapeshellarg($message);
 
         // Execute the command
         exec($command, $output, $returnVar);

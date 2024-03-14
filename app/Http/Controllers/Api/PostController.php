@@ -6,7 +6,6 @@ use App\Http\Requests\Post\PostFilterRequest;
 use App\Http\Requests\PostRequest;
 use App\Models\Category;
 use App\Models\Post;
-use App\Models\Product;
 use App\Models\User;
 use App\Services\PostService;
 use App\Traits\HandlesUserPostInteractions;
@@ -28,8 +27,7 @@ class PostController extends ApiBaseController
 
     public function __construct(
         protected PostService $service
-    )
-    {
+    ) {
         parent::__construct();
     }
 

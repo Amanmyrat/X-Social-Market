@@ -39,7 +39,7 @@ class AdminPostController extends Controller
     public function postDetails(Post $post): PostResource
     {
         $postDetails = $post->load(['user', 'media', 'product', 'category'])
-            ->loadCount(['favorites', 'comments', 'views'])
+            ->loadCount(['favorites', 'comments', 'views', 'bookmarks'])
             ->loadAvg('ratings', 'rating');
 
         return new PostResource($postDetails, true);
@@ -53,7 +53,7 @@ class AdminPostController extends Controller
         $post->update($request->validated());
 
         $post = $post->load(['user', 'media', 'product', 'category'])
-            ->loadCount(['favorites', 'comments', 'views'])
+            ->loadCount(['favorites', 'comments', 'views', 'bookmarks'])
             ->loadAvg('ratings', 'rating');
 
         return new PostResource($post, true);

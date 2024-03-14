@@ -49,12 +49,11 @@ class PostService
                             return collect($color['sizes'])->pluck('size_id');
                         })->unique()->values()->all();
 
-                    $product->colors()->attach($uniqueColorIds);
-                    $product->sizes()->attach($uniqueSizeIds);
-
-
                     $product->post()->associate($post);
                     $product->save();
+
+                    $product->colors()->attach($uniqueColorIds);
+                    $product->sizes()->attach($uniqueSizeIds);
                 }
             });
 
@@ -102,10 +101,10 @@ class PostService
                         $product = new Product($productData);
 
                         $product->post()->associate($post);
-                        $product->colors()->attach($uniqueColorIds);
-                        $product->sizes()->attach($uniqueSizeIds);
                         $product->save();
 
+                        $product->colors()->attach($uniqueColorIds);
+                        $product->sizes()->attach($uniqueSizeIds);
                     }
 
                 } elseif ($post->product()->exists()) {

@@ -121,7 +121,7 @@ class PostController extends ApiBaseController
     {
         $userInteractionsDTO = $this->getUserInteractionsDTO();
 
-        $posts =  Post::withRecommendationScore(Auth::id())->paginate(10);
+        $posts = Post::withRecommendationScore(Auth::id())->paginate(10);
 
         return $this->respondWithPaginator($posts, new PostTransformer($userInteractionsDTO));
     }

@@ -192,7 +192,8 @@ class Post extends Model implements HasMedia
         })->addSelect(['posts.*', DB::raw('CASE WHEN followers.followed_user_id IS NOT NULL THEN true ELSE false END')]);
     }
 
-    public function scopeIsActive($query){
+    public function scopeIsActive($query)
+    {
         return $query->where('is_active', true);
     }
 
@@ -211,9 +212,7 @@ class Post extends Model implements HasMedia
      * - Filters by active posts
      * - Adds a custom select to indicate if the current user is following the post's author
      *
-     * @param Builder $query
-     * @param int $userId User ID for whom the recommendations are tailored
-     * @return Builder
+     * @param  int  $userId  User ID for whom the recommendations are tailored
      */
     public function scopeWithRecommendationScore(Builder $query, int $userId): Builder
     {

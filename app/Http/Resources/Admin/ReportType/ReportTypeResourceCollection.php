@@ -13,8 +13,8 @@ class ReportTypeResourceCollection extends BaseCollectionResource
     public function toArray(Request $request): array
     {
         return [
-            'data' => $this->collection->map(function ($size) {
-                return new ReportTypeResource($size, false);
+            'data' => $this->collection->map(function ($reportType) {
+                return new ReportTypeResource($reportType, false);
             }),
         ];
     }

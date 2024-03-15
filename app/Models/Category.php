@@ -69,7 +69,7 @@ class Category extends Model
 
     public function posts(): HasMany
     {
-        return $this->hasMany(Post::class);
+        return $this->hasMany(Post::class)->where('is_active', true);
     }
 
     public function userProfiles(): HasMany

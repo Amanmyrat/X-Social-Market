@@ -10,6 +10,7 @@ trait PreparesPostQuery
     {
         return Post::with(['user.profile', 'media'])
             ->withAvg('ratings', 'rating')
+            ->isActive()
             ->withIsFollowing();
     }
 

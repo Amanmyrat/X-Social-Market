@@ -43,6 +43,7 @@ class PostTransformer extends TransformerAbstract
             'isBookmark' => in_array($post->id, $this->userInteractions->bookmarkedPostIds),
             'isViewed' => in_array($post->id, $this->userInteractions->viewedPostIds),
             'is_following' => (bool) $post->is_following ?? false,
+            'score' =>  $post->score ?? '',
         ];
     }
 

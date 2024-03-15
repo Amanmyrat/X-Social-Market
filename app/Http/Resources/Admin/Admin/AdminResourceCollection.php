@@ -13,8 +13,8 @@ class AdminResourceCollection extends BaseCollectionResource
     public function toArray(Request $request): array
     {
         return [
-            'data' => $this->collection->map(function ($brand) {
-                return new AdminResource($brand, false);
+            'data' => $this->collection->map(function ($admin) {
+                return new AdminResource($admin, false);
             }),
         ];
     }

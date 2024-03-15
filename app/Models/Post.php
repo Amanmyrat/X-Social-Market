@@ -191,4 +191,85 @@ class Post extends Model implements HasMedia
                 ->where('followers.followed_user_id', '=', $user->id);
         })->addSelect(['posts.*', DB::raw('CASE WHEN followers.followed_user_id IS NOT NULL THEN true ELSE false END')]);
     }
+
+    public function scopeIsActive($query){
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Scope a query to enhance it with a complex scoring system for post recommendations,
+     * including user engagement and preferences. It calculates a dynamic score for each post
+     * based on several criteria:
+     * - Engagement (likes, comments, bookmarks) with different weights (Trendy or engaging posts)
+     * - Recency of the post
+     * - Whether the post is from a followed user
+     * - Whether the post belongs to a category that the user has shown interest in (Posts likely to be of interest (based on category))
+     * - The novelty of the post (favoring posts not yet viewed by the user)(Freshness of content (non-viewed posts))
+     * This scope also integrates additional functionality:
+     * - Eager loads related user profiles and media
+     * - Calculates the average rating of each post
+     * - Filters by active posts
+     * - Adds a custom select to indicate if the current user is following the post's author
+     *
+     * @param Builder $query
+     * @param int $userId User ID for whom the recommendations are tailored
+     * @return Builder
+     */
+    public function scopeWithRecommendationScore(Builder $query, int $userId): Builder
+    {
+        $scoreSelect = "
+        posts.id,
+        (
+            SELECT COUNT(*) FROM post_favorites WHERE post_favorites.post_id = posts.id
+        ) * 1 +
+        (
+            SELECT COUNT(*) FROM post_comments WHERE post_comments.post_id = posts.id
+        ) * 2 +
+        (
+            SELECT COUNT(*) FROM post_bookmarks WHERE post_bookmarks.post_id = posts.id
+        ) * 1 +
+        (
+            CASE WHEN EXISTS (
+                SELECT 1 FROM followers WHERE followers.followed_user_id = posts.user_id AND followers.following_user_id = $userId
+            ) THEN 100 ELSE 0 END
+        ) +
+        (
+            CASE WHEN NOT EXISTS (
+                SELECT 1 FROM post_views WHERE post_views.post_id = posts.id AND post_views.user_id = $userId
+            ) THEN 50 ELSE 0 END
+        ) +
+        (
+           CASE WHEN posts.category_id IN (
+                SELECT posts.category_id FROM posts
+                JOIN post_favorites ON post_favorites.post_id = posts.id AND post_favorites.user_id = $userId
+                UNION
+                SELECT posts.category_id FROM posts
+                JOIN post_comments ON post_comments.post_id = posts.id AND post_comments.user_id = $userId
+                UNION
+                SELECT posts.category_id FROM posts
+                JOIN post_bookmarks ON post_bookmarks.post_id = posts.id AND post_bookmarks.user_id = $userId
+            ) THEN 10 ELSE 0 END
+        ) +
+        GREATEST(5 - EXTRACT(DAY FROM NOW() - posts.created_at), 0) AS score
+    ";
+
+        $subQuery = DB::table('posts')
+            ->selectRaw($scoreSelect)
+            ->where('posts.is_active', true)
+            ->groupBy('posts.id');
+
+        $isFollowingSelect = DB::raw('CASE WHEN followers.followed_user_id IS NOT NULL THEN true ELSE false END AS is_following');
+
+        return $query->joinSub($subQuery, 'scored_posts', function ($join) {
+            $join->on('posts.id', '=', 'scored_posts.id');
+        })
+            ->leftJoin('followers', function ($join) use ($userId) {
+                $join->on('followers.following_user_id', '=', 'posts.user_id')
+                    ->where('followers.followed_user_id', '=', $userId);
+            })
+            ->select('posts.*', 'scored_posts.score', $isFollowingSelect)
+            ->with(['user.profile', 'media'])
+            ->withAvg('ratings', 'rating')
+            ->orderBy('scored_posts.score', 'DESC');
+    }
 }

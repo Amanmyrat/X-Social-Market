@@ -90,6 +90,7 @@ class PostController extends ApiBaseController
     public function relatedPosts(Post $post): JsonResponse
     {
         $posts = Post::with('media')
+            ->isActive()
             ->where('id', '!=', $post->id)
             ->where('category_id', $post->category_id)
             ->inRandomOrder()
@@ -120,8 +121,7 @@ class PostController extends ApiBaseController
     {
         $userInteractionsDTO = $this->getUserInteractionsDTO();
 
-        $postsQuery = $this->getPostsQuery();
-        $posts = $postsQuery->inRandomOrder()->paginate(10);
+        $posts =  Post::withRecommendationScore(Auth::id())->paginate(10);
 
         return $this->respondWithPaginator($posts, new PostTransformer($userInteractionsDTO));
     }
@@ -132,6 +132,9 @@ class PostController extends ApiBaseController
     public function guestAllPosts(): JsonResponse
     {
         $postsQuery = $this->getPostsQuery();
+        $postsQuery->whereDoesntHave('user.profile', function ($query) {
+            $query->where('private', true);
+        });
         $posts = $postsQuery->inRandomOrder()->paginate(10);
 
         return $this->respondWithPaginator($posts, new GuestPostTransformer());
@@ -194,7 +197,7 @@ class PostController extends ApiBaseController
      */
     public function discoveryPosts(): JsonResponse
     {
-        $posts = Post::with('media')->inRandomOrder()->paginate(25);
+        $posts = Post::isActive()->with('media')->inRandomOrder()->paginate(25);
 
         return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }

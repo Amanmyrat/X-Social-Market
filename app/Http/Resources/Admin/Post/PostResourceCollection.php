@@ -13,8 +13,8 @@ class PostResourceCollection extends BaseCollectionResource
     public function toArray(Request $request): array
     {
         return [
-            'data' => $this->collection->map(function ($size) {
-                return new PostResource($size, false);
+            'data' => $this->collection->map(function ($post) {
+                return new PostResource($post, false);
             }),
         ];
     }

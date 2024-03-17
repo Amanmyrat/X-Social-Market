@@ -10,15 +10,22 @@ use App\Transformers\StoryTransformer;
 use App\Transformers\UserStoryTransformer;
 use Auth;
 use Illuminate\Http\JsonResponse;
+use Throwable;
 
 class StoryController extends ApiBaseController
 {
+    public function __construct(protected StoryService $service)
+    {
+        parent::__construct();
+    }
+
     /**
      * Create story
+     * @throws Throwable
      */
     public function create(StoryRequest $request): JsonResponse
     {
-        StoryService::create($request);
+        $this->service->create($request->validated(), Auth::user());
 
         return new JsonResponse([
             'success' => true,

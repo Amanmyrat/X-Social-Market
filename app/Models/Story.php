@@ -11,18 +11,25 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Spatie\Image\Exceptions\InvalidManipulation;
+use Spatie\Image\Manipulations;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * App\Models\Story
  *
  * @property int $id
  * @property int $user_id
- * @property string|null $image
  * @property Carbon $valid_until
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int|null $post_id
+ * @property MediaCollection<int, Media> $media
  * @property-read Collection<int, StoryFavorite> $favorites
+ * @property-read ?array $image_urls
  * @property-read int|null $favorites_count
  * @property-read Post|null $post
  * @property-read User $user
@@ -42,9 +49,10 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class Story extends Model
+class Story extends Model implements HasMedia
 {
     use HasFactory;
+    use InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -54,7 +62,6 @@ class Story extends Model
     protected $fillable = [
         'user_id',
         'post_id',
-        'image',
         'valid_until',
     ];
 
@@ -136,4 +143,50 @@ class Story extends Model
 
         return $user ? $this->myFavorites->isNotEmpty() : false;
     }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('story_images')
+            ->useDisk('stories')
+            ->singleFile();
+    }
+
+    /**
+     * @throws InvalidManipulation
+     */
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('large')
+            ->format(Manipulations::FORMAT_WEBP)
+            ->width(1024)
+            ->optimize()
+            ->performOnCollections('story_images');
+
+        $this->addMediaConversion('medium')
+            ->format(Manipulations::FORMAT_WEBP)
+            ->width(768)
+            ->optimize()
+            ->performOnCollections('story_images');
+
+        $this->addMediaConversion('thumb')
+            ->format(Manipulations::FORMAT_WEBP)
+            ->width(100)
+            ->blur(1)
+            ->optimize()
+            ->performOnCollections('story_images');
+    }
+
+    public function getImageUrlsAttribute(): ?array
+    {
+        if (!$this->hasMedia('story_images')) {
+            return null;
+        }
+
+        return [
+            'large_url' => $this->getFirstMediaUrl('story_images', 'large') ? $this->getFirstMedia('story_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'large') : null,
+            'medium_url' => $this->getFirstMediaUrl('story_images', 'medium') ? $this->getFirstMedia('story_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'medium') : null,
+            'thumb_url' => $this->getFirstMediaUrl('story_images', 'thumb') ? $this->getFirstMedia('story_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb') : null,
+        ];
+    }
+
 }

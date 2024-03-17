@@ -63,7 +63,7 @@ class MessageService
             ->first(['id', 'user_id', 'image', 'post_id']);
 
         if ($story) {
-            $story->image = $story->image ? url('uploads/stories/'.$story->image) : null;
+            $story->image = $story->image_urls;
         }
 
         return $story;

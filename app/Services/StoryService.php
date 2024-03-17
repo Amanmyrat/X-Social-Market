@@ -2,29 +2,30 @@
 
 namespace App\Services;
 
-use App\Http\Requests\StoryRequest;
 use App\Models\Story;
+use App\Models\User;
 use Carbon\Carbon;
+use DB;
+use Exception;
+use Throwable;
 
 class StoryService
 {
-    public static function create(StoryRequest $request): void
+    /**
+     * @throws Exception
+     * @throws Throwable
+     */
+    public function create(array $validated, User $user): void
     {
-        $validated = $request->validated();
+        DB::transaction(function () use ($validated, $user) {
 
-        if ($validated['type'] == 'basic') {
-            $imageName = $request->user()->phone.'-'.time().'.'.$request->image->getClientOriginalExtension();
-            $validated['image']->move(public_path('uploads/stories'), $imageName);
-            $validated['image'] = $imageName;
-            $validated['post_id'] = null;
-        } else {
-            $validated['image'] = null;
-        }
+            $story = Story::create(array_merge($validated, [
+                'user_id' => $user->id,
+                'valid_until' => Carbon::now()->addYear(),
+                'image' => 'null'
+            ]));
 
-        Story::create(array_merge($validated, [
-            'user_id' => $request->user()->id,
-            'valid_until' => Carbon::now()->addYear(),
-        ]));
-
+            $story->addMedia($validated['image'])->toMediaCollection('story_images');
+        });
     }
 }

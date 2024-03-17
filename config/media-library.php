@@ -1,5 +1,9 @@
 <?php
 
+use App\Models\Story;
+use App\Services\MediaLibrary\CustomPathGenerator;
+use App\Services\MediaLibrary\StoryPathGenerator;
+
 return [
 
     /*
@@ -71,13 +75,13 @@ return [
     /*
      * The class that contains the strategy for determining a media file's path.
      */
-    'path_generator' => Spatie\MediaLibrary\Support\PathGenerator\DefaultPathGenerator::class,
+    'path_generator' => CustomPathGenerator::class,
 
     /*
      * Here you can specify which path generator should be used for the given class.
      */
     'custom_path_generators' => [
-        // Model::class => PathGenerator::class
+         Story::class => StoryPathGenerator::class
         // or
         // 'model_morph_alias' => PathGenerator::class
     ],
@@ -204,6 +208,7 @@ return [
          */
         'extra_headers' => [
             'CacheControl' => 'max-age=604800',
+            'ACL' => 'public-read',
         ],
     ],
 

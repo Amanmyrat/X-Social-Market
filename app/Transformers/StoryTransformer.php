@@ -16,7 +16,7 @@ class StoryTransformer extends TransformerAbstract
     {
         return [
             'id' => $story->id,
-            'image' => isset($story->image) ? url('uploads/stories/'.$story->image) : null,
+            'image' => $story->image_urls,
             'isFavorite' => $story->getIsFavorite(),
             'isViewed' => $story->getIsViewed(),
             'created_at' => $story->created_at,

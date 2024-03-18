@@ -183,9 +183,10 @@ class Story extends Model implements HasMedia
         }
 
         return [
-            'large_url' => $this->getFirstMediaUrl('story_images', 'large') ? $this->getFirstMedia('story_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'large') : null,
-            'medium_url' => $this->getFirstMediaUrl('story_images', 'medium') ? $this->getFirstMedia('story_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'medium') : null,
-            'thumb_url' => $this->getFirstMediaUrl('story_images', 'thumb') ? $this->getFirstMedia('story_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb') : null,
+            'original_url' => $this->getFirstMedia('story_images')->getTemporaryUrl(Carbon::now()->addDays(3)),
+            'large_url' => $this->getFirstMedia('story_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
+            'medium_url' => $this->getFirstMedia('story_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
+            'thumb_url' => $this->getFirstMedia('story_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
         ];
     }
 

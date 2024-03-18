@@ -17,11 +17,7 @@ class PostReportResource extends JsonResource
             'caption' => $this->resource->caption,
             'user' => $this->resource->user->username,
             'media_type' => $this->resource->media_type,
-            'media' => [
-                'original_url' => $this->resource->getFirstMedia()->original_url,
-                'extension' => $this->resource->getFirstMedia()->extension,
-                'size' => $this->resource->getFirstMedia()->size,
-            ],
+            'media' => $this->resource->first_image_urls,
             'lastReport' => [
                 'id' => $this->resource->latestReport->id,
                 'message' => $this->resource->latestReport->message,

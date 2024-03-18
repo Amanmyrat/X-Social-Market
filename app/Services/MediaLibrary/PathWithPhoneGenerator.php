@@ -6,7 +6,7 @@ use Spatie\MediaLibrary\Support\PathGenerator\PathGenerator;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Support\Str;
 
-class StoryPathGenerator implements PathGenerator
+class PathWithPhoneGenerator implements PathGenerator
 {
     public function getPath(Media $media): string
     {

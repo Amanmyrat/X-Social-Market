@@ -22,16 +22,6 @@ class PostResource extends JsonResource
     public function toArray(Request $request): array
     {
         if ($this->detailsEnabled) {
-
-            $medias = [];
-            foreach ($this->resource->getMedia() as $media) {
-                array_push($medias, [
-                    'original_url' => $media->original_url,
-                    'extension' => $media->extension,
-                    'size' => $media->size,
-                ]);
-            }
-
             return [
                 'id' => $this->resource->id,
                 'caption' => $this->resource->caption,
@@ -50,7 +40,7 @@ class PostResource extends JsonResource
                 'category' => $this->resource->category->title,
                 'product' => new ProductResource($this->resource->product),
                 'media_type' => $this->resource->media_type,
-                'media' => $medias,
+                'media' => $this->resource->image_urls,
             ];
         } else {
             return [
@@ -61,11 +51,7 @@ class PostResource extends JsonResource
                 'is_active' => $this->resource->is_active,
                 'category' => $this->resource->category->title,
                 'media_type' => $this->resource->media_type,
-                'media' => [
-                    'original_url' => $this->resource->getFirstMedia()->original_url,
-                    'extension' => $this->resource->getFirstMedia()->extension,
-                    'size' => $this->resource->getFirstMedia()->size,
-                ],
+                'media' => $this->resource->first_image_urls,
             ];
         }
     }

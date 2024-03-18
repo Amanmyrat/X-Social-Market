@@ -35,11 +35,7 @@ class PostNotificationResource extends JsonResource
             'post' => [
                 'id' => $this->resource->post->id,
                 'media_type' => $this->resource->post->media_type,
-                'media' => [
-                    'original_url' => $this->resource->post->getFirstMedia()->original_url,
-                    'extension' => $this->resource->post->getFirstMedia()->extension,
-                    'size' => $this->resource->post->getFirstMedia()->size,
-                ],
+                'media' => $this->resource->post->first_image_urls,
             ],
             'user' => [
                 'id' => $this->resource->post->user->id,

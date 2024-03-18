@@ -14,11 +14,7 @@ class PostSimpleTransformer extends TransformerAbstract
             'caption' => $post->caption,
             'price' => $post->price,
             'media_type' => $post->media_type,
-            'media' => [
-                'original_url' => $post->getFirstMedia()->original_url,
-                'extension' => $post->getFirstMedia()->extension,
-                'size' => $post->getFirstMedia()->size,
-            ],
+            'media' => $post->first_image_urls,
 
         ];
     }

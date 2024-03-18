@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
+use Spatie\Image\Exceptions\InvalidManipulation;
+use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
@@ -55,6 +57,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property-read int|null $views_count
  * @property-read float $ratings_avg_rating
  * @property-read bool $is_following
+ * @property-read ?array $image_urls
+ * @property-read ?array $first_image_urls
  *
  * @method static Builder|Post newModelQuery()
  * @method static Builder|Post newQuery()
@@ -270,5 +274,68 @@ class Post extends Model implements HasMedia
             ->with(['user.profile', 'media'])
             ->withAvg('ratings', 'rating')
             ->orderBy('scored_posts.score', 'DESC');
+    }
+
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('post_images')
+            ->useDisk('posts');
+    }
+
+    /**
+     * @throws InvalidManipulation
+     */
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('large')
+            ->format(Manipulations::FORMAT_WEBP)
+            ->width(1024)
+            ->optimize()
+            ->performOnCollections('post_images');
+
+        $this->addMediaConversion('medium')
+            ->format(Manipulations::FORMAT_WEBP)
+            ->width(768)
+            ->optimize()
+            ->performOnCollections('post_images');
+
+        $this->addMediaConversion('thumb')
+            ->format(Manipulations::FORMAT_WEBP)
+            ->width(100)
+            ->blur(1)
+            ->optimize()
+            ->performOnCollections('post_images');
+    }
+
+    public function getFirstImageUrlsAttribute(): ?array
+    {
+        if (!$this->hasMedia('post_images')) {
+            return null;
+        }
+
+        return [
+            'original_url' => $this->getFirstMedia('post_images')->getTemporaryUrl(Carbon::now()->addDays(3)),
+            'large_url' => $this->getFirstMedia('post_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
+            'medium_url' => $this->getFirstMedia('post_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
+            'thumb_url' => $this->getFirstMedia('post_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
+        ];
+    }
+
+    public function getImageUrlsAttribute(): ?array
+    {
+        if (!$this->hasMedia('post_images')) {
+            return null;
+        }
+        $medias = [];
+        foreach ($this->getMedia('post_images') as $media) {
+            array_push($medias, [
+                'original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3)),
+                'large_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
+                'medium_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
+                'thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
+            ]);
+        }
+        return $medias;
     }
 }

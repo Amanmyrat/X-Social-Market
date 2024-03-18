@@ -1,8 +1,9 @@
 <?php
 
+use App\Models\Post;
 use App\Models\Story;
 use App\Services\MediaLibrary\CustomPathGenerator;
-use App\Services\MediaLibrary\StoryPathGenerator;
+use App\Services\MediaLibrary\PathWithPhoneGenerator;
 
 return [
 
@@ -81,7 +82,8 @@ return [
      * Here you can specify which path generator should be used for the given class.
      */
     'custom_path_generators' => [
-         Story::class => StoryPathGenerator::class
+         Story::class => PathWithPhoneGenerator::class,
+         Post::class => PathWithPhoneGenerator::class
         // or
         // 'model_morph_alias' => PathGenerator::class
     ],

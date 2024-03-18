@@ -14,15 +14,6 @@ class GuestPostTransformer extends TransformerAbstract
 
     public function transform(Post $post): array
     {
-        $medias = [];
-        foreach ($post->getMedia() as $media) {
-            array_push($medias, [
-                'original_url' => $media->original_url,
-                'extension' => $media->extension,
-                'size' => $media->size,
-            ]);
-        }
-
         return [
             'id' => $post->id,
             'caption' => $post->caption,
@@ -33,7 +24,7 @@ class GuestPostTransformer extends TransformerAbstract
             'can_comment' => $post->can_comment,
             'created_at' => $post->created_at,
             'rating' => $post->ratings_avg_rating,
-            'media' => $medias,
+            'media' => $post->image_urls,
             'isFavorite' => false,
             'isBookmark' => false,
             'isViewed' => false,

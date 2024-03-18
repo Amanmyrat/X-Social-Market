@@ -77,13 +77,7 @@ class MessageService
             ->first(['id', 'user_id', 'caption']);
 
         if ($post) {
-            $medias = $post->getMedia()->map(function ($media) {
-                return [
-                    'original_url' => $media->original_url,
-                    'extension' => $media->extension,
-                    'size' => $media->size,
-                ];
-            });
+            $medias = $post->image_urls;
             unset($post->media);
             $post->media = $medias;
 

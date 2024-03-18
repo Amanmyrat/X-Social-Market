@@ -27,8 +27,9 @@ class CustomPathGenerator implements PathGenerator
     {
         $year = $media->created_at->format('Y');
         $month = $media->created_at->format('m');
+        $day = $media->created_at->format('d');
         $hashedId = Str::limit(md5($media->model_id), 12, '');
 
-        return "$year/$month/$hashedId";
+        return "$year/$month/$day/$hashedId";
     }
 }

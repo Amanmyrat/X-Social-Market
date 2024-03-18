@@ -19,15 +19,6 @@ class PostTransformer extends TransformerAbstract
 
     public function transform(Post $post): array
     {
-        $medias = [];
-        foreach ($post->getMedia() as $media) {
-            array_push($medias, [
-                'original_url' => $media->original_url,
-                'extension' => $media->extension,
-                'size' => $media->size,
-            ]);
-        }
-
         return [
             'id' => $post->id,
             'caption' => $post->caption,
@@ -38,11 +29,11 @@ class PostTransformer extends TransformerAbstract
             'can_comment' => $post->can_comment,
             'created_at' => $post->created_at,
             'rating' => $post->ratings_avg_rating,
-            'media' => $medias,
+            'media' => $post->image_urls,
             'isFavorite' => in_array($post->id, $this->userInteractions->favoritePostIds),
             'isBookmark' => in_array($post->id, $this->userInteractions->bookmarkedPostIds),
             'isViewed' => in_array($post->id, $this->userInteractions->viewedPostIds),
-            'is_following' => (bool) $post->is_following ?? false,
+            'is_following' => $post->is_following ?? false,
             'score' => $post->score ?? '',
         ];
     }

@@ -35,7 +35,7 @@ class UserService
         }
         $user->update($data);
 
-        if ($data['profile']) {
+        if (isset($data['profile'])) {
             if ($user->profile) {
                 $user->profile()->update($data['profile']);
             } else {

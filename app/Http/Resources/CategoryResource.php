@@ -16,7 +16,7 @@ class CategoryResource extends JsonResource
             'id' => $this->resource->id,
             'title' => $this->resource->title,
             'description' => $this->resource->description,
-            'icon' => url('uploads/categories/'.$this->resource->icon),
+            'icon' => $this->resource->image_urls,
             'has_product' => $this->resource->has_product,
         ];
     }

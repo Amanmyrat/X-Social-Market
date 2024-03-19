@@ -10,12 +10,18 @@ use App\Http\Requests\Category\CategoryUpdateRequest;
 use App\Http\Resources\Admin\Category\CategoryResource;
 use App\Http\Resources\Admin\Category\CategoryResourceCollection;
 use App\Models\Category;
+use App\Services\Admin\CategoryService;
 use App\Services\Admin\UniversalService;
+use Exception;
 use Illuminate\Http\JsonResponse;
+use Throwable;
 
 class AdminCategoryController extends Controller
 {
-    public function __construct(protected UniversalService $service)
+    public function __construct(
+        protected UniversalService $service,
+        protected CategoryService $categoryService,
+    )
     {
         $this->service->setModel(new Category());
     }
@@ -50,10 +56,11 @@ class AdminCategoryController extends Controller
 
     /**
      * Create category
+     * @throws Throwable
      */
     public function create(CategoryCreateRequest $request): JsonResponse
     {
-        $this->service->create($request->validated());
+        $this->categoryService->create($request->validated());
 
         return new JsonResponse([
             'success' => true,
@@ -63,11 +70,12 @@ class AdminCategoryController extends Controller
 
     /**
      * Update category
+     * @throws Exception
      */
     public function update(Category $category, CategoryUpdateRequest $request): CategoryResource
     {
         /** @var Category $category */
-        $category = $this->service->update($category, $request->validated());
+        $category = $this->categoryService->update($category, $request->validated());
 
         return new CategoryResource($category->loadCount('posts'), true);
     }

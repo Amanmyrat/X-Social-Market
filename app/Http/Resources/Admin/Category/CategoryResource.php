@@ -24,17 +24,16 @@ class CategoryResource extends JsonResource
             'id' => $this->resource->id,
             'title' => $this->resource->title,
             'description' => $this->resource->description,
-            'icon' => url('uploads/categories/'.$this->resource->icon),
+            'icon' => $this->resource->image_urls,
             'is_active' => $this->resource->is_active,
             'has_product' => $this->resource->has_product,
             'posts_count' => $this->resource->posts_count,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
-
         ] : [
             'id' => $this->resource->id,
             'title' => $this->resource->title,
-            'icon' => url('uploads/categories/'.$this->resource->icon),
+            'icon' => $this->resource->image_urls,
             'is_active' => $this->resource->is_active,
             'posts_count' => $this->resource->posts_count,
         ];

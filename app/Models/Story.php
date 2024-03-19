@@ -84,17 +84,11 @@ class Story extends Model implements HasMedia
         'valid_until' => 'datetime',
     ];
 
-    /**
-     * Get the user that owns the story.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the post
-     */
     public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class)->with('media');

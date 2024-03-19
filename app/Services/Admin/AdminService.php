@@ -48,7 +48,7 @@ class AdminService
                 $admin->givePermissionTo($data['permissions']);
             }
             if (isset($data['profile_image'])) {
-                $admin->clearMediaCollection();
+                $admin->clearMediaCollection('admin_images');
                 $admin->addMedia($data['profile_image'])->toMediaCollection('admin_images');
             }
         });
@@ -73,7 +73,7 @@ class AdminService
 
         try {
             if (isset($data['profile_image'])) {
-                $admin->clearMediaCollection();
+                $admin->clearMediaCollection('admin_images');
                 $admin->addMedia($data['profile_image'])->toMediaCollection('admin_images');
             }
         }catch (\Exception $exception){

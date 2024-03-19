@@ -23,7 +23,7 @@ class UserProfileService
             }
 
             if (isset($validated['profile_image'])) {
-                $user->profile->clearMediaCollection();
+                $user->profile->clearMediaCollection('user_images');
                 $user->profile->addMedia($validated['profile_image'])->toMediaCollection('user_images');
             }
         });

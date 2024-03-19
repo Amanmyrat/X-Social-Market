@@ -44,7 +44,7 @@ class UserService
                 }
 
                 if (isset($data['profile']['profile_image'])) {
-                    $user->profile->clearMediaCollection();
+                    $user->profile->clearMediaCollection('user_images');
                     $user->profile->addMedia($data['profile']['profile_image'])->toMediaCollection('user_images');
                 }
             });

@@ -119,6 +119,7 @@ class UserProfile extends Model implements HasMedia
     {
         return $this->belongsTo(Category::class)->withDefault();
     }
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('user_images')

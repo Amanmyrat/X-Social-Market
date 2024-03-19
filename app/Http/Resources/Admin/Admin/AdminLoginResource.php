@@ -19,7 +19,7 @@ class AdminLoginResource extends JsonResource
             'name' => $this->resource->name,
             'surname' => $this->resource->surname,
             'email' => $this->resource->email,
-            'profile_image' => $this->resource->profile_image ? url('uploads/admin/'.$this->resource->profile_image) : null,
+            'image' => $this->resource->image_urls,
             'role' => $this->resource->getRoleNames()->first(),
             'permissions' => $this->resource->getAllPermissions()->pluck('name'),
         ];

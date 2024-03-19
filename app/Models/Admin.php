@@ -10,6 +10,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\PersonalAccessToken;
+use Spatie\Image\Exceptions\InvalidManipulation;
+use Spatie\Image\Manipulations;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -21,13 +27,14 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $phone
  * @property string $email
  * @property string $password
- * @property string $profile_image
  * @property bool $is_active
  * @property Carbon|null $last_activity
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property MediaCollection<int, Media> $media
  * @property-read Collection<int, PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
+ * @property-read ?array $image_urls
  *
  * @method static Builder|Admin newModelQuery()
  * @method static Builder|Admin newQuery()
@@ -42,9 +49,10 @@ use Spatie\Permission\Traits\HasRoles;
  *
  * @mixin Eloquent
  */
-class Admin extends Authenticatable
+class Admin extends Authenticatable implements HasMedia
 {
     use HasApiTokens, HasFactory, HasRoles;
+    use InteractsWithMedia;
 
     protected string $guard_name = 'admin';
 
@@ -61,7 +69,6 @@ class Admin extends Authenticatable
         'password',
         'is_active',
         'last_activity',
-        'profile_image',
     ];
 
     /**
@@ -82,4 +89,50 @@ class Admin extends Authenticatable
         'created_at',
         'updated_at',
     ];
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('admin_images')
+            ->useDisk('admins')
+            ->singleFile();
+    }
+
+    /**
+     * @throws InvalidManipulation
+     */
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('large')
+            ->format(Manipulations::FORMAT_WEBP)
+            ->width(1024)
+            ->optimize()
+            ->performOnCollections('admin_images');
+
+        $this->addMediaConversion('medium')
+            ->format(Manipulations::FORMAT_WEBP)
+            ->width(768)
+            ->optimize()
+            ->performOnCollections('admin_images');
+
+        $this->addMediaConversion('thumb')
+            ->format(Manipulations::FORMAT_WEBP)
+            ->width(100)
+            ->blur(1)
+            ->optimize()
+            ->performOnCollections('admin_images');
+    }
+
+    public function getImageUrlsAttribute(): ?array
+    {
+        if (!$this->hasMedia('admin_images')) {
+            return null;
+        }
+
+        return [
+            'original_url' => $this->getFirstMedia('admin_images')->getTemporaryUrl(Carbon::now()->addDays(3)),
+            'large_url' => $this->getFirstMedia('admin_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
+            'medium_url' => $this->getFirstMedia('admin_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
+            'thumb_url' => $this->getFirstMedia('admin_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
+        ];
+    }
 }

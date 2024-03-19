@@ -30,7 +30,7 @@ class AdminResource extends JsonResource
             'permissions' => $this->resource->getAllPermissions()->pluck('name'),
             'last_activity' => $this->resource->last_activity,
             'is_active' => $this->resource->is_active,
-            'profile_image' => $this->resource->profile_image ? url('uploads/admin/'.$this->resource->profile_image) : null,
+            'image' => $this->resource->image_urls,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
 
@@ -42,7 +42,7 @@ class AdminResource extends JsonResource
             'role' => $this->resource->roles()->first()['display_name'] ?? null,
             'last_activity' => $this->resource->last_activity,
             'is_active' => $this->resource->is_active,
-            'profile_image' => $this->resource->profile_image ? url('uploads/admin/'.$this->resource->profile_image) : null,
+            'image' => $this->resource->image_urls,
         ];
     }
 }

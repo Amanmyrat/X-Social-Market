@@ -87,7 +87,6 @@ return [
          Story::class => PathWithPhoneGenerator::class,
          Post::class => PathWithPhoneGenerator::class,
          UserProfile::class => PathWithPhoneGenerator::class,
-         Admin::class => PathWithPhoneGenerator::class,
         // or
         // 'model_morph_alias' => PathGenerator::class
     ],

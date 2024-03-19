@@ -10,9 +10,11 @@ use App\Http\Resources\Admin\Admin\AdminResource;
 use App\Http\Resources\Admin\Admin\AdminResourceCollection;
 use App\Models\Admin;
 use App\Services\Admin\AdminService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Throwable;
 
 class AdminAdminController
 {
@@ -37,6 +39,7 @@ class AdminAdminController
 
     /**
      * Admin create
+     * @throws Throwable
      */
     public function create(AdminCreateRequest $request): JsonResponse
     {
@@ -59,6 +62,7 @@ class AdminAdminController
 
     /**
      * Update admin
+     * @throws Exception
      */
     public function update(Admin $admin, AdminUpdateRequest $request): AdminResource
     {

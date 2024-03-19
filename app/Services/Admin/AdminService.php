@@ -2,10 +2,14 @@
 
 namespace App\Services\Admin;
 
+use _PHPStan_156ee64ba\Nette\Neon\Exception;
+use App\Enum\ErrorMessage;
 use App\Models\Admin;
 use App\Traits\SortableTrait;
+use DB;
 use Hash;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Throwable;
 
 class AdminService
 {
@@ -27,30 +31,34 @@ class AdminService
         return $query->paginate($limit);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function create(array $data): Admin
     {
-        if (isset($data['profile_image'])) {
-            $profileImageName = $data['email'].'-'.time().'.'.$data['profile_image']->getClientOriginalExtension();
-            $data['profile_image']->move(public_path('uploads/admin/'), $profileImageName);
-            $data['profile_image'] = $profileImageName;
-        }
-        $data['password'] = Hash::make($data['password']);
+        DB::transaction(function () use ($data) {
 
-        $admin = Admin::create($data);
-        $admin->assignRole($data['role']);
-        $admin->givePermissionTo($data['permissions']);
+            $data['password'] = Hash::make($data['password']);
 
-        return $admin;
+            $admin = Admin::create($data);
+            $admin->assignRole($data['role']);
+            $admin->givePermissionTo($data['permissions']);
+
+            if (isset($data['profile_image'])) {
+                $admin->clearMediaCollection();
+                $admin->addMedia($data['profile_image'])->toMediaCollection('admin_images');
+            }
+            return $admin;
+        });
+
+        throw new \Exception(ErrorMessage::GENERAL_ERROR->value);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function update(Admin $admin, array $data): Admin
     {
-        if (isset($data['profile_image'])) {
-            $profileImageName = $admin->email.'-'.time().'.'.$data['profile_image']->getClientOriginalExtension();
-            $data['profile_image']->move(public_path('uploads/admin/'), $profileImageName);
-            $data['profile_image'] = $profileImageName;
-        }
-
         $admin->update($data);
 
         if (isset($data['role'])) {
@@ -61,6 +69,15 @@ class AdminService
         if (isset($data['permissions'])) {
             $admin->permissions()->detach();
             $admin->givePermissionTo($data['permissions']);
+        }
+
+        try {
+            if (isset($data['profile_image'])) {
+                $admin->clearMediaCollection();
+                $admin->addMedia($data['profile_image'])->toMediaCollection('admin_images');
+            }
+        }catch (\Exception $exception){
+            throw new \Exception($exception->getMessage());
         }
 
         return $admin;

@@ -2,41 +2,49 @@
 
 namespace App\Services;
 
+use App\Enum\ErrorMessage;
 use App\Jobs\ProcessMessageRead;
 use App\Models\Chat;
 use App\Models\Message;
 use App\Models\Post;
 use App\Models\Story;
+use DB;
+use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Throwable;
 
 class MessageService
 {
     /**
      * Send message
+     * @throws Exception
+     * @throws Throwable
      */
     public function sendMessage(array $data): Message
     {
-        $extras = $this->handleExtrasBasedOnType($data);
+        return DB::transaction(function () use ($data) {
+            $extras = $this->handleExtrasBasedOnType($data);
 
-        $messageData = [
-            'chat_id' => (int) $data['chat_id'],
-            'sender_user_id' => auth()->id(),
-            'receiver_user_id' => (int) $data['receiver_user_id'],
-            'body' => $data['body'],
-            'type' => $data['type'],
-            'extra' => $extras,
-        ];
+            $messageData = [
+                'chat_id' => (int)$data['chat_id'],
+                'sender_user_id' => auth()->id(),
+                'receiver_user_id' => (int)$data['receiver_user_id'],
+                'body' => $data['body'],
+                'type' => $data['type'],
+                'extra' => $extras,
+            ];
 
-        $message = Message::create($messageData);
+            $message = Message::create($messageData);
 
-        if ($data['type'] === Message::TYPE_MEDIA) {
-            $message = $this->handleMediaMessage($message, $data);
-        }
+            if ($data['type'] === Message::TYPE_MEDIA) {
+                $this->handleMediaMessage($message, $data);
+            }
 
-        $message->chat->updated_at = now();
-        $message->chat->save();
+            $message->chat->updated_at = now();
+            $message->chat->save();
 
-        return $message;
+            return $message;
+        }, 2);
     }
 
     private function handleExtrasBasedOnType(array $data): ?array
@@ -55,7 +63,8 @@ class MessageService
         return $extras;
     }
 
-    private function getStoryDetails($storyId): Story
+    private
+    function getStoryDetails($storyId): Story
     {
         /** @var Story $story */
         $story = Story::with('user:id,username,last_activity')
@@ -69,7 +78,8 @@ class MessageService
         return $story;
     }
 
-    private function getPostDetails($postId): Post
+    private
+    function getPostDetails($postId): Post
     {
         /** @var Post $post */
         $post = Post::with(['user:id,username,last_activity', 'media'])
@@ -86,40 +96,22 @@ class MessageService
         return $post;
     }
 
-    private function handleMediaMessage(Message $message, array $data): Message
+    private function handleMediaMessage(Message $message, array $data): void
     {
         // Determine the type of media (images or videos)
         $mediaType = $data['media_type'] == 'image' ? 'images' : 'videos';
 
         $message->addMultipleMediaFromRequest([$mediaType])
             ->each(function ($file) {
-                $file->toMediaCollection();
+                $file->toMediaCollection('message_images');
             });
-
-        $medias = $message->getMedia()->map(function ($media) {
-            return [
-                'id' => $media->id,
-                'original_url' => $media->original_url,
-                'extension' => $media->extension,
-                'size' => $media->size,
-            ];
-        });
-
-        $extras = $message->extra ?? [];
-        $extras['medias'] = $medias;
-        $message->extra = $extras;
-
-        unset($message->media);
-
-        $message->save();
-
-        return $message;
     }
 
     /**
      * Get all messages
      */
-    public function listMessages($chatId): LengthAwarePaginator
+    public
+    function listMessages($chatId): LengthAwarePaginator
     {
         $userId = auth()->id();
 
@@ -136,14 +128,16 @@ class MessageService
     /**
      * Mark message read
      */
-    public function readMessage(Message $message): void
+    public
+    function readMessage(Message $message): void
     {
         $message->update(['read_at' => now()]);
 
         ProcessMessageRead::dispatch($message);
     }
 
-    public function readAllMessages(Chat $chat): void
+    public
+    function readAllMessages(Chat $chat): void
     {
         $userId = auth()->id();
 

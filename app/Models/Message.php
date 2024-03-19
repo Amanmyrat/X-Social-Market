@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Spatie\Image\Exceptions\InvalidManipulation;
+use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
@@ -31,6 +33,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property-read Chat $chat
  * @property-read MediaCollection<int, Media> $media
  * @property-read int|null $media_count
+ * @property-read ?array $image_urls
  *
  * @method static Builder|Message newModelQuery()
  * @method static Builder|Message newQuery()
@@ -59,7 +62,7 @@ class Message extends Model implements HasMedia
 
     public const TYPE_SHARE_STORY = 'share_story';
 
-    public const TYPE_SHARE_POST = 'share_post';
+    public const TYPE_SHARE_POST = 'share_message';
 
     public const TYPE_MEDIA = 'media';
 
@@ -86,5 +89,64 @@ class Message extends Model implements HasMedia
     public function chat(): BelongsTo
     {
         return $this->belongsTo(Chat::class);
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('message_images')
+            ->useDisk('messages');
+    }
+
+    /**
+     * @throws InvalidManipulation
+     */
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('large')
+            ->format(Manipulations::FORMAT_WEBP)
+            ->width(1024)
+            ->optimize()
+            ->performOnCollections('message_images');
+
+        $this->addMediaConversion('medium')
+            ->format(Manipulations::FORMAT_WEBP)
+            ->width(768)
+            ->optimize()
+            ->performOnCollections('message_images');
+
+        $this->addMediaConversion('thumb')
+            ->format(Manipulations::FORMAT_WEBP)
+            ->width(100)
+            ->blur(1)
+            ->optimize()
+            ->performOnCollections('message_images');
+    }
+
+    public function getImageUrlsAttribute(): ?array
+    {
+        if (!$this->hasMedia('message_images')) {
+            return null;
+        }
+        $medias = [];
+        foreach ($this->getMedia('message_images') as $media) {
+            array_push($medias, [
+                'id' => $media->id,
+                'original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3)),
+                'large_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
+                'medium_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
+                'thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
+            ]);
+        }
+        return $medias;
+    }
+
+    public function getExtraAttribute(): ?array
+    {
+        if ($this->type == Message::TYPE_MEDIA){
+            return [
+              'medias' => $this->image_urls
+            ];
+        }
+        return $this->extra;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Enum\AdminRole;
 use App\Models\Admin;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
@@ -22,8 +23,8 @@ class AdminCreateRequest extends FormRequest
             'profile_image' => ['filled', 'image'],
             'is_active' => ['filled', 'bool'],
             'role' => ['required', 'string', 'exists:roles,name'],
-            'permissions' => ['required', 'array'],
-            'permissions.*' => ['required', 'string', 'exists:permissions,name'],
+            'permissions' => ['required_if:role,'.AdminRole::Admin->value, 'array'],
+            'permissions.*' => ['required_if:role,'.AdminRole::Admin->value, 'string', 'exists:permissions,name'],
         ];
     }
 }

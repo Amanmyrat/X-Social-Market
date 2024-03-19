@@ -3,6 +3,7 @@
 namespace App\Services\Admin;
 
 use _PHPStan_156ee64ba\Nette\Neon\Exception;
+use App\Enum\AdminRole;
 use App\Enum\ErrorMessage;
 use App\Models\Admin;
 use App\Traits\SortableTrait;
@@ -34,7 +35,7 @@ class AdminService
     /**
      * @throws Throwable
      */
-    public function create(array $data): Admin
+    public function create(array $data): void
     {
         DB::transaction(function () use ($data) {
 
@@ -42,16 +43,15 @@ class AdminService
 
             $admin = Admin::create($data);
             $admin->assignRole($data['role']);
-            $admin->givePermissionTo($data['permissions']);
 
+            if ($data['role'] != AdminRole::SUPER_ADMIN->value){
+                $admin->givePermissionTo($data['permissions']);
+            }
             if (isset($data['profile_image'])) {
                 $admin->clearMediaCollection();
                 $admin->addMedia($data['profile_image'])->toMediaCollection('admin_images');
             }
-            return $admin;
         });
-
-        throw new \Exception(ErrorMessage::GENERAL_ERROR->value);
     }
 
     /**

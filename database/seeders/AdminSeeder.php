@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enum\AdminRole;
 use App\Models\Admin;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -23,7 +24,7 @@ class AdminSeeder extends Seeder
         ]);
 
         // Assign the "super-admin" role to this user
-        $superAdmin->assignRole('super-admin');
+        $superAdmin->assignRole(AdminRole::SUPER_ADMIN->value);
 
     }
 }

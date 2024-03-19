@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enum\AdminRole;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -36,8 +37,8 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Roles with display names
         $roles = [
-            ['name' => 'admin', 'display_name' => 'Admin', 'guard_name' => 'admin'],
-            ['name' => 'super-admin', 'display_name' => 'Super Admin', 'guard_name' => 'admin'],
+            ['name' => AdminRole::Admin->value, 'display_name' => 'Admin', 'guard_name' => 'admin'],
+            ['name' => AdminRole::SUPER_ADMIN->value, 'display_name' => 'Super Admin', 'guard_name' => 'admin'],
         ];
 
         foreach ($roles as $role) {

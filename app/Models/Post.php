@@ -276,7 +276,6 @@ class Post extends Model implements HasMedia
             ->orderBy('scored_posts.score', 'DESC');
     }
 
-
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('post_images')

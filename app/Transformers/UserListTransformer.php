@@ -22,7 +22,7 @@ class UserListTransformer extends TransformerAbstract
             'username' => $user->username,
             'is_active' => $user->is_active,
             'full_name' => $user->profile?->full_name,
-            'profile_image' => $user->profile?->profile_image ? url('uploads/user/profile/'.$user->profile?->profile_image) : null,
+            'image' => $user->profile?->image_urls,
             'location' => $user->profile?->location->title,
             'category' => $user->profile?->category->title,
         ] : [
@@ -31,7 +31,7 @@ class UserListTransformer extends TransformerAbstract
             'username' => $user->username,
             'is_active' => $user->is_active,
             'full_name' => $user->profile?->full_name,
-            'profile_image' => $user->profile?->profile_image ? url('uploads/user/profile/'.$user->profile?->profile_image) : null,
+            'image' => $user->profile?->image_urls,
             'last_activity' => $user->last_activity,
         ];
     }

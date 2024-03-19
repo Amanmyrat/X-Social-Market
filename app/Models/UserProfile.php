@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Spatie\Image\Exceptions\InvalidManipulation;
+use Spatie\Image\Manipulations;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * App\Models\UserProfile
@@ -15,7 +21,6 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $user_id
  * @property string|null $full_name
- * @property string|null $profile_image
  * @property string|null $bio
  * @property string|null $website
  * @property Carbon|null $birthdate
@@ -27,9 +32,11 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property int|null $category_id
  * @property int|null $location_id
+ * @property MediaCollection<int, Media> $media
  * @property-read Category|null $category
  * @property-read Location|null $location
  * @property-read User $user
+ * @property-read ?array $image_urls
  *
  * @method static Builder|UserProfile newModelQuery()
  * @method static Builder|UserProfile newQuery()
@@ -52,9 +59,10 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class UserProfile extends Model
+class UserProfile extends Model implements HasMedia
 {
     use HasFactory;
+    use InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -64,7 +72,6 @@ class UserProfile extends Model
     protected $fillable = [
         'user_id',
         'full_name',
-        'profile_image',
         'bio',
         'location_id',
         'category_id',
@@ -111,5 +118,50 @@ class UserProfile extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class)->withDefault();
+    }
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('user_images')
+            ->useDisk('users')
+            ->singleFile();
+    }
+
+    /**
+     * @throws InvalidManipulation
+     */
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('large')
+            ->format(Manipulations::FORMAT_WEBP)
+            ->width(1024)
+            ->optimize()
+            ->performOnCollections('user_images');
+
+        $this->addMediaConversion('medium')
+            ->format(Manipulations::FORMAT_WEBP)
+            ->width(768)
+            ->optimize()
+            ->performOnCollections('user_images');
+
+        $this->addMediaConversion('thumb')
+            ->format(Manipulations::FORMAT_WEBP)
+            ->width(100)
+            ->blur(1)
+            ->optimize()
+            ->performOnCollections('user_images');
+    }
+
+    public function getImageUrlsAttribute(): ?array
+    {
+        if (!$this->hasMedia('user_images')) {
+            return null;
+        }
+
+        return [
+            'original_url' => $this->getFirstMedia('user_images')->getTemporaryUrl(Carbon::now()->addDays(3)),
+            'large_url' => $this->getFirstMedia('user_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
+            'medium_url' => $this->getFirstMedia('user_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
+            'thumb_url' => $this->getFirstMedia('user_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
+        ];
     }
 }

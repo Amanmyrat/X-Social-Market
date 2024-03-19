@@ -12,7 +12,7 @@ class UserProfileTransformer extends TransformerAbstract
         return [
             'user_id' => $profile->user_id,
             'full_name' => $profile->full_name,
-            'profile_image' => url('uploads/user/profile/'.$profile->profile_image),
+            'image' => $profile->image_urls,
             'bio' => $profile->bio,
             'location' => $profile->location,
             'category' => $profile->category,

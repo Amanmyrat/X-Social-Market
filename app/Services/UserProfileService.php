@@ -4,20 +4,28 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\UserProfile;
+use DB;
+use Throwable;
 
 class UserProfileService
 {
-    public static function update(array $validated, User $user): void
+    /**
+     * @throws Throwable
+     */
+    public function update(array $validated, User $user): void
     {
-        if (isset($validated['profile_image'])) {
-            $profileImageName = $user->phone.'-'.time().'.'.$validated['profile_image']->getClientOriginalExtension();
-            $validated['profile_image']->move(public_path('uploads/user/profile'), $profileImageName);
-            $validated['profile_image'] = $profileImageName;
-        }
-        if ($user->profile) {
-            $user->profile()->update($validated);
-        } else {
-            UserProfile::create(array_merge($validated, ['user_id' => $user->id]));
-        }
+        DB::transaction(function () use ($validated, $user) {
+
+            if ($user->profile) {
+                $user->profile()->update($validated);
+            } else {
+                UserProfile::create(array_merge($validated, ['user_id' => $user->id]));
+            }
+
+            if (isset($validated['profile_image'])) {
+                $user->profile->clearMediaCollection();
+                $user->profile->addMedia($validated['profile_image'])->toMediaCollection('user_images');
+            }
+        });
     }
 }

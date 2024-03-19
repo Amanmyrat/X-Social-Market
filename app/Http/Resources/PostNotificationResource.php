@@ -41,7 +41,7 @@ class PostNotificationResource extends JsonResource
                 'id' => $this->resource->post->user->id,
                 'username' => $this->resource->post->user->username,
                 'full_name' => $this->resource->post->user->profile?->full_name,
-                'profile_image' => $this->resource->post->user->profile?->profile_image ? url('uploads/user/profile/'.$this->resource->post->user->profile?->profile_image) : null,
+                'image' => $this->resource->post->user->profile?->image_urls,
             ],
             'created_at' => $this->resource->created_at,
         ];

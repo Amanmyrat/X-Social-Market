@@ -12,6 +12,7 @@ use App\Transformers\UserListTransformer;
 use App\Transformers\UserWithProfileTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Throwable;
 
 class AdminUserController extends ApiBaseController
 {
@@ -49,6 +50,7 @@ class AdminUserController extends ApiBaseController
 
     /**
      * Update user
+     * @throws Throwable
      */
     public function update(User $user, UserUpdateRequest $request): JsonResponse
     {

@@ -1,7 +1,9 @@
 <?php
 
+use App\Models\Admin;
 use App\Models\Post;
 use App\Models\Story;
+use App\Models\UserProfile;
 use App\Services\MediaLibrary\CustomPathGenerator;
 use App\Services\MediaLibrary\PathWithPhoneGenerator;
 
@@ -83,7 +85,9 @@ return [
      */
     'custom_path_generators' => [
          Story::class => PathWithPhoneGenerator::class,
-         Post::class => PathWithPhoneGenerator::class
+         Post::class => PathWithPhoneGenerator::class,
+         UserProfile::class => PathWithPhoneGenerator::class,
+         Admin::class => PathWithPhoneGenerator::class,
         // or
         // 'model_morph_alias' => PathGenerator::class
     ],

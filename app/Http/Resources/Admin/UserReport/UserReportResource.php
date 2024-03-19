@@ -16,7 +16,7 @@ class UserReportResource extends JsonResource
             'id' => $this->resource->id,
             'username' => $this->resource->username,
             'full_name' => $this->resource->profile?->full_name,
-            'profile_image' => $this->resource->profile?->profile_image ? url('uploads/user/profile/'.$this->resource->profile?->profile_image) : null,
+            'image' => $this->resource->profile?->image_urls,
             'lastReport' => [
                 'id' => $this->resource->latestReportAgainst->id,
                 'message' => $this->resource->latestReportAgainst->message,

@@ -16,7 +16,7 @@ class UserReportUserResource extends JsonResource
             'id' => $this->resource->reporter->id,
             'username' => $this->resource->reporter->username,
             'full_name' => $this->resource->reporter->profile?->full_name,
-            'profile_image' => $this->resource->reporter->profile?->profile_image ? url('uploads/user/profile/'.$this->resource->reporter->profile?->profile_image) : null,
+            'image' => $this->resource->reporter->profile?->image_urls,
             'report_type' => $this->resource->reportType->title,
             'message' => $this->resource->message,
             'created_at' => $this->resource->created_at,

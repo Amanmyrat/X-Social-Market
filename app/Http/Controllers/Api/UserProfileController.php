@@ -7,15 +7,22 @@ use App\Models\User;
 use App\Services\UserProfileService;
 use App\Transformers\UserWithProfileTransformer;
 use Illuminate\Http\JsonResponse;
+use Throwable;
 
 class UserProfileController extends ApiBaseController
 {
+    public function __construct(protected UserProfileService $service)
+    {
+        parent::__construct();
+    }
+
     /**
      * Update the profile of user.
+     * @throws Throwable
      */
     public function update(ProfileUpdateRequest $request): JsonResponse
     {
-        UserProfileService::update($request->validated(), $request->user());
+        $this->service->update($request->validated(), $request->user());
 
         return $this->respondWithItem(
             $request->user()->loadCount(['posts', 'followers', 'followings']),

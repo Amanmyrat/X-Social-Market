@@ -93,7 +93,7 @@ class Message extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('message_images')
+        $this->addMediaCollection('message_medias')
             ->useDisk('messages');
     }
 
@@ -106,45 +106,52 @@ class Message extends Model implements HasMedia
             ->format(Manipulations::FORMAT_WEBP)
             ->width(1024)
             ->optimize()
-            ->performOnCollections('message_images');
+            ->performOnCollections('message_medias');
 
         $this->addMediaConversion('medium')
             ->format(Manipulations::FORMAT_WEBP)
             ->width(768)
             ->optimize()
-            ->performOnCollections('message_images');
+            ->performOnCollections('message_medias');
 
         $this->addMediaConversion('thumb')
             ->format(Manipulations::FORMAT_WEBP)
             ->width(100)
             ->blur(1)
             ->optimize()
-            ->performOnCollections('message_images');
+            ->performOnCollections('message_medias');
     }
 
     public function getImageUrlsAttribute(): ?array
     {
-        if (!$this->hasMedia('message_images')) {
+        if (!$this->hasMedia('message_medias')) {
             return null;
         }
+
         $medias = [];
-        foreach ($this->getMedia('message_images') as $media) {
-            array_push($medias, [
-                'id' => $media->id,
-                'original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3)),
-                'large_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
-                'medium_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
-                'thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
-            ]);
+        foreach ($this->getMedia('message_medias') as $media) {
+
+            $mediaUrls = ['original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3))];
+
+            if ($this->type == 'image') {
+                $mediaUrls += [
+                    'large_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
+                    'medium_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
+                    'thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
+                ];
+            }
+
+            array_push($medias, $mediaUrls);
         }
+
         return $medias;
     }
 
     public function getExtraAttribute(): ?array
     {
-        if ($this->type == Message::TYPE_MEDIA){
+        if ($this->type == Message::TYPE_MEDIA) {
             return [
-              'medias' => $this->image_urls
+                'medias' => $this->image_urls
             ];
         }
         return $this->extra;

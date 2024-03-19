@@ -278,7 +278,7 @@ class Post extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('post_images')
+        $this->addMediaCollection('post_medias')
             ->useDisk('posts');
     }
 
@@ -291,50 +291,66 @@ class Post extends Model implements HasMedia
             ->format(Manipulations::FORMAT_WEBP)
             ->width(1024)
             ->optimize()
-            ->performOnCollections('post_images');
+            ->performOnCollections('post_medias');
 
         $this->addMediaConversion('medium')
             ->format(Manipulations::FORMAT_WEBP)
             ->width(768)
             ->optimize()
-            ->performOnCollections('post_images');
+            ->performOnCollections('post_medias');
 
         $this->addMediaConversion('thumb')
             ->format(Manipulations::FORMAT_WEBP)
             ->width(100)
             ->blur(1)
             ->optimize()
-            ->performOnCollections('post_images');
+            ->performOnCollections('post_medias');
     }
 
     public function getFirstImageUrlsAttribute(): ?array
     {
-        if (!$this->hasMedia('post_images')) {
+        if (!$this->hasMedia('post_medias')) {
             return null;
         }
 
+        $media = $this->getFirstMedia('post_medias');
+
+        if ($this->media_type == 'video') {
+            return [
+                'original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3)),
+            ];
+        }
+
         return [
-            'original_url' => $this->getFirstMedia('post_images')->getTemporaryUrl(Carbon::now()->addDays(3)),
-            'large_url' => $this->getFirstMedia('post_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
-            'medium_url' => $this->getFirstMedia('post_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
-            'thumb_url' => $this->getFirstMedia('post_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
+            'original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3)),
+            'large_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
+            'medium_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
+            'thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
         ];
     }
 
     public function getImageUrlsAttribute(): ?array
     {
-        if (!$this->hasMedia('post_images')) {
+        if (!$this->hasMedia('post_medias')) {
             return null;
         }
+
         $medias = [];
-        foreach ($this->getMedia('post_images') as $media) {
-            array_push($medias, [
-                'original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3)),
-                'large_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
-                'medium_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
-                'thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
-            ]);
+        foreach ($this->getMedia('post_medias') as $media) {
+
+            $mediaUrls = ['original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3))];
+
+            if ($this->media_type === 'image') {
+                $mediaUrls += [
+                    'large_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
+                    'medium_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
+                    'thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
+                ];
+            }
+
+            array_push($medias, $mediaUrls);
         }
+
         return $medias;
     }
 }

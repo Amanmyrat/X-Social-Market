@@ -35,7 +35,7 @@ class PostService
 
                 $post->addMultipleMediaFromRequest([$medias])
                     ->each(function ($fileAdder) {
-                        $fileAdder->toMediaCollection('post_images');
+                        $fileAdder->toMediaCollection('post_medias');
                     });
 
                 if ($post->category->has_product) {
@@ -80,7 +80,7 @@ class PostService
 
                 $post->addMultipleMediaFromRequest([$medias])
                     ->each(function ($fileAdder) {
-                        $fileAdder->toMediaCollection('post_images');
+                        $fileAdder->toMediaCollection('post_medias');
                     });
                 if ($post->category->has_product) {
                     $product = $post->product;

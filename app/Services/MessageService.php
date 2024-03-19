@@ -103,7 +103,7 @@ class MessageService
 
         $message->addMultipleMediaFromRequest([$mediaType])
             ->each(function ($file) {
-                $file->toMediaCollection('message_images');
+                $file->toMediaCollection('message_medias');
             });
     }
 

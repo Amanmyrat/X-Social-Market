@@ -75,6 +75,9 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/notifications', [NotificationController::class, 'list']);
 
         Route::post('/{user}/report', [UserReportController::class, 'reportUser']);
+
+        Route::post('/check/contacts', [UserController::class, 'checkContacts']);
+
     });
 
     Route::prefix('posts')->group(function () {

@@ -83,4 +83,52 @@ class UserService
             ProcessUserOffline::dispatch($user);
         }
     }
+
+    /**
+     * Check and retrieve contacts.
+     *
+     * @param array $contacts
+     * @param User $authUser
+     * @return array
+     */
+    public function checkAndRetrieveContacts(array $contacts, User $authUser): array
+    {
+        // Retrieve all users with the given phone numbers and eager load 'profile'
+        $users = User::whereIn('phone', $contacts)->with('profile')->get()->keyBy('phone');
+
+        // Retrieve IDs of users the auth user is following for an efficient check later
+        $followingUserIds = $authUser->followings()->pluck('users.id')->toArray();
+
+        $results = collect($contacts)->map(function ($contact) use ($users, $followingUserIds) {
+            $user = $users->get($contact);
+            $isFollowed = false;
+
+            if ($user) {
+                // Check if the auth user is following this user
+                $isFollowed = in_array($user->id, $followingUserIds);
+            }
+
+            return [
+                'phone' => $contact,
+                'user' => $user ? [
+                    'id' => $user->id,
+                    'username' => $user->username,
+                    'full_name' => $user->profile?->full_name,
+                    'image' => $user->profile?->image_urls,
+                    'isFollowing' => $isFollowed,
+                ] : null,
+            ];
+        })->toArray();
+
+        usort($results, function ($a, $b) {
+            // If both have users or both don't, order doesn't change
+            if (($a['user'] !== null && $b['user'] !== null) || ($a['user'] === null && $b['user'] === null)) {
+                return 0;
+            }
+            // If $a has a user and $b doesn't, $a should come first
+            return $a['user'] === null ? 1 : -1;
+        });
+
+        return $results;
+    }
 }

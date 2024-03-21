@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\User\UserCheckContactsRequest;
+use App\Http\Resources\ContactResource;
 use App\Models\User;
 use App\Services\UserService;
 use App\Transformers\UserSimpleTransformer;
 use App\Transformers\UserTransformer;
+use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserController extends ApiBaseController
 {
@@ -116,5 +120,17 @@ class UserController extends ApiBaseController
         $users = $this->service->search($request);
 
         return $this->respondWithCollection($users, new UserSimpleTransformer());
+    }
+
+    /**
+     * Check user contacts
+     */
+    public function checkContacts(UserCheckContactsRequest $request): AnonymousResourceCollection
+    {
+        $validated = $request->validated();
+
+        $results = $this->service->checkAndRetrieveContacts($validated['contacts'], Auth::user());
+
+        return ContactResource::collection(collect($results));
     }
 }

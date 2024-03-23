@@ -205,7 +205,7 @@ class Post extends Model implements HasMedia
      * Scope a query to enhance it with a complex scoring system for post recommendations,
      * including user engagement and preferences. It calculates a dynamic score for each post
      * based on several criteria:
-     * - Engagement (likes, comments, bookmarks) with different weights (Trendy or engaging posts)
+     * - Engagement (favorites, comments, bookmarks) with different weights (Trendy or engaging posts)
      * - Recency of the post
      * - Whether the post is from a followed user
      * - Whether the post belongs to a category that the user has shown interest in (Posts likely to be of interest (based on category))

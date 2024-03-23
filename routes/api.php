@@ -46,7 +46,6 @@ Route::prefix('users')->group(function () {
 
 Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     Route::prefix('users')->group(function () {
-        Route::post('/update', [UserController::class, 'update']);
         Route::post('/password/update', [UserController::class, 'updatePassword']);
         Route::post('/password/new', [UserController::class, 'newPassword']);
         Route::post('/delete', [UserController::class, 'delete']);
@@ -77,6 +76,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/{user}/report', [UserReportController::class, 'reportUser']);
 
         Route::post('/check/contacts', [UserController::class, 'checkContacts']);
+        Route::post('/check/availability', [UserController::class, 'checkAvailability']);
 
     });
 

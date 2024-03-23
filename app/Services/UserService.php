@@ -45,15 +45,6 @@ class UserService
         ]);
     }
 
-    public static function update(Request $request): void
-    {
-        $validated = $request->validate([
-            'username' => ['filled', 'string', 'min:3', 'alpha_dash', 'unique:'.User::class],
-            'email' => ['filled', 'email', 'unique:'.User::class],
-        ]);
-        $request->user()->update($validated);
-    }
-
     public function search(Request $request): LengthAwarePaginator
     {
         $limit = $request->get('limit');

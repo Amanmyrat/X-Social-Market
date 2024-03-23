@@ -58,19 +58,6 @@ class UserController extends ApiBaseController
     }
 
     /**
-     * Update the username or email of User.
-     */
-    public function update(Request $request): JsonResponse
-    {
-        UserService::update($request);
-
-        return $this->respondWithItem(
-            $request->user()->toArray(),
-            new UserTransformer()
-        );
-    }
-
-    /**
      * Delete user.
      */
     public function delete(Request $request): JsonResponse
@@ -132,5 +119,20 @@ class UserController extends ApiBaseController
         $results = $this->service->checkAndRetrieveContacts($validated['contacts'], Auth::user());
 
         return ContactResource::collection(collect($results));
+    }
+
+    /**
+     * Check availability
+     */
+    public function checkAvailability(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'type' => 'required|string|in:phone,username,email',
+            'value' => 'required|string',
+        ]);
+
+        $exists = User::where($validated['type'], $validated['value'])->exists();
+
+        return new JsonResponse(['available' => !$exists]);
     }
 }

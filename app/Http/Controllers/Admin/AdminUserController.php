@@ -50,6 +50,7 @@ class AdminUserController extends ApiBaseController
 
     /**
      * Update user
+     *
      * @throws Throwable
      */
     public function update(User $user, UserUpdateRequest $request): JsonResponse

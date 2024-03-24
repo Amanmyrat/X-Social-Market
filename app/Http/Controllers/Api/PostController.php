@@ -27,8 +27,7 @@ class PostController extends ApiBaseController
 
     public function __construct(
         protected PostService $service
-    )
-    {
+    ) {
         parent::__construct();
     }
 

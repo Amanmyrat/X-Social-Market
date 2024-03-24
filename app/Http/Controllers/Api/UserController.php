@@ -133,6 +133,6 @@ class UserController extends ApiBaseController
 
         $exists = User::where($validated['type'], $validated['value'])->exists();
 
-        return new JsonResponse(['available' => !$exists]);
+        return new JsonResponse(['available' => ! $exists]);
     }
 }

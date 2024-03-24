@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\BlockedUser;
 use App\Models\User;
 use Auth;
-use Illuminate\Http\Request;
 
 class UserBlockService
 {

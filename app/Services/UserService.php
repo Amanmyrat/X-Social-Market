@@ -77,10 +77,6 @@ class UserService
 
     /**
      * Check and retrieve contacts.
-     *
-     * @param array $contacts
-     * @param User $authUser
-     * @return array
      */
     public function checkAndRetrieveContacts(array $contacts, User $authUser): array
     {
@@ -116,6 +112,7 @@ class UserService
             if (($a['user'] !== null && $b['user'] !== null) || ($a['user'] === null && $b['user'] === null)) {
                 return 0;
             }
+
             // If $a has a user and $b doesn't, $a should come first
             return $a['user'] === null ? 1 : -1;
         });

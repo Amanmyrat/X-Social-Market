@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enum\ErrorMessage;
 use App\Http\Requests\MessageSendRequest;
 use App\Jobs\ProcessMessageSent;
 use App\Models\Chat;
 use App\Models\Message;
 use App\Services\MessageService;
 use App\Transformers\MessageTransformer;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -27,6 +25,7 @@ class MessageController extends ApiBaseController
 
     /**
      * Send message
+     *
      * @throws Throwable
      */
     public function sendMessage(MessageSendRequest $request): JsonResponse
@@ -110,10 +109,10 @@ class MessageController extends ApiBaseController
         );
 
         $medias = $message->extra['medias'];
-        $foundMedia = current(array_filter($medias, fn($item) => $item['id'] === $media->id));
+        $foundMedia = current(array_filter($medias, fn ($item) => $item['id'] === $media->id));
 
         abort_if(
-            !$foundMedia,
+            ! $foundMedia,
             400,
             'Media not found'
         );

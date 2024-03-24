@@ -39,6 +39,7 @@ class AdminAdminController
 
     /**
      * Admin create
+     *
      * @throws Throwable
      */
     public function create(AdminCreateRequest $request): JsonResponse
@@ -62,6 +63,7 @@ class AdminAdminController
 
     /**
      * Update admin
+     *
      * @throws Exception
      */
     public function update(Admin $admin, AdminUpdateRequest $request): AdminResource

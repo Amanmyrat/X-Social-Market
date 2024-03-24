@@ -21,7 +21,7 @@ class StoryService
 
             $story = Story::create(array_merge($validated, [
                 'user_id' => $user->id,
-                'valid_until' => Carbon::now()->addYear()
+                'valid_until' => Carbon::now()->addYear(),
             ]));
             if ($validated['type'] == 'basic') {
                 $story->addMedia($validated['image'])->toMediaCollection('story_images');

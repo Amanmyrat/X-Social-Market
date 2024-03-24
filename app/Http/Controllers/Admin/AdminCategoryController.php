@@ -21,8 +21,7 @@ class AdminCategoryController extends Controller
     public function __construct(
         protected UniversalService $service,
         protected CategoryService $categoryService,
-    )
-    {
+    ) {
         $this->service->setModel(new Category());
     }
 
@@ -56,6 +55,7 @@ class AdminCategoryController extends Controller
 
     /**
      * Create category
+     *
      * @throws Throwable
      */
     public function create(CategoryCreateRequest $request): JsonResponse
@@ -70,6 +70,7 @@ class AdminCategoryController extends Controller
 
     /**
      * Update category
+     *
      * @throws Exception
      */
     public function update(Category $category, CategoryUpdateRequest $request): CategoryResource

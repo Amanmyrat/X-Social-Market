@@ -100,7 +100,7 @@ class Admin extends Authenticatable implements HasMedia
     /**
      * @throws InvalidManipulation
      */
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('large')
             ->format(Manipulations::FORMAT_WEBP)
@@ -124,7 +124,7 @@ class Admin extends Authenticatable implements HasMedia
 
     public function getImageUrlsAttribute(): ?array
     {
-        if (!$this->hasMedia('admin_images')) {
+        if (! $this->hasMedia('admin_images')) {
             return null;
         }
 

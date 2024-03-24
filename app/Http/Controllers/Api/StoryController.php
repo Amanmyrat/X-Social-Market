@@ -21,6 +21,7 @@ class StoryController extends ApiBaseController
 
     /**
      * Create story
+     *
      * @throws Throwable
      */
     public function create(StoryRequest $request): JsonResponse

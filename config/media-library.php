@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Admin;
 use App\Models\Post;
 use App\Models\Story;
 use App\Models\UserProfile;
@@ -84,9 +83,9 @@ return [
      * Here you can specify which path generator should be used for the given class.
      */
     'custom_path_generators' => [
-         Story::class => PathWithPhoneGenerator::class,
-         Post::class => PathWithPhoneGenerator::class,
-         UserProfile::class => PathWithPhoneGenerator::class,
+        Story::class => PathWithPhoneGenerator::class,
+        Post::class => PathWithPhoneGenerator::class,
+        UserProfile::class => PathWithPhoneGenerator::class,
         // or
         // 'model_morph_alias' => PathGenerator::class
     ],

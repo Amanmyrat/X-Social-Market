@@ -95,7 +95,7 @@ class Category extends Model implements HasMedia
     /**
      * @throws InvalidManipulation
      */
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('large')
             ->format(Manipulations::FORMAT_WEBP)
@@ -113,7 +113,7 @@ class Category extends Model implements HasMedia
 
     public function getImageUrlsAttribute(): ?array
     {
-        if (!$this->hasMedia('category_images')) {
+        if (! $this->hasMedia('category_images')) {
             return null;
         }
 

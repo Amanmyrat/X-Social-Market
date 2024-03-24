@@ -18,6 +18,7 @@ class UserProfileController extends ApiBaseController
 
     /**
      * Update the profile of user.
+     *
      * @throws Throwable
      */
     public function update(ProfileUpdateRequest $request): JsonResponse

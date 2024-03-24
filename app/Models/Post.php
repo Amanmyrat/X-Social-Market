@@ -227,8 +227,8 @@ class Post extends Model implements HasMedia
      * - Calculates and includes the average rating of each post.
      * - Orders the posts by their calculated score in descending order.
      *
-     * @param Builder $query The initial query builder instance.
-     * @param int $userId The ID of the user for whom recommendations are being tailored.
+     * @param  Builder  $query  The initial query builder instance.
+     * @param  int  $userId  The ID of the user for whom recommendations are being tailored.
      * @return Builder The modified query builder instance with applied conditions for recommendations.
      */
     public function scopeWithRecommendationScore(Builder $query, int $userId): Builder
@@ -297,7 +297,7 @@ class Post extends Model implements HasMedia
                 $query->where(function ($q) {
                     // Include posts if the profile is not private or does not exist
                     $q->whereNull('user_profiles.private') // Profile is either not private
-                    ->orWhere('user_profiles.private', '=', false);
+                        ->orWhere('user_profiles.private', '=', false);
                 })->orWhereExists(function ($q) use ($userId) {
                     // Or the current user is following the post's user
                     $q->select(DB::raw(1))
@@ -307,7 +307,6 @@ class Post extends Model implements HasMedia
                 });
             })
             ->groupBy('posts.id');
-
 
         return $query->joinSub($subQuery, 'scored_posts', function ($join) {
             $join->on('posts.id', '=', 'scored_posts.id');
@@ -333,8 +332,8 @@ class Post extends Model implements HasMedia
      * - Excludes posts from users who have been blocked by admins, indicated by a non-null 'blocked_at' field in the 'users' table.
      * - Excludes posts from users with a private profile, unless those users are followed by the current user.
      *
-     * @param Builder $query The initial query builder instance.
-     * @param int|null $userId The ID of the current user, to filter out posts from users blocked by them and handle privacy checks. Null if the user is not logged in.
+     * @param  Builder  $query  The initial query builder instance.
+     * @param  int|null  $userId  The ID of the current user, to filter out posts from users blocked by them and handle privacy checks. Null if the user is not logged in.
      * @return Builder The modified query builder instance with applied filters.
      */
     public function scopeActiveAndNotBlocked(Builder $query, ?int $userId): Builder
@@ -353,12 +352,12 @@ class Post extends Model implements HasMedia
             ->whereNull('users.blocked_at') // Admin has not blocked the user
             ->where('users.is_active', true) // Admin has not disabled user
             ->whereNull('blocked_users.id') // Current user has not blocked the user
-            ->where(function ($query) use ($userId) {
+            ->where(function ($query) {
                 $query->where(function ($q) {
                     // Include posts if the profile is not private or does not exist
                     $q->whereNull('user_profiles.private')
                         ->orWhere('user_profiles.private', '=', false);
-                })->orWhere(function ($q) use ($userId) {
+                })->orWhere(function ($q) {
                     // Or the current user is following the post's user
                     $q->whereNotNull('followers.followed_user_id');
                 });
@@ -374,7 +373,7 @@ class Post extends Model implements HasMedia
     /**
      * @throws InvalidManipulation
      */
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('large')
             ->format(Manipulations::FORMAT_WEBP)
@@ -398,7 +397,7 @@ class Post extends Model implements HasMedia
 
     public function getFirstImageUrlsAttribute(): ?array
     {
-        if (!$this->hasMedia('post_medias')) {
+        if (! $this->hasMedia('post_medias')) {
             return null;
         }
 
@@ -420,7 +419,7 @@ class Post extends Model implements HasMedia
 
     public function getImageUrlsAttribute(): ?array
     {
-        if (!$this->hasMedia('post_medias')) {
+        if (! $this->hasMedia('post_medias')) {
             return null;
         }
 

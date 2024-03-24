@@ -16,7 +16,7 @@ class UserService
     public function list(string $type, int $limit, ?string $search_query = null, ?string $sort = null): LengthAwarePaginator
     {
         $query = User::where('type', $type)->when(isset($search_query), function ($query) use ($search_query) {
-            $search_query = '%' . $search_query . '%';
+            $search_query = '%'.$search_query.'%';
 
             return $query->whereHas('profile', function ($q) use ($search_query) {
                 $q->where('full_name', $search_query);

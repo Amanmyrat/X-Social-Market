@@ -2,25 +2,25 @@
 
 namespace App\Services\MediaLibrary;
 
-use Spatie\MediaLibrary\Support\PathGenerator\PathGenerator;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Support\Str;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\MediaLibrary\Support\PathGenerator\PathGenerator;
 
 class PathWithPhoneGenerator implements PathGenerator
 {
     public function getPath(Media $media): string
     {
-        return $this->baseDir($media) . '/';
+        return $this->baseDir($media).'/';
     }
 
     public function getPathForConversions(Media $media): string
     {
-        return $this->baseDir($media) . '/conversions/';
+        return $this->baseDir($media).'/conversions/';
     }
 
     public function getPathForResponsiveImages(Media $media): string
     {
-        return $this->baseDir($media) . '/responsive-images/';
+        return $this->baseDir($media).'/responsive-images/';
     }
 
     protected function baseDir(Media $media): string
@@ -31,6 +31,7 @@ class PathWithPhoneGenerator implements PathGenerator
         $hashedId = Str::limit(md5($media->model_id), 12, '');
 
         $phone = $media->model->user->phone;
+
         return "$year/$month/$day/$phone/$hashedId";
     }
 }

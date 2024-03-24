@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Enum\ErrorMessage;
 use App\Jobs\ProcessMessageRead;
 use App\Models\Chat;
 use App\Models\Message;
@@ -17,6 +16,7 @@ class MessageService
 {
     /**
      * Send message
+     *
      * @throws Exception
      * @throws Throwable
      */
@@ -26,9 +26,9 @@ class MessageService
             $extras = $this->handleExtrasBasedOnType($data);
 
             $messageData = [
-                'chat_id' => (int)$data['chat_id'],
+                'chat_id' => (int) $data['chat_id'],
                 'sender_user_id' => auth()->id(),
-                'receiver_user_id' => (int)$data['receiver_user_id'],
+                'receiver_user_id' => (int) $data['receiver_user_id'],
                 'body' => $data['body'],
                 'type' => $data['type'],
                 'extra' => $extras,
@@ -63,8 +63,7 @@ class MessageService
         return $extras;
     }
 
-    private
-    function getStoryDetails($storyId): Story
+    private function getStoryDetails($storyId): Story
     {
         /** @var Story $story */
         $story = Story::with('user:id,username,last_activity')
@@ -78,8 +77,7 @@ class MessageService
         return $story;
     }
 
-    private
-    function getPostDetails($postId): Post
+    private function getPostDetails($postId): Post
     {
         /** @var Post $post */
         $post = Post::with(['user:id,username,last_activity', 'media'])
@@ -110,8 +108,7 @@ class MessageService
     /**
      * Get all messages
      */
-    public
-    function listMessages($chatId): LengthAwarePaginator
+    public function listMessages($chatId): LengthAwarePaginator
     {
         $userId = auth()->id();
 
@@ -128,16 +125,14 @@ class MessageService
     /**
      * Mark message read
      */
-    public
-    function readMessage(Message $message): void
+    public function readMessage(Message $message): void
     {
         $message->update(['read_at' => now()]);
 
         ProcessMessageRead::dispatch($message);
     }
 
-    public
-    function readAllMessages(Chat $chat): void
+    public function readAllMessages(Chat $chat): void
     {
         $userId = auth()->id();
 

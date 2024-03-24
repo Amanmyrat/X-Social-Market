@@ -12,7 +12,7 @@ trait HandlesImageUpload
     {
         $fileNameWithoutExt = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $extension = 'jpg';
-        $uniqueFileName = $fileNameWithoutExt . '-' . uniqid();
+        $uniqueFileName = $fileNameWithoutExt.'-'.uniqid();
 
         $originalPath = "$basePath/$uniqueFileName/$uniqueFileName.$extension";
         Storage::disk($bucket)->put($originalPath, file_get_contents($file), 'public');

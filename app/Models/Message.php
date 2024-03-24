@@ -100,7 +100,7 @@ class Message extends Model implements HasMedia
     /**
      * @throws InvalidManipulation
      */
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('large')
             ->format(Manipulations::FORMAT_WEBP)
@@ -124,7 +124,7 @@ class Message extends Model implements HasMedia
 
     public function getImageUrlsAttribute(): ?array
     {
-        if (!$this->hasMedia('message_medias')) {
+        if (! $this->hasMedia('message_medias')) {
             return null;
         }
 
@@ -151,9 +151,10 @@ class Message extends Model implements HasMedia
     {
         if ($this->type == Message::TYPE_MEDIA) {
             return [
-                'medias' => $this->image_urls
+                'medias' => $this->image_urls,
             ];
         }
+
         return $this->extra;
     }
 }

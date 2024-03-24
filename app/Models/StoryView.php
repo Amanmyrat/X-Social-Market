@@ -17,8 +17,8 @@ use Illuminate\Support\Carbon;
  * @property int $story_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read \App\Models\Story $story
- * @property-read \App\Models\User $user
+ * @property-read Story $story
+ * @property-read User $user
  *
  * @method static Builder|StoryView newModelQuery()
  * @method static Builder|StoryView newQuery()

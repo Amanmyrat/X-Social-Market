@@ -21,11 +21,11 @@ class StoryService
 
             $story = Story::create(array_merge($validated, [
                 'user_id' => $user->id,
-                'valid_until' => Carbon::now()->addYear(),
-                'image' => 'null'
+                'valid_until' => Carbon::now()->addYear()
             ]));
-
-            $story->addMedia($validated['image'])->toMediaCollection('story_images');
+            if ($validated['type'] == 'basic') {
+                $story->addMedia($validated['image'])->toMediaCollection('story_images');
+            }
         });
     }
 }

@@ -66,7 +66,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
 
         Route::post('/block', [BlockedUserController::class, 'block']);
         Route::post('/unblock', [BlockedUserController::class, 'unblock']);
-
         Route::post('/block/list', [BlockedUserController::class, 'blockedList']);
 
         Route::post('/make/seller', [UserController::class, 'makeAccountBusiness']);

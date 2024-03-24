@@ -114,7 +114,7 @@ class User extends Authenticatable
         'is_online',
         'is_active',
         'blocked_at',
-        'block_reason ',
+        'block_reason',
     ];
 
     /**

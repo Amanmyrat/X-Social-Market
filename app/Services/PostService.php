@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Post;
 use App\Models\Product;
 use Arr;
+use Auth;
 use DB;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -123,7 +124,7 @@ class PostService
     {
         $limit = $request->get('limit');
 
-        $posts = Post::isActive()->with('media')->select('id', 'caption', 'price', 'media_type')->when(isset($request->categories), function ($query) use ($request) {
+        $posts = Post::activeAndNotBlocked(Auth::id())->with('media')->select(['posts.id', 'posts.caption', 'posts.price', 'posts.media_type'])->when(isset($request->categories), function ($query) use ($request) {
             return $query->whereIn('category_id', $request->categories);
         })
             ->when(isset($request->price_min), function ($query) use ($request) {

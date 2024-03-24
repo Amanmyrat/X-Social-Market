@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\Post;
+use Auth;
 
 trait PreparesPostQuery
 {
@@ -10,16 +11,15 @@ trait PreparesPostQuery
     {
         return Post::with(['user.profile', 'media'])
             ->withAvg('ratings', 'rating')
-            ->isActive()
-            ->withIsFollowing();
+            ->activeAndNotBlocked(Auth::id());
     }
 
     private function getUserPostsQuery($user)
     {
-        return $user->posts()
-            ->with(['user.profile', 'media'])
+        return Post::with(['user.profile', 'media'])
             ->withAvg('ratings', 'rating')
-            ->withIsFollowing()
+            ->where('posts.user_id', $user->id)
+            ->activeAndNotBlocked(Auth::id())
             ->latest();
     }
 

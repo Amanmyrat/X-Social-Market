@@ -28,7 +28,8 @@ class GuestPostTransformer extends TransformerAbstract
             'isFavorite' => false,
             'isBookmark' => false,
             'isViewed' => false,
-            'is_following' => false,
+            'is_following' => null,
+            'has_unviewed_story' => null,
         ];
     }
 

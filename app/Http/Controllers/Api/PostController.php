@@ -27,7 +27,8 @@ class PostController extends ApiBaseController
 
     public function __construct(
         protected PostService $service
-    ) {
+    )
+    {
         parent::__construct();
     }
 
@@ -90,9 +91,9 @@ class PostController extends ApiBaseController
     public function relatedPosts(Post $post): JsonResponse
     {
         $posts = Post::with('media')
-            ->isActive()
-            ->where('id', '!=', $post->id)
-            ->where('category_id', $post->category_id)
+            ->where('posts.id', '!=', $post->id)
+            ->where('posts.category_id', $post->category_id)
+            ->activeAndNotBlocked(Auth::id())
             ->inRandomOrder()
             ->limit(10)
             ->get();
@@ -132,9 +133,6 @@ class PostController extends ApiBaseController
     public function guestAllPosts(): JsonResponse
     {
         $postsQuery = $this->getPostsQuery();
-        $postsQuery->whereDoesntHave('user.profile', function ($query) {
-            $query->where('private', true);
-        });
         $posts = $postsQuery->inRandomOrder()->paginate(10);
 
         return $this->respondWithPaginator($posts, new GuestPostTransformer());
@@ -197,7 +195,7 @@ class PostController extends ApiBaseController
      */
     public function discoveryPosts(): JsonResponse
     {
-        $posts = Post::isActive()->with('media')->inRandomOrder()->paginate(25);
+        $posts = Post::activeAndNotBlocked(Auth::id())->with('media')->inRandomOrder()->paginate(25);
 
         return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }
@@ -207,7 +205,11 @@ class PostController extends ApiBaseController
      */
     public function categoryPosts(Category $category): JsonResponse
     {
-        $posts = $category->posts()->with('media')->inRandomOrder()->paginate();
+        $posts = Post::with(['media'])
+            ->where('posts.category_id', $category->id)
+            ->activeAndNotBlocked(Auth::id())
+            ->inRandomOrder()
+            ->paginate(20);
 
         return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }

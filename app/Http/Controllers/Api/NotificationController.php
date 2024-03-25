@@ -23,20 +23,39 @@ class NotificationController
             ->where('created_at', '>=', Carbon::now()->subDays(7))
             ->with(['post.user', 'post.media', 'notifiable'])
             ->orderByDesc('created_at')
-            ->get()
-            ->groupBy(function ($date) {
-                $createdAt = Carbon::parse($date->created_at);
-                if ($createdAt->isToday()) {
-                    return 'today';
-                } elseif ($createdAt->isYesterday()) {
-                    return 'yesterday';
-                } else {
-                    return 'others';
-                }
-            });
+            ->get();
 
-        return response()->json($notifications->map(function ($dayNotifications) {
+        $notifications->each->update(['is_read' => true]);
+
+        // Group by date
+        $groupedNotifications = $notifications->groupBy(function ($date) {
+            $createdAt = Carbon::parse($date->created_at);
+            if ($createdAt->isToday()) {
+                return 'today';
+            } elseif ($createdAt->isYesterday()) {
+                return 'yesterday';
+            } else {
+                return 'others';
+            }
+        });
+
+        return response()->json($groupedNotifications->map(function ($dayNotifications) {
             return PostNotificationResource::collection($dayNotifications);
         }));
     }
+
+    public function unreadCount(): JsonResponse
+    {
+        $userId = Auth::id();
+
+        $count = PostNotification::whereHas('post', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })
+            ->where('is_read', false)
+            ->where('created_at', '>=', Carbon::now()->subDays(7))
+            ->count();
+
+        return response()->json(['unreadCount' => $count]);
+    }
+
 }

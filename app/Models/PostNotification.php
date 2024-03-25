@@ -38,7 +38,7 @@ class PostNotification extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['post_id'];
+    protected $fillable = ['post_id', 'is_read'];
 
     public function notifiable(): MorphTo
     {

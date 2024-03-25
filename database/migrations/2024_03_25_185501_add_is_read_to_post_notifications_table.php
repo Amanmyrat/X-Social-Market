@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('categories', function (Blueprint $table) {
-            $table->dropColumn('icon');
+        Schema::table('post_notifications', function (Blueprint $table) {
+            $table->boolean('is_read')->default(false)->after('notifiable_type');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('categories', function (Blueprint $table) {
-            $table->text('icon')->nullable();
+        Schema::table('post_notifications', function (Blueprint $table) {
+            $table->dropColumn('is_read');
         });
     }
 };

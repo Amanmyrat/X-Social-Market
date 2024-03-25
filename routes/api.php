@@ -70,7 +70,10 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
 
         Route::post('/make/seller', [UserController::class, 'makeAccountBusiness']);
         Route::post('/search', [UserController::class, 'search']);
+
         Route::post('/notifications', [NotificationController::class, 'list']);
+        Route::get('/notifications/count', [NotificationController::class, 'unreadCount']);
+
 
         Route::post('/{user}/report', [UserReportController::class, 'reportUser']);
 

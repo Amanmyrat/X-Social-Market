@@ -38,10 +38,10 @@ class PostNotificationResource extends JsonResource
                 'media' => $this->resource->post->first_image_urls,
             ],
             'user' => [
-                'id' => $this->resource->post->user->id,
-                'username' => $this->resource->post->user->username,
-                'full_name' => $this->resource->post->user->profile?->full_name,
-                'image' => $this->resource->post->user->profile?->image_urls,
+                'id' => $this->resource->user->id,
+                'username' => $this->resource->user->username,
+                'full_name' => $this->resource->user->profile?->full_name,
+                'image' => $this->resource->user->profile?->image_urls,
             ],
             'created_at' => $this->resource->created_at,
         ];

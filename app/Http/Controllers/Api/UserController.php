@@ -12,12 +12,14 @@ use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends ApiBaseController
 {
     public function __construct(
         protected UserService $service
-    ) {
+    )
+    {
         parent::__construct();
     }
 
@@ -26,7 +28,12 @@ class UserController extends ApiBaseController
      */
     public function updatePassword(Request $request): JsonResponse
     {
-        UserService::updatePassword($request);
+        $validated = $request->validateWithBag('updatePassword', [
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', Password::defaults()],
+        ]);
+
+        $this->service->updatePassword($validated, Auth::user());
 
         return new JsonResponse([
             'success' => true,
@@ -38,7 +45,8 @@ class UserController extends ApiBaseController
      */
     public function updatePhone(Request $request): JsonResponse
     {
-        UserService::updatePhone($request);
+        $validated = $request->validate(['phone' => ['required', 'integer', 'unique:' . User::class]]);
+        $this->service->updatePhone($validated, Auth::user());
 
         return new JsonResponse([
             'success' => true,
@@ -50,7 +58,16 @@ class UserController extends ApiBaseController
      */
     public function newPassword(Request $request): JsonResponse
     {
-        UserService::newPassword($request);
+        $validated = $request->validate(
+            [
+                'password' => ['required', 'confirmed', Password::defaults()],
+                'phone' => ['required', 'integer']
+            ]
+        );
+
+        $user = User::firstWhere('phone', $validated['phone']);
+
+        $this->service->newPassword($validated, $user);
 
         return new JsonResponse([
             'success' => true,
@@ -104,7 +121,7 @@ class UserController extends ApiBaseController
     public function search(Request $request): JsonResponse
     {
         $request->validate(['search_query' => ['required', 'string']]);
-        $users = $this->service->search($request);
+        $users = $this->service->search($request->all());
 
         return $this->respondWithCollection($users, new UserSimpleTransformer());
     }
@@ -133,6 +150,6 @@ class UserController extends ApiBaseController
 
         $exists = User::where($validated['type'], $validated['value'])->exists();
 
-        return new JsonResponse(['available' => ! $exists]);
+        return new JsonResponse(['available' => !$exists]);
     }
 }

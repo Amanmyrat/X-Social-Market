@@ -12,46 +12,32 @@ use Illuminate\Validation\Rules\Password;
 
 class UserService
 {
-    public static function updatePassword(Request $request): void
+    public function updatePassword(array $validated, User $user): void
     {
-        $validated = $request->validateWithBag('updatePassword', [
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', 'confirmed', Password::defaults()],
-        ]);
-
-        $request->user()->update([
+        $user->update([
             'password' => Hash::make($validated['password']),
         ]);
     }
 
-    public static function updatePhone(Request $request): void
+    public function updatePhone(array $validated, User $user): void
     {
-        $validated = $request->validate(
-            [
-                'phone' => ['required', 'integer', 'unique:'.User::class],
-            ]
-        );
-        $request->user()->update($validated);
+        $user->update($validated);
     }
 
-    public static function newPassword(Request $request): void
+    public function newPassword(array $validated, User $user): void
     {
-        $validated = $request->validate([
-            'password' => ['required', 'confirmed', Password::defaults()],
-        ]);
-
-        $request->user()->update([
+        $user->update([
             'password' => Hash::make($validated['password']),
         ]);
     }
 
-    public function search(Request $request): LengthAwarePaginator
+    public function search(array $validated): LengthAwarePaginator
     {
-        $limit = $request->get('limit');
+        $limit = $validated['limit'];
 
         $users = User::with('profile')
-            ->when(isset($request->search_query), function ($query) use ($request) {
-                $search_query = '%'.$request->search_query.'%';
+            ->when(isset($request->search_query), function ($query) use ($validated) {
+                $search_query = '%' . $validated['search_query'] . '%';
 
                 return $query->where('username', 'LIKE', $search_query)
                     ->orWhereHas('profile', function ($query) use ($search_query) {

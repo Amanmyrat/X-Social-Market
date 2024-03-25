@@ -42,12 +42,12 @@ Route::prefix('users')->group(function () {
 
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/password/new', [UserController::class, 'newPassword']);
 });
 
 Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     Route::prefix('users')->group(function () {
         Route::post('/password/update', [UserController::class, 'updatePassword']);
-        Route::post('/password/new', [UserController::class, 'newPassword']);
         Route::post('/delete', [UserController::class, 'delete']);
         Route::post('/phone/update', [UserController::class, 'updatePhone']);
 

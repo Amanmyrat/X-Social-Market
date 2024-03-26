@@ -43,6 +43,8 @@ Route::prefix('users')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/password/new', [UserController::class, 'newPassword']);
+
+    Route::post('/check/availability', [UserController::class, 'checkAvailability']);
 });
 
 
@@ -88,8 +90,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/{user}/report', [UserReportController::class, 'reportUser']);
 
         Route::post('/check/contacts', [UserController::class, 'checkContacts']);
-        Route::post('/check/availability', [UserController::class, 'checkAvailability']);
-
     });
 
     Route::prefix('posts')->group(function () {

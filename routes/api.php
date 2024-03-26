@@ -51,6 +51,9 @@ Route::prefix('posts')->group(function () {
     Route::post('/{post}/related', [PostController::class, 'relatedPosts']);
     Route::post('/discovery', [PostController::class, 'discoveryPosts']);
     Route::post('/category/{category}', [PostController::class, 'categoryPosts']);
+
+    Route::post('/search', [PostController::class, 'search']);
+    Route::post('/filter', [PostController::class, 'filter']);
 });
 
 Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
@@ -94,9 +97,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/create', [PostController::class, 'create']);
         Route::post('/{post}/update', [PostController::class, 'update']);
         Route::post('/{post}/delete', [PostController::class, 'delete']);
-
-        Route::post('/search', [PostController::class, 'search']);
-        Route::post('/filter', [PostController::class, 'filter']);
 
         Route::post('/favorites/{post}/change', [PostFavoritesController::class, 'change']);
         Route::post('/favorites/{post}/users', [PostFavoritesController::class, 'favoriteUsers']);

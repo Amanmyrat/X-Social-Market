@@ -168,15 +168,13 @@ class PostService
     {
         $query = Post::query();
 
-        $query->where('is_active', true);
-
         if (isset($filters['price_min'], $filters['price_max'])) {
-            $query->whereBetween('price', [$filters['price_min'], $filters['price_max']]);
+            $query->whereBetween('posts.price', [$filters['price_min'], $filters['price_max']]);
         }
 
         if (! empty($filters['brands']) || ! empty($filters['colors']) || ! empty($filters['sizes'])) {
 
-            $query->whereHas('product', function ($query) use ($filters) {
+            $query->whereHas('posts.product', function ($query) use ($filters) {
                 if (! empty($filters['brands'])) {
                     $query->whereIn('brand_id', $filters['brands']);
                 }
@@ -201,7 +199,7 @@ class PostService
 
             switch ($sortField) {
                 case 'price':
-                    $query->orderBy('price', $direction);
+                    $query->orderBy('posts.price', $direction);
                     break;
             }
         }

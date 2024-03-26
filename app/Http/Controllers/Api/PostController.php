@@ -168,7 +168,7 @@ class PostController extends ApiBaseController
     public function filter(PostFilterRequest $request): JsonResponse
     {
         $filters = $request->validated();
-        $posts = $this->service->filter($filters)->with('media')->paginate(20);
+        $posts = $this->service->filter($filters)->activeAndNotBlocked(Auth::id())->with('media')->paginate(20);
 
         return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }

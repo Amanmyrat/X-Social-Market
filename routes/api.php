@@ -74,7 +74,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/notifications', [NotificationController::class, 'list']);
         Route::get('/notifications/count', [NotificationController::class, 'unreadCount']);
 
-
         Route::post('/{user}/report', [UserReportController::class, 'reportUser']);
 
         Route::post('/check/contacts', [UserController::class, 'checkContacts']);
@@ -123,7 +122,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
 
         Route::post('/{story}/report', [StoryReportController::class, 'reportStory']);
         Route::post('/{story}/views', [StoryViewController::class, 'views']);
-        Route::post('/views/{story}/view', [StoryViewController::class, 'view']);
+        Route::post('/{story}/view', [StoryViewController::class, 'view']);
     });
 
     Route::post('/followers', [FollowerController::class, 'followers']);

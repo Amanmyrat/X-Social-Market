@@ -20,8 +20,6 @@ class UserStoryTransformer extends TransformerAbstract
             'id' => $user['id'],
             'phone' => $user['phone'],
             'username' => $user['username'],
-            'type' => $user['type'],
-            'last_activity' => $user['last_activity'],
         ];
     }
 

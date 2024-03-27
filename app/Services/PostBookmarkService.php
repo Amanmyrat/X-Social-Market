@@ -17,10 +17,11 @@ class PostBookmarkService
     {
         /** @var User $user */
         $user = Auth::user();
-        $isBookmark = $post->bookmarks()->where('user_id', $user->id)->exists();
 
-        if ($isBookmark) {
-            $post->bookmarks()->where('user_id', $user->id)->delete();
+        $bookmark = $post->bookmarks()->where('user_id', $user->id)->first();
+
+        if ($bookmark) {
+            $bookmark->delete();
             $message = 'Bookmark remove success';
         } else {
             $bookmark = new PostBookmark();

@@ -13,16 +13,16 @@ class PostFavoriteService
 {
     use PreparesPostQuery;
 
-    public function add(Post $post): string
+    public function change(Post $post): string
     {
         /** @var User $user */
         $user = Auth::user();
 
-        $isFavorite = $post->favorites()->where('user_id', $user->id)->exists();
+        $favorite = $post->favorites()->where('user_id', $user->id)->first();
 
-        if ($isFavorite) {
-            $post->favorites()->where('user_id', $user->id)->delete();
-            $message = 'Favorite remove success';
+        if ($favorite) {
+            $favorite->delete();
+            $message = 'Favorite remove';
         } else {
             $favorite = new PostFavorite();
             $favorite->user()->associate($user);

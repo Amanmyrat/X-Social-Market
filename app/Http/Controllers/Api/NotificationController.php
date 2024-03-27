@@ -27,6 +27,12 @@ class NotificationController
 
         $notifications->each->update(['is_read' => true]);
 
+        if ($notifications->isEmpty()){
+            return new JsonResponse([
+                'data' => null
+            ]);
+        }
+
         // Group by date
         $groupedNotifications = $notifications->groupBy(function ($date) {
             $createdAt = Carbon::parse($date->created_at);
@@ -39,11 +45,16 @@ class NotificationController
             }
         });
 
-        return response()->json($groupedNotifications->map(function ($dayNotifications) {
-            return PostNotificationResource::collection($dayNotifications);
-        }));
+        return new JsonResponse([
+            'data' => $groupedNotifications->map(function ($dayNotifications) {
+                return PostNotificationResource::collection($dayNotifications);
+            })
+        ]);
     }
 
+    /**
+     * Users unread notifications
+     */
     public function unreadCount(): JsonResponse
     {
         $userId = Auth::id();

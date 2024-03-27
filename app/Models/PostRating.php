@@ -62,6 +62,16 @@ class PostRating extends Model implements NotifiableModel
         'updated_at',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($rating) {
+            // Delete associated notifications
+            $rating->notifications()->delete();
+        });
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

@@ -57,6 +57,16 @@ class PostFavorite extends Model implements NotifiableModel
         'updated_at',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($favorite) {
+            // Delete associated notifications
+            $favorite->notifications()->delete();
+        });
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

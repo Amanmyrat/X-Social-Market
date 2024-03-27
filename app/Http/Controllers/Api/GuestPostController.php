@@ -21,7 +21,7 @@ use Illuminate\Http\Request;
 use Response;
 use Throwable;
 
-class PostController extends ApiBaseController
+class GuestPostController extends ApiBaseController
 {
     use HandlesUserPostInteractions, PreparesPostQuery;
 
@@ -29,59 +29,6 @@ class PostController extends ApiBaseController
         protected PostService $service
     ) {
         parent::__construct();
-    }
-
-    /**
-     * Create post
-     *
-     * @throws Throwable
-     */
-    public function create(PostRequest $request): JsonResponse
-    {
-        $validated = $request->validated();
-
-        try {
-            $this->service->create($validated, $request->user()->id);
-
-            return Response::json([
-                'success' => true,
-                'message' => 'Successfully created a new post',
-            ]);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 400);
-        }
-
-    }
-
-    /**
-     * Update post
-     *
-     * @throws Throwable
-     */
-    public function update(Post $post, PostRequest $request): JsonResponse
-    {
-        $validated = $request->validated();
-
-        try {
-            $this->service->update($post, $validated);
-
-            return Response::json([
-                'success' => true,
-                'message' => 'Successfully updated',
-            ]);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 400);
-        }
-    }
-
-    /**
-     * Delete post
-     */
-    public function delete(Post $post): JsonResponse
-    {
-        $post->delete();
-
-        return $this->respondWithMessage('Successfully deleted');
     }
 
     /**
@@ -101,35 +48,9 @@ class PostController extends ApiBaseController
     }
 
     /**
-     * My posts list
-     */
-    public function myPosts(): JsonResponse
-    {
-        $userInteractionsDTO = $this->getUserInteractionsDTO();
-
-        $user = Auth::user();
-        $postsQuery = $this->getUserPostsQuery($user);
-        $posts = $postsQuery->paginate(10);
-
-        return $this->respondWithPaginator($posts, new PostTransformer($userInteractionsDTO));
-    }
-
-    /**
-     * All posts list
+     * Guest all posts list
      */
     public function allPosts(): JsonResponse
-    {
-        $userInteractionsDTO = $this->getUserInteractionsDTO();
-
-        $posts = Post::withRecommendationScore(Auth::id())->paginate(10);
-
-        return $this->respondWithPaginator($posts, new PostTransformer($userInteractionsDTO));
-    }
-
-    /**
-     * Guest All posts list
-     */
-    public function guestAllPosts(): JsonResponse
     {
         $postsQuery = $this->getPostsQuery();
         $posts = $postsQuery->inRandomOrder()->paginate(10);
@@ -137,18 +58,6 @@ class PostController extends ApiBaseController
         return $this->respondWithPaginator($posts, new GuestPostTransformer());
     }
 
-    /**
-     * User posts list
-     */
-    public function userPosts(User $user): JsonResponse
-    {
-        $userInteractionsDTO = $this->getUserInteractionsDTO();
-
-        $postsQuery = $this->getUserPostsQuery($user);
-        $posts = $postsQuery->paginate(10);
-
-        return $this->respondWithCollection($posts, new PostTransformer($userInteractionsDTO));
-    }
 
     /**
      * Search posts

@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\FollowerController;
 use App\Http\Controllers\Api\FollowerRequestController;
+use App\Http\Controllers\Api\GuestPostController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OptionsController;
@@ -45,17 +46,18 @@ Route::prefix('users')->group(function () {
     Route::post('/password/new', [UserController::class, 'newPassword']);
 
     Route::post('/check/availability', [UserController::class, 'checkAvailability']);
+    Route::post('/list', [UserController::class, 'getAll']);
 });
 
+Route::prefix('guest/posts')->group(function () {
+    Route::post('/all/list', [GuestPostController::class, 'allPosts']);
+    Route::post('/{post}/details', [GuestPostController::class, 'postDetails']);
+    Route::post('/{post}/related', [GuestPostController::class, 'relatedPosts']);
+    Route::post('/discovery', [GuestPostController::class, 'discoveryPosts']);
+    Route::post('/category/{category}', [GuestPostController::class, 'categoryPosts']);
 
-Route::prefix('posts')->group(function () {
-    Route::post('/{post}/details', [PostController::class, 'postDetails']);
-    Route::post('/{post}/related', [PostController::class, 'relatedPosts']);
-    Route::post('/discovery', [PostController::class, 'discoveryPosts']);
-    Route::post('/category/{category}', [PostController::class, 'categoryPosts']);
-
-    Route::post('/search', [PostController::class, 'search']);
-    Route::post('/filter', [PostController::class, 'filter']);
+    Route::post('/search', [GuestPostController::class, 'search']);
+    Route::post('/filter', [GuestPostController::class, 'filter']);
 });
 
 Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
@@ -63,12 +65,20 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/password/update', [UserController::class, 'updatePassword']);
         Route::post('/delete', [UserController::class, 'delete']);
         Route::post('/phone/update', [UserController::class, 'updatePhone']);
+        Route::post('/{post}/details', [PostController::class, 'postDetails']);
+
+        Route::post('/{post}/related', [PostController::class, 'relatedPosts']);
+        Route::post('/discovery', [PostController::class, 'discoveryPosts']);
+        Route::post('/category/{category}', [PostController::class, 'categoryPosts']);
 
         Route::post('/profile/update', [UserProfileController::class, 'update']);
         Route::post('/profile/get/{user}', [UserProfileController::class, 'get']);
 
         Route::post('/follow', [FollowerController::class, 'follow']);
         Route::post('/unfollow', [FollowerController::class, 'unfollow']);
+
+        Route::post('/search', [PostController::class, 'search']);
+        Route::post('/filter', [PostController::class, 'filter']);
 
         Route::post('/follow/request', [FollowerRequestController::class, 'followRequest']);
         Route::post('/follow/request/{user}/accept', [FollowerRequestController::class, 'accept']);
@@ -160,8 +170,5 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     Route::post('/report/types', [OptionsController::class, 'reportTypes']);
 
 });
-Route::post('/users/all/list', [UserController::class, 'getAll']);
-
-Route::post('/guest/posts/all/list', [PostController::class, 'guestAllPosts']);
 
 require __DIR__.'/admin.php';

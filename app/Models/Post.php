@@ -197,7 +197,7 @@ class Post extends Model implements HasMedia
         return $query->leftJoin('followers', function ($join) use ($user) {
             $join->on('followers.following_user_id', '=', 'posts.user_id')
                 ->where('followers.followed_user_id', '=', $user->id);
-        })->addSelect(['posts.*', DB::raw('CASE WHEN followers.followed_user_id IS NOT NULL THEN true ELSE false END')]);
+        })->addSelect(['posts.*', DB::raw('CASE WHEN followers.followed_user_id IS NOT NULL THEN true ELSE false END AS is_following')]);
     }
 
     public function scopeIsActive($query)

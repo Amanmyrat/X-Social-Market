@@ -105,13 +105,11 @@ class PostController extends ApiBaseController
      */
     public function myPosts(): JsonResponse
     {
-        $userInteractionsDTO = $this->getUserInteractionsDTO();
-
         $user = Auth::user();
         $postsQuery = $this->getUserPostsQuery($user);
         $posts = $postsQuery->paginate(10);
 
-        return $this->respondWithPaginator($posts, new PostTransformer($userInteractionsDTO));
+        return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }
 
     /**
@@ -142,12 +140,10 @@ class PostController extends ApiBaseController
      */
     public function userPosts(User $user): JsonResponse
     {
-        $userInteractionsDTO = $this->getUserInteractionsDTO();
-
         $postsQuery = $this->getUserPostsQuery($user);
         $posts = $postsQuery->paginate(10);
 
-        return $this->respondWithCollection($posts, new PostTransformer($userInteractionsDTO));
+        return $this->respondWithCollection($posts, new PostSimpleTransformer());
     }
 
     /**

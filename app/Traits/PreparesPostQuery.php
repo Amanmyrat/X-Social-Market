@@ -16,8 +16,7 @@ trait PreparesPostQuery
 
     private function getUserPostsQuery($user)
     {
-        return Post::with(['user.profile', 'media'])
-            ->withAvg('ratings', 'rating')
+        return Post::with(['media'])
             ->where('posts.user_id', $user->id)
             ->activeAndNotBlocked(Auth::id())
             ->latest();

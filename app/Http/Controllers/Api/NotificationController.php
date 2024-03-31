@@ -66,6 +66,7 @@ class NotificationController
             ->where('created_at', '>=', Carbon::now()->subDays(7))
             ->count();
 
+
         return response()->json(['unreadCount' => $count]);
     }
 

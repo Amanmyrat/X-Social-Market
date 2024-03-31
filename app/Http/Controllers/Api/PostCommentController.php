@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 class PostCommentController extends ApiBaseController
 {
     /**
-     * Display a listing of the resource.
+     * Post comments
      */
     public function comments(Post $post): JsonResponse
     {

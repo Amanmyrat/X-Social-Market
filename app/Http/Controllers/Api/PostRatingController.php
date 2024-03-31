@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class PostRatingController extends ApiBaseController
 {
     /**
-     * Display a listing of the resource.
+     * Post's ratings
      */
     public function ratings(Post $post): JsonResponse
     {

@@ -52,6 +52,7 @@ Route::prefix('users')->group(function () {
 Route::prefix('guest/posts')->group(function () {
     Route::post('/all/list', [GuestPostController::class, 'allPosts']);
     Route::post('/{post}/details', [GuestPostController::class, 'postDetails']);
+    Route::post('/{post}/comments', [GuestPostController::class, 'comments']);
     Route::post('/{post}/related', [GuestPostController::class, 'relatedPosts']);
     Route::post('/discovery', [GuestPostController::class, 'discoveryPosts']);
     Route::post('/category/{category}', [GuestPostController::class, 'categoryPosts']);

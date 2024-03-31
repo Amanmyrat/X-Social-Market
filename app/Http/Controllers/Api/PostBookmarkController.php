@@ -20,7 +20,7 @@ class PostBookmarkController extends ApiBaseController
     }
 
     /**
-     * Display a listing of the resource.
+     * Users bookmark posts
      */
     public function bookmarks(): JsonResponse
     {

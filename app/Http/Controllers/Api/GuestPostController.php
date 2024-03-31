@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\PostService;
 use App\Traits\HandlesUserPostInteractions;
 use App\Traits\PreparesPostQuery;
+use App\Transformers\CommentTransformer;
 use App\Transformers\GuestPostTransformer;
 use App\Transformers\PostDetailsTransformer;
 use App\Transformers\PostSimpleTransformer;
@@ -97,6 +98,14 @@ class GuestPostController extends ApiBaseController
             ->first();
 
         return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO));
+    }
+
+    /**
+     * Post comments
+     */
+    public function comments(Post $post): JsonResponse
+    {
+        return $this->respondWithCollection($post->comments, new CommentTransformer());
     }
 
     /**

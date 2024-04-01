@@ -16,7 +16,7 @@ class UserService
     public function list(string $type, int $limit, ?string $search_query = null, ?string $sort = null): LengthAwarePaginator
     {
         $query = User::where('type', $type)->when(isset($search_query), function ($query) use ($search_query) {
-            $search_query = '%'.$search_query.'%';
+            $search_query = '%' . $search_query . '%';
 
             return $query->whereHas('profile', function ($q) use ($search_query) {
                 $q->where('full_name', $search_query);
@@ -37,15 +37,26 @@ class UserService
         if (isset($data['profile'])) {
             DB::transaction(function () use ($data, $user) {
 
+                if (isset($data['profile']['profile_image'])) {
+                    $profileImage = $data['profile']['profile_image'];
+                }
+                unset($data['profile']['profile_image']);
+
                 if ($user->profile) {
                     $user->profile()->update($data['profile']);
                 } else {
+                    $data['profile'] = count($data['profile']) > 0 ? $data['profile'] : ['bio' => ''];
+
                     UserProfile::create(array_merge($data['profile'], ['user_id' => $user->id]));
                 }
 
-                if (isset($data['profile']['profile_image'])) {
-                    $user->profile->clearMediaCollection('user_images');
-                    $user->profile->addMedia($data['profile']['profile_image'])->toMediaCollection('user_images');
+                $user->load('profile');
+
+                if (isset($profileImage)) {
+                    if ($user->profile->hasMedia()) {
+                        $user->profile->clearMediaCollection('user_images');
+                    }
+                    $user->profile->addMedia($profileImage)->toMediaCollection('user_images');
                 }
             });
         }

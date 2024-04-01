@@ -23,7 +23,7 @@ class UserProfileController extends ApiBaseController
      */
     public function update(ProfileUpdateRequest $request): JsonResponse
     {
-        $this->service->update($request->validated(), $request->user());
+        $this->service->update($request->user(), $request->validated());
 
         return $this->respondWithItem(
             $request->user()->loadCount(['posts', 'followers', 'followings']),

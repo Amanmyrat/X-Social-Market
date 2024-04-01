@@ -46,7 +46,7 @@ class UserWithProfileTransformer extends TransformerAbstract
     public function includeProfile(User $user): ?Item
     {
         if ($user->profile) {
-            return $this->item($user->profile->load(['location', 'category']), new UserProfileTransformer());
+            return $this->item($user->profile->load(['location', 'category', 'media']), new UserProfileTransformer());
         }
 
         return null;

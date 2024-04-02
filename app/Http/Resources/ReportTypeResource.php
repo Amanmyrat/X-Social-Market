@@ -15,6 +15,7 @@ class ReportTypeResource extends JsonResource
         return [
             'id' => $this->resource->id,
             'title' => $this->resource->title,
+            'message_required' => $this->resource->message_required,
         ];
     }
 }

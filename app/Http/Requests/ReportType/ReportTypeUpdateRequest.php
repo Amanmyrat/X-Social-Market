@@ -14,6 +14,7 @@ class ReportTypeUpdateRequest extends FormRequest
         return [
             'title' => ['filled', 'string', 'max:255'],
             'is_active' => ['filled', 'bool'],
+            'message_required' => ['filled', 'bool'],
         ];
     }
 }

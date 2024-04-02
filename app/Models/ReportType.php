@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property string $title
  * @property bool $is_active
+ * @property bool $message_required
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
@@ -40,6 +41,7 @@ class ReportType extends Model
     protected $fillable = [
         'title',
         'is_active',
+        'message_required'
     ];
 
     /**
@@ -59,6 +61,7 @@ class ReportType extends Model
      */
     protected $casts = [
         'is_active' => 'bool',
+        'message_required' => 'bool',
     ];
 
     public function postReports(): HasMany

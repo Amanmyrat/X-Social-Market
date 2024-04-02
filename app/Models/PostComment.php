@@ -21,6 +21,9 @@ use Illuminate\Support\Carbon;
  * @property int $user_id
  * @property int $post_id
  * @property string $comment
+ * @property bool $is_active
+ * @property Carbon|null $blocked_at
+ * @property string|null $block_reason
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, PostComment> $children
@@ -58,6 +61,9 @@ class PostComment extends Model implements NotifiableModel
         'user_id',
         'post_id',
         'comment',
+        'is_active',
+        'blocked_at',
+        'block_reason',
     ];
 
     /**

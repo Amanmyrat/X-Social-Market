@@ -24,7 +24,7 @@ class CommentTransformer extends TransformerAbstract
 
     public function includeChildren(PostComment $comment): Collection
     {
-        return $this->collection($comment->children, new CommentTransformer());
+        return $this->collection($comment->children()->where('is_active', true)->whereNull('blocked_at')->get(), new CommentTransformer());
     }
 
     public function includeUser(PostComment $comment): Item

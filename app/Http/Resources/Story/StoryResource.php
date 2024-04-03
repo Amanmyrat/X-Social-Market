@@ -10,6 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class StoryResource extends JsonResource
 {
     private static array $data;
+
     /**
      * Transform the resource into an array.
      *
@@ -33,6 +34,7 @@ class StoryResource extends JsonResource
     public static function customCollection($resource, $data): AnonymousResourceCollection
     {
         self::$data = $data;
+
         return parent::collection($resource);
     }
 }

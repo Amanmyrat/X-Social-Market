@@ -41,7 +41,7 @@ class ReportType extends Model
     protected $fillable = [
         'title',
         'is_active',
-        'message_required'
+        'message_required',
     ];
 
     /**

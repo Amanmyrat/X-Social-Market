@@ -27,9 +27,9 @@ class NotificationController
 
         $notifications->each->update(['is_read' => true]);
 
-        if ($notifications->isEmpty()){
+        if ($notifications->isEmpty()) {
             return new JsonResponse([
-                'data' => null
+                'data' => null,
             ]);
         }
 
@@ -48,7 +48,7 @@ class NotificationController
         return new JsonResponse([
             'data' => $groupedNotifications->map(function ($dayNotifications) {
                 return PostNotificationResource::collection($dayNotifications);
-            })
+            }),
         ]);
     }
 
@@ -66,8 +66,6 @@ class NotificationController
             ->where('created_at', '>=', Carbon::now()->subDays(7))
             ->count();
 
-
         return response()->json(['unreadCount' => $count]);
     }
-
 }

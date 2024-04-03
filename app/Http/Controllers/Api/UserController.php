@@ -18,8 +18,7 @@ class UserController extends ApiBaseController
 {
     public function __construct(
         protected UserService $service
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -45,7 +44,7 @@ class UserController extends ApiBaseController
      */
     public function updatePhone(Request $request): JsonResponse
     {
-        $validated = $request->validate(['phone' => ['required', 'integer', 'unique:' . User::class]]);
+        $validated = $request->validate(['phone' => ['required', 'integer', 'unique:'.User::class]]);
         $this->service->updatePhone($validated, Auth::user());
 
         return new JsonResponse([
@@ -54,14 +53,14 @@ class UserController extends ApiBaseController
     }
 
     /**
-     * Create new user password.
+     * Reset password
      */
-    public function newPassword(Request $request): JsonResponse
+    public function resetPassword(Request $request): JsonResponse
     {
         $validated = $request->validate(
             [
                 'password' => ['required', 'confirmed', Password::defaults()],
-                'phone' => ['required', 'integer']
+                'phone' => ['required', 'integer'],
             ]
         );
 
@@ -150,6 +149,6 @@ class UserController extends ApiBaseController
 
         $exists = User::where($validated['type'], $validated['value'])->exists();
 
-        return new JsonResponse(['available' => !$exists]);
+        return new JsonResponse(['available' => ! $exists]);
     }
 }

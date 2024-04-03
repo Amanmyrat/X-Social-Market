@@ -19,7 +19,7 @@ class UserStoryResource extends JsonResource
     {
         $isViewed = true;
         foreach ($this->resource->stories as $story) {
-            if (!in_array($story->id, self::$data['viewedStoryIds'])) {
+            if (! in_array($story->id, self::$data['viewedStoryIds'])) {
                 $isViewed = false;
                 break;
             }
@@ -39,6 +39,7 @@ class UserStoryResource extends JsonResource
     public static function customCollection($resource, $data): AnonymousResourceCollection
     {
         self::$data = $data;
+
         return parent::collection($resource);
     }
 }

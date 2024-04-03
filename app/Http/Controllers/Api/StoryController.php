@@ -48,6 +48,7 @@ class StoryController extends ApiBaseController
             ->where('valid_until', '>', now())
             ->orderBy('created_at', 'desc')
             ->get();
+
         return StoryResource::customCollection($stories, []);
     }
 
@@ -91,9 +92,9 @@ class StoryController extends ApiBaseController
             }, 'stories.post.media'])
             ->get();
 
-        $followingsStories = $followings->sort(function ($a, $b) use ($viewedStoryIds) {
-            $aUnviewed = $a->stories->first(fn($story) => !in_array($story->id, $viewedStoryIds)) ? 0 : 1;
-            $bUnviewed = $b->stories->first(fn($story) => !in_array($story->id, $viewedStoryIds)) ? 0 : 1;
+        $followingsStories = $followings->sort(function (User $a, User $b) use ($viewedStoryIds) {
+            $aUnviewed = $a->stories->first(fn ($story) => ! in_array($story->id, $viewedStoryIds)) ? 0 : 1;
+            $bUnviewed = $b->stories->first(fn ($story) => ! in_array($story->id, $viewedStoryIds)) ? 0 : 1;
 
             if ($aUnviewed === $bUnviewed) {
                 $aRecentStory = $a->stories->first() ? $a->stories->first()->created_at : null;
@@ -101,6 +102,7 @@ class StoryController extends ApiBaseController
 
                 return $bRecentStory <=> $aRecentStory;
             }
+
             return $aUnviewed <=> $bUnviewed;
         });
 

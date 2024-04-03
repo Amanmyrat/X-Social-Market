@@ -13,7 +13,7 @@ class ReportRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'report_type_id' => ['required', 'integer', 'exists:' . ReportType::class . ',id'],
+            'report_type_id' => ['required', 'integer', 'exists:'.ReportType::class.',id'],
             'message' => ['sometimes', 'string'],
         ];
 

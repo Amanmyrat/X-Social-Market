@@ -29,7 +29,7 @@ class StoryViewController extends ApiBaseController
 
         $existingView = $story->views()->where('user_id', $user->id)->first();
 
-        if (!$existingView) {
+        if (! $existingView) {
             $storyView = new StoryView();
             $storyView->user()->associate($user);
             $storyView->story()->associate($story);

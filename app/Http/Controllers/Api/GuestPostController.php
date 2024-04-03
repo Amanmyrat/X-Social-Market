@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Post\PostFilterRequest;
-use App\Http\Requests\PostRequest;
 use App\Models\Category;
 use App\Models\Post;
-use App\Models\User;
 use App\Services\PostService;
 use App\Traits\HandlesUserPostInteractions;
 use App\Traits\PreparesPostQuery;
@@ -14,13 +12,9 @@ use App\Transformers\CommentTransformer;
 use App\Transformers\GuestPostTransformer;
 use App\Transformers\PostDetailsTransformer;
 use App\Transformers\PostSimpleTransformer;
-use App\Transformers\PostTransformer;
 use Auth;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Response;
-use Throwable;
 
 class GuestPostController extends ApiBaseController
 {
@@ -58,7 +52,6 @@ class GuestPostController extends ApiBaseController
 
         return $this->respondWithPaginator($posts, new GuestPostTransformer());
     }
-
 
     /**
      * Search posts

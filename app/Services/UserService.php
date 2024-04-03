@@ -6,9 +6,7 @@ use App\Jobs\ProcessUserOffline;
 use App\Jobs\ProcessUserOnline;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 
 class UserService
 {
@@ -36,8 +34,8 @@ class UserService
         $limit = $validated['limit'];
 
         $users = User::with('profile')
-            ->when(isset($request->search_query), function ($query) use ($validated) {
-                $search_query = '%' . $validated['search_query'] . '%';
+            ->when(isset($validated['search_query']), function ($query) use ($validated) {
+                $search_query = '%'.$validated['search_query'].'%';
 
                 return $query->where('username', 'LIKE', $search_query)
                     ->orWhereHas('profile', function ($query) use ($search_query) {

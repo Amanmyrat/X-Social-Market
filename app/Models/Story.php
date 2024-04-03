@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Auth;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -28,6 +27,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property Carbon|null $updated_at
  * @property int|null $post_id
  * @property MediaCollection<int, Media> $media
+ * @property ?mixed $image
  * @property-read Collection<int, StoryFavorite> $favorites
  * @property-read ?array $image_urls
  * @property-read int|null $favorites_count

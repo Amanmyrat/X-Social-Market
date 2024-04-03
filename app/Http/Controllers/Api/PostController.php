@@ -113,9 +113,9 @@ class PostController extends ApiBaseController
     }
 
     /**
-     * All posts list
+     * Recommended posts
      */
-    public function allPosts(): JsonResponse
+    public function recommendedPosts(): JsonResponse
     {
         $userInteractionsDTO = $this->getUserInteractionsDTO();
 

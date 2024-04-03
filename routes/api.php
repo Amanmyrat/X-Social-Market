@@ -37,18 +37,6 @@ use Illuminate\Support\Facades\Route;
 */
 //Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
-Route::prefix('users')->group(function () {
-    Route::post('/otp/send', [OtpController::class, 'sendOTP']);
-    Route::post('/otp/confirm', [OtpController::class, 'confirmOTP']);
-
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/password/new', [UserController::class, 'newPassword']);
-
-    Route::post('/check/availability', [UserController::class, 'checkAvailability']);
-    Route::post('/list', [UserController::class, 'getAll']);
-});
-
 Route::prefix('guest/posts')->group(function () {
     Route::post('/all/list', [GuestPostController::class, 'allPosts']);
     Route::post('/{post}/details', [GuestPostController::class, 'postDetails']);
@@ -61,60 +49,70 @@ Route::prefix('guest/posts')->group(function () {
     Route::post('/filter', [GuestPostController::class, 'filter']);
 });
 
+Route::prefix('users')->group(function () {
+    Route::post('/otp/send', [OtpController::class, 'sendOTP']);
+    Route::post('/otp/confirm', [OtpController::class, 'confirmOTP']);
+
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/password/reset', [UserController::class, 'resetPassword']);
+    Route::post('/check/availability', [UserController::class, 'checkAvailability']);
+    Route::post('/list', [UserController::class, 'getAll']);
+});
+
 Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
+
     Route::prefix('users')->group(function () {
         Route::post('/password/update', [UserController::class, 'updatePassword']);
-        Route::post('/delete', [UserController::class, 'delete']);
         Route::post('/phone/update', [UserController::class, 'updatePhone']);
-
-        Route::post('/{post}/related', [PostController::class, 'relatedPosts']);
-        Route::post('/discovery', [PostController::class, 'discoveryPosts']);
-        Route::post('/category/{category}', [PostController::class, 'categoryPosts']);
-
-        Route::post('/profile/update', [UserProfileController::class, 'update']);
-        Route::post('/profile/get/{user}', [UserProfileController::class, 'get']);
-
-        Route::post('/follow', [FollowerController::class, 'follow']);
-        Route::post('/unfollow', [FollowerController::class, 'unfollow']);
-
-        Route::post('/search', [PostController::class, 'search']);
-        Route::post('/filter', [PostController::class, 'filter']);
-
-        Route::post('/follow/request', [FollowerRequestController::class, 'followRequest']);
-        Route::post('/follow/request/{user}/accept', [FollowerRequestController::class, 'accept']);
-        Route::post('/follow/request/{user}/decline', [FollowerRequestController::class, 'decline']);
-
-        Route::post('/{user}/stories', [StoryController::class, 'userStories']);
-        Route::post('/{user}/posts', [PostController::class, 'userPosts']);
-
+        Route::post('/delete', [UserController::class, 'delete']);
+        Route::post('/make/seller', [UserController::class, 'makeAccountBusiness']);
         Route::post('/block', [BlockedUserController::class, 'block']);
         Route::post('/unblock', [BlockedUserController::class, 'unblock']);
         Route::post('/block/list', [BlockedUserController::class, 'blockedList']);
-
-        Route::post('/make/seller', [UserController::class, 'makeAccountBusiness']);
         Route::post('/search', [UserController::class, 'search']);
-
-        Route::post('/notifications', [NotificationController::class, 'list']);
-        Route::get('/notifications/count', [NotificationController::class, 'unreadCount']);
-
-        Route::post('/{user}/report', [UserReportController::class, 'reportUser']);
-
         Route::post('/check/contacts', [UserController::class, 'checkContacts']);
+        Route::post('/{user}/report', [UserReportController::class, 'reportUser']);
     });
 
+    Route::prefix('users/profile')->group(function () {
+        Route::post('/update', [UserProfileController::class, 'update']);
+        Route::post('/get/{user}', [UserProfileController::class, 'get']);
+    });
+
+    Route::prefix('users/notifications')->group(function () {
+        Route::post('/', [NotificationController::class, 'list']);
+        Route::get('/count', [NotificationController::class, 'unreadCount']);
+    });
+
+    Route::prefix('users/follow')->group(function () {
+        Route::post('/', [FollowerController::class, 'follow']);
+        Route::post('/unfollow', [FollowerController::class, 'unfollow']);
+        Route::post('/request', [FollowerRequestController::class, 'followRequest']);
+        Route::post('/request/{user}/accept', [FollowerRequestController::class, 'accept']);
+        Route::post('/request/{user}/decline', [FollowerRequestController::class, 'decline']);
+        Route::post('/outgoing/requests', [FollowerRequestController::class, 'followerRequests']);
+        Route::post('/incoming/requests', [FollowerRequestController::class, 'followingRequests']);
+    });
+
+    Route::post('/followers', [FollowerController::class, 'followers']);
+    Route::post('/followings', [FollowerController::class, 'followings']);
+    Route::post('/users/{user}/followers', [FollowerController::class, 'userFollowers']);
+    Route::post('/users/{user}/followings', [FollowerController::class, 'userFollowings']);
+
     Route::prefix('posts')->group(function () {
-        Route::post('/', [PostController::class, 'myPosts']);
+        Route::post('/recommended', [PostController::class, 'recommendedPosts']);
+        Route::post('/my', [PostController::class, 'myPosts']);
+        Route::post('/user/{user}', [PostController::class, 'userPosts']);
         Route::post('/create', [PostController::class, 'create']);
         Route::post('/{post}/update', [PostController::class, 'update']);
         Route::post('/{post}/delete', [PostController::class, 'delete']);
         Route::post('/{post}/details', [PostController::class, 'postDetails']);
-
-        Route::post('/favorites/{post}/change', [PostFavoritesController::class, 'change']);
-        Route::post('/favorites/{post}/users', [PostFavoritesController::class, 'favoriteUsers']);
-        Route::post('/favorites', [PostFavoritesController::class, 'favorites']);
-
-        Route::post('/bookmarks', [PostBookmarkController::class, 'bookmarks']);
-        Route::post('/bookmarks/{post}/change', [PostBookmarkController::class, 'change']);
+        Route::post('/{post}/related', [PostController::class, 'relatedPosts']);
+        Route::post('/discovery', [PostController::class, 'discoveryPosts']);
+        Route::post('/category/{category}', [PostController::class, 'categoryPosts']);
+        Route::post('/search', [PostController::class, 'search']);
+        Route::post('/filter', [PostController::class, 'filter']);
 
         Route::post('/{post}/comments', [PostCommentController::class, 'comments']);
         Route::post('/{post}/comment', [PostCommentController::class, 'addComment']);
@@ -123,15 +121,25 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/{post}/rating', [PostRatingController::class, 'addRating']);
 
         Route::post('/{post}/report', [PostReportController::class, 'reportPost']);
-
         Route::post('/{post}/views', [PostViewController::class, 'views']);
-        Route::post('/views/{post}/view', [PostViewController::class, 'view']);
+        Route::post('/{post}/view', [PostViewController::class, 'view']);
 
-        Route::post('/all/list', [PostController::class, 'allPosts']);
+        Route::prefix('favorites')->group(function () {
+            Route::post('/', [PostFavoritesController::class, 'favorites']);
+            Route::post('/{post}/change', [PostFavoritesController::class, 'change']);
+            Route::post('/{post}/users', [PostFavoritesController::class, 'favoriteUsers']);
+        });
+
+        Route::prefix('bookmarks')->group(function () {
+            Route::post('/', [PostBookmarkController::class, 'bookmarks']);
+            Route::post('/{post}/change', [PostBookmarkController::class, 'change']);
+        });
     });
 
     Route::prefix('stories')->group(function () {
-        Route::post('/', [StoryController::class, 'myStories']);
+        Route::post('/recommended', [StoryController::class, 'followingStories']);
+        Route::post('/my', [StoryController::class, 'myStories']);
+        Route::post('/user/{user}', [StoryController::class, 'userStories']);
         Route::post('/create', [StoryController::class, 'create']);
 
         Route::post('/{story}/report', [StoryReportController::class, 'reportStory']);
@@ -139,36 +147,27 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/{story}/view', [StoryViewController::class, 'view']);
     });
 
-    Route::post('/followers', [FollowerController::class, 'followers']);
-    Route::post('/users/{user}/followers', [FollowerController::class, 'userFollowers']);
-    Route::post('/users/{user}/followings', [FollowerController::class, 'userFollowings']);
+    Route::prefix('chat')->group(function () {
+        Route::post('/create', [ChatController::class, 'createChat']);
+        Route::post('/list', [ChatController::class, 'listChats']);
+        Route::post('/{chat}/delete', [ChatController::class, 'delete']);
+        Route::post('/send/message', [MessageController::class, 'sendMessage']);
+        Route::post('/{chat}/messages', [MessageController::class, 'listMessages']);
+        Route::post('/{chat}/read', [MessageController::class, 'readAllUnreadMessages']);
 
-    Route::prefix('followings')->group(function () {
-        Route::post('/', [FollowerController::class, 'followings']);
-        Route::post('/stories', [StoryController::class, 'followingStories']);
+        Route::post('/messages/{message}/read', [MessageController::class, 'readMessage']);
+        Route::post('/messages/{message}/delete', [MessageController::class, 'delete']);
+        Route::post('/messages/{message}/image/{media}/delete', [MessageController::class, 'deleteImage']);
     });
 
-    Route::post('/follow/outgoing/requests', [FollowerRequestController::class, 'followerRequests']);
-    Route::post('/follow/incoming/requests', [FollowerRequestController::class, 'followingRequests']);
-
-    Route::post('/chat/create', [ChatController::class, 'createChat']);
-    Route::post('/chat/list', [ChatController::class, 'listChats']);
-    Route::post('/chat/{chat}/delete', [ChatController::class, 'delete']);
-
-    Route::post('/chat/send/message', [MessageController::class, 'sendMessage']);
-    Route::post('/chat/{chatId}/messages', [MessageController::class, 'listMessages']);
-    Route::post('/chat/{chat}/read', [MessageController::class, 'readAllUnreadMessages']);
-
-    Route::post('/message/{message}/read', [MessageController::class, 'readMessage']);
-    Route::post('/messages/{message}/delete', [MessageController::class, 'delete']);
-    Route::post('/message/{message}/image/{media}/delete', [MessageController::class, 'deleteImage']);
-
-    Route::post('/categories', [OptionsController::class, 'categories']);
-    Route::post('/locations', [OptionsController::class, 'locations']);
-    Route::post('/brands', [OptionsController::class, 'brands']);
-    Route::post('/colors', [OptionsController::class, 'colors']);
-    Route::post('/sizes', [OptionsController::class, 'sizes']);
-    Route::post('/report/types', [OptionsController::class, 'reportTypes']);
+    Route::prefix('options')->group(function () {
+        Route::post('/categories', [OptionsController::class, 'categories']);
+        Route::post('/locations', [OptionsController::class, 'locations']);
+        Route::post('/brands', [OptionsController::class, 'brands']);
+        Route::post('/colors', [OptionsController::class, 'colors']);
+        Route::post('/sizes', [OptionsController::class, 'sizes']);
+        Route::post('/report/types', [OptionsController::class, 'reportTypes']);
+    });
 
 });
 

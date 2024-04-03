@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Http\Resources\Story;
+
+use App\Http\Resources\Post\PostSimpleResource;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class StoryResource extends JsonResource
+{
+    private static array $data;
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        $isViewed = in_array($this->resource->id, self::$data['viewedStoryIds'] ?? []);
+        $isFavorite = in_array($this->resource->id, self::$data['favoriteStoryIds'] ?? []);
+
+        return [
+            'id' => $this->resource->id,
+            'image' => $this->resource->image_urls,
+            'isViewed' => $isViewed,
+            'isFavorite' => $isFavorite,
+            'created_at' => $this->resource->created_at,
+            'post' => new PostSimpleResource($this->whenLoaded('post')),
+        ];
+    }
+
+    public static function customCollection($resource, $data): AnonymousResourceCollection
+    {
+        self::$data = $data;
+        return parent::collection($resource);
+    }
+}

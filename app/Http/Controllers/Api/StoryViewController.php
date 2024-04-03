@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Story;
-use App\Services\StoryViewService;
+use App\Models\StoryView;
+use App\Models\User;
 use App\Transformers\UserSimpleTransformer;
+use Auth;
 use Illuminate\Http\JsonResponse;
 
 class StoryViewController extends ApiBaseController
@@ -22,8 +24,18 @@ class StoryViewController extends ApiBaseController
      */
     public function view(Story $story): JsonResponse
     {
-        $message = StoryViewService::addView($story);
+        /** @var User $user */
+        $user = Auth::user();
 
-        return $this->respondWithMessage($message);
+        $existingView = $story->views()->where('user_id', $user->id)->first();
+
+        if (!$existingView) {
+            $storyView = new StoryView();
+            $storyView->user()->associate($user);
+            $storyView->story()->associate($story);
+            $storyView->save();
+        }
+
+        return $this->respondWithMessage('View success');
     }
 }

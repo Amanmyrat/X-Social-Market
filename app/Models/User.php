@@ -143,20 +143,14 @@ class User extends Authenticatable
         'is_online' => 'bool',
     ];
 
-    /**
-     * Get the user profile record associated with the user.
-     */
     public function profile(): HasOne
     {
         return $this->hasOne(UserProfile::class);
     }
 
-    /**
-     * Get stories record associated with the user.
-     */
     public function stories(): HasMany
     {
-        return $this->hasMany(Story::class)->where('valid_until', '>', Carbon::now());
+        return $this->hasMany(Story::class);
     }
 
     /**
@@ -191,41 +185,36 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'follow_requests', 'followed_user_id', 'following_user_id')->withTimestamps();
     }
 
-    /**
-     * Get posts record associated with the user.
-     */
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class)->where('is_active', true);
     }
 
-    /**
-     * Get favorites associated with the user.
-     */
     public function favorites(): HasMany
     {
         return $this->hasMany(PostFavorite::class)->orderByDesc('created_at');
     }
 
-    /**
-     * Get bookmarks associated with the user.
-     */
     public function bookmarks(): HasMany
     {
         return $this->hasMany(PostBookmark::class)->orderByDesc('created_at');
     }
 
-    /**
-     * Get bookmarks associated with the user.
-     */
     public function postViews(): HasMany
     {
         return $this->hasMany(PostView::class)->orderByDesc('created_at');
     }
 
-    /**
-     * Get user blocked list
-     */
+    public function storyViews(): HasMany
+    {
+        return $this->hasMany(StoryView::class);
+    }
+
+    public function storyFavorites(): HasMany
+    {
+        return $this->hasMany(StoryFavorite::class);
+    }
+
     public function blockedUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'blocked_users', 'user_id', 'blocked_user_id')->withTimestamps();

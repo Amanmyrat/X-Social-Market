@@ -66,7 +66,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/password/update', [UserController::class, 'updatePassword']);
         Route::post('/delete', [UserController::class, 'delete']);
         Route::post('/phone/update', [UserController::class, 'updatePhone']);
-        Route::post('/{post}/details', [PostController::class, 'postDetails']);
 
         Route::post('/{post}/related', [PostController::class, 'relatedPosts']);
         Route::post('/discovery', [PostController::class, 'discoveryPosts']);
@@ -108,6 +107,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/create', [PostController::class, 'create']);
         Route::post('/{post}/update', [PostController::class, 'update']);
         Route::post('/{post}/delete', [PostController::class, 'delete']);
+        Route::post('/{post}/details', [PostController::class, 'postDetails']);
 
         Route::post('/favorites/{post}/change', [PostFavoritesController::class, 'change']);
         Route::post('/favorites/{post}/users', [PostFavoritesController::class, 'favoriteUsers']);
@@ -125,7 +125,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/{post}/report', [PostReportController::class, 'reportPost']);
 
         Route::post('/{post}/views', [PostViewController::class, 'views']);
-        Route::post('/views/{story}/view', [PostViewController::class, 'view']);
+        Route::post('/views/{post}/view', [PostViewController::class, 'view']);
 
         Route::post('/all/list', [PostController::class, 'allPosts']);
     });

@@ -99,43 +99,9 @@ class Story extends Model implements HasMedia
         return $this->hasMany(StoryView::class)->with('user');
     }
 
-    public function myViews(): HasMany
-    {
-        /** @var User $user */
-        $user = Auth::user();
-
-        return $this->hasMany(StoryView::class)
-            ->where('user_id', $user->id);
-    }
-
-    public function getIsViewed(): bool
-    {
-        /** @var User $user */
-        $user = Auth::user();
-
-        return $user ? $this->myViews->isNotEmpty() : false;
-    }
-
-    public function myFavorites(): HasMany
-    {
-        /** @var User $user */
-        $user = Auth::user();
-
-        return $this->hasMany(StoryFavorite::class)
-            ->where('user_id', $user->id);
-    }
-
     public function favorites(): HasMany
     {
         return $this->hasMany(StoryFavorite::class);
-    }
-
-    public function getIsFavorite(): bool
-    {
-        /** @var User $user */
-        $user = Auth::user();
-
-        return $user ? $this->myFavorites->isNotEmpty() : false;
     }
 
     public function registerMediaCollections(): void

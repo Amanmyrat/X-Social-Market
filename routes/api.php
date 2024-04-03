@@ -38,13 +38,12 @@ use Illuminate\Support\Facades\Route;
 //Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
 Route::prefix('guest/posts')->group(function () {
-    Route::post('/all/list', [GuestPostController::class, 'allPosts']);
+    Route::post('/recommended', [GuestPostController::class, 'allPosts']);
     Route::post('/{post}/details', [GuestPostController::class, 'postDetails']);
     Route::post('/{post}/comments', [GuestPostController::class, 'comments']);
     Route::post('/{post}/related', [GuestPostController::class, 'relatedPosts']);
     Route::post('/discovery', [GuestPostController::class, 'discoveryPosts']);
     Route::post('/category/{category}', [GuestPostController::class, 'categoryPosts']);
-
     Route::post('/search', [GuestPostController::class, 'search']);
     Route::post('/filter', [GuestPostController::class, 'filter']);
 });

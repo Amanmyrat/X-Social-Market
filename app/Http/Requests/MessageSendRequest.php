@@ -26,7 +26,7 @@ class MessageSendRequest extends FormRequest
                 Rule::notIn([auth()->id()]),
             ],
             'type' => 'required|in:message,share_story,share_post,media,file',
-            'body' => 'required_if:type,message,share_story,share_post|string',
+            'body' => 'required_if:type,message|string',
             'story_id' => 'required_if:type,share_story|exists:stories,id',
             'post_id' => 'required_if:type,share_post|exists:posts,id',
             'file' => 'required_if:type,file|file',

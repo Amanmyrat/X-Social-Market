@@ -29,7 +29,7 @@ class MessageService
                 'chat_id' => (int) $data['chat_id'],
                 'sender_user_id' => auth()->id(),
                 'receiver_user_id' => (int) $data['receiver_user_id'],
-                'body' => $data['body'],
+                'body' => $data['body'] ?? '',
                 'type' => $data['type'],
                 'extra' => $extras,
             ];

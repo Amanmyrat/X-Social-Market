@@ -133,7 +133,7 @@ class Message extends Model implements HasMedia
 
             $mediaUrls = ['original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3))];
 
-            if ($this->type == 'image') {
+            if (str_starts_with($media->mime_type, 'image/')) {
                 $mediaUrls += [
                     'large_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
                     'medium_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
@@ -155,6 +155,6 @@ class Message extends Model implements HasMedia
             ];
         }
 
-        return $this->extra;
+        return json_decode($this->attributes['extra'], true);
     }
 }

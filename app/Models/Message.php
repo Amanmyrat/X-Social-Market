@@ -14,6 +14,8 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Crypt;
 
 /**
  * App\Models\Message
@@ -147,14 +149,25 @@ class Message extends Model implements HasMedia
         return $medias;
     }
 
-    public function getExtraAttribute(): ?array
+    protected function extra(): Attribute
     {
-        if ($this->type == Message::TYPE_MEDIA) {
-            return [
-                'medias' => $this->image_urls,
-            ];
-        }
+        return new Attribute(
+            get: function ($value) {
+                if ($this->type == self::TYPE_MEDIA) {
+                    return [
+                        'medias' => $this->image_urls,
+                    ];
+                }
+                return json_decode($value, true);
+            }
+        );
+    }
 
-        return json_decode($this->attributes['extra'], true);
+    protected function body(): Attribute
+    {
+        return new Attribute(
+            get: fn ($value) => Crypt::decrypt($value),
+            set: fn ($value) => Crypt::encrypt($value)
+        );
     }
 }

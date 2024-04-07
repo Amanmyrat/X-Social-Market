@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\NotifiableModel;
+use App\Jobs\ProcessPostNotification;
 use App\Models\PostNotification;
 
 class NotificationService
@@ -10,11 +11,12 @@ class NotificationService
     /**
      * Create a post notification.
      *
-     * @param  NotifiableModel  $notifiable  The instance that triggered the notification.
+     * @param  NotifiableModel $notifiable  The instance that triggered the notification.
      * @param  int  $postId  The ID of the related post.
      */
-    public static function createPostNotification(NotifiableModel $notifiable, int $postId): PostNotification
+    public static function createPostNotification(NotifiableModel $notifiable, int $postId): void
     {
-        return $notifiable->notifications()->create(['post_id' => $postId]);
+        $notification = $notifiable->notifications()->create(['post_id' => $postId]);
+        ProcessPostNotification::dispatch($notification);
     }
 }

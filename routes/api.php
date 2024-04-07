@@ -150,10 +150,10 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/create', [ChatController::class, 'createChat']);
         Route::post('/list', [ChatController::class, 'listChats']);
         Route::post('/{chat}/delete', [ChatController::class, 'delete']);
+
         Route::post('/send/message', [MessageController::class, 'sendMessage']);
         Route::post('/{chat}/messages', [MessageController::class, 'listMessages']);
         Route::post('/{chat}/read', [MessageController::class, 'readAllUnreadMessages']);
-
         Route::post('/messages/{message}/read', [MessageController::class, 'readMessage']);
         Route::post('/messages/{message}/delete', [MessageController::class, 'delete']);
         Route::post('/messages/{message}/image/{media}/delete', [MessageController::class, 'deleteImage']);

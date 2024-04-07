@@ -29,8 +29,6 @@ class MessageSent implements ShouldBroadcast
     public function broadcastOn(): PrivateChannel
     {
         return new PrivateChannel('App.Models.User.'.$this->message->receiver_user_id);
-
-        //        return new PrivateChannel('chat.' . $this->message->chat_id);
     }
 
     /**
@@ -43,6 +41,6 @@ class MessageSent implements ShouldBroadcast
 
     public function broadcastWith(): array
     {
-        return ['message' => $this->message];
+        return ['messages' => $this->message];
     }
 }

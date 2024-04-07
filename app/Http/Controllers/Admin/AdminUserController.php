@@ -87,7 +87,7 @@ class AdminUserController extends ApiBaseController
         ]);
 
         $user->blocked_at = now();
-        $user->block_reason = $request->reason;
+        $user->block_reason = $request->get('reason');
         $user->save();
 
         return new JsonResponse([

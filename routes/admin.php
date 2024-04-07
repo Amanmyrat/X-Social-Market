@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminBrandController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminColorController;
+use App\Http\Controllers\Admin\AdminCommentController;
 use App\Http\Controllers\Admin\AdminLocationController;
 use App\Http\Controllers\Admin\AdminPostController;
 use App\Http\Controllers\Admin\AdminPostReportController;
@@ -115,6 +116,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['role:super-admin|admin']], 
                 Route::post('/delete', [AdminAdminController::class, 'delete']);
                 Route::post('/roles', [AdminAdminController::class, 'roles']);
                 Route::post('/permissions', [AdminAdminController::class, 'permissions']);
+            });
+
+        Route::prefix('comments')
+            ->group(function () {
+                Route::post('/', [AdminCommentController::class, 'list']);
+                Route::post('/accept/{comment}', [AdminCommentController::class, 'accept']);
+                Route::post('/decline/{comment}', [AdminCommentController::class, 'decline']);
             });
     });
 });

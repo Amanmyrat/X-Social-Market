@@ -428,7 +428,7 @@ class Post extends Model implements HasMedia
 
             $mediaUrls = ['original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3))];
 
-            if ($this->media_type === 'image') {
+            if ($this->media_type == 'image') {
                 $mediaUrls += [
                     'large_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
                     'medium_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),

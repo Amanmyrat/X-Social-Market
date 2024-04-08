@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Resources\Admin\PostComment\PostCommentResource;
-use App\Models\PostComment;
+use App\Http\Resources\Admin\Story\StoryResource;
+use App\Models\Story;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Request;
 use Throwable;
 
-class AdminCommentController
+class AdminStoryController
 {
     /**
      * Non active comments list
@@ -18,13 +18,13 @@ class AdminCommentController
     {
         $limit = $request->get('limit') ?? 10;
 
-        $comments = PostComment::where('is_active', false)
+        $comments = Story::where('is_active', false)
             ->whereNull('blocked_at')
             ->with(['user', 'post'])
             ->latest()
             ->paginate($limit);
 
-        return PostCommentResource::collection($comments);
+        return StoryResource::collection($comments);
     }
 
     /**
@@ -32,28 +32,28 @@ class AdminCommentController
      *
      * @throws Throwable
      */
-    public function accept(PostComment $comment): JsonResponse
+    public function accept(Story $story): JsonResponse
     {
-        $comment->update(['is_active' => true]);
+        $story->update(['is_active' => true]);
 
         return new JsonResponse([
             'success' => true,
-            'message' => 'Successfully accepted comment',
+            'message' => 'Successfully accepted story',
         ]);
     }
 
     /**
-     * Decline comment
+     * Decline story
      *
      * @throws Throwable
      */
-    public function decline(PostComment $comment, Request $request): JsonResponse
+    public function decline(Story $story, Request $request): JsonResponse
     {
         $request->validate([
             'reason' => 'required|string|max:255',
         ]);
 
-        $comment->update(
+        $story->update(
             [
                 'is_active' => false,
                 'blocked_at' => now(),
@@ -63,7 +63,7 @@ class AdminCommentController
 
         return new JsonResponse([
             'success' => true,
-            'message' => 'Successfully declined comment',
+            'message' => 'Successfully declined story',
         ]);
     }
 }

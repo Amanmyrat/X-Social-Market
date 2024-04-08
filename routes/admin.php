@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AdminPostController;
 use App\Http\Controllers\Admin\AdminPostReportController;
 use App\Http\Controllers\Admin\AdminReportTypeController;
 use App\Http\Controllers\Admin\AdminSizeController;
+use App\Http\Controllers\Admin\AdminStoryController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminUserReportController;
 use Illuminate\Support\Facades\Route;
@@ -120,11 +121,18 @@ Route::group(['prefix' => 'admin', 'middleware' => ['role:super-admin|admin']], 
                 Route::post('/permissions', [AdminAdminController::class, 'permissions']);
             });
 
-        Route::prefix('comments')
+        Route::prefix('comments')->middleware('permission:manage-posts')
             ->group(function () {
                 Route::post('/', [AdminCommentController::class, 'list']);
                 Route::post('/accept/{comment}', [AdminCommentController::class, 'accept']);
                 Route::post('/decline/{comment}', [AdminCommentController::class, 'decline']);
+            });
+
+        Route::prefix('stories')
+            ->group(function () {
+                Route::post('/', [AdminStoryController::class, 'list']);
+                Route::post('/accept/{story}', [AdminStoryController::class, 'accept']);
+                Route::post('/decline/{story}', [AdminStoryController::class, 'decline']);
             });
     });
 });

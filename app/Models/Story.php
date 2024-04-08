@@ -28,6 +28,9 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property int|null $post_id
  * @property MediaCollection<int, Media> $media
  * @property ?mixed $image
+ * @property bool $is_active
+ * @property Carbon|null $blocked_at
+ * @property string|null $block_reason
  * @property-read Collection<int, StoryFavorite> $favorites
  * @property-read ?array $image_urls
  * @property-read int|null $favorites_count
@@ -63,6 +66,9 @@ class Story extends Model implements HasMedia
         'user_id',
         'post_id',
         'valid_until',
+        'is_active',
+        'blocked_at',
+        'block_reason',
     ];
 
     /**

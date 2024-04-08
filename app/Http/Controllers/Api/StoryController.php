@@ -46,6 +46,8 @@ class StoryController extends ApiBaseController
         $user = Auth::user();
         $stories = $user->stories()
             ->where('valid_until', '>', now())
+            ->where('is_active', true)
+            ->whereNull('blocked_at')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -63,6 +65,8 @@ class StoryController extends ApiBaseController
         $stories = $user->stories()
             ->with('post.media')
             ->where('valid_until', '>', now())
+            ->where('is_active', true)
+            ->whereNull('blocked_at')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -84,10 +88,12 @@ class StoryController extends ApiBaseController
 
         $followings = $user->followings()
             ->whereHas('stories', function ($query) {
-                $query->where('valid_until', '>', now());
+                $query->where('valid_until', '>', now())
+                    ->where('is_active', true)->whereNull('blocked_at');
             })
             ->with(['stories' => function ($query) {
                 $query->where('valid_until', '>', now())
+                    ->where('is_active', true)->whereNull('blocked_at')
                     ->orderBy('created_at', 'desc');
             }, 'stories.post.media'])
             ->get();

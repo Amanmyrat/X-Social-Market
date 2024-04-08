@@ -26,9 +26,13 @@ class PostService
 
         try {
             DB::transaction(function () use ($postData, $productData, $userId) {
+                $activePostsCount = Post::where('user_id', $userId)->where('is_active', true)->count();
+                $isActive = $activePostsCount >= 10;
+
                 $post = Post::create($postData + [
-                    'user_id' => $userId,
-                ]);
+                        'user_id' => $userId,
+                        'is_active' => $isActive,
+                    ]);
 
                 $medias = $postData['media_type'] == 'image'
                     ? 'images'
@@ -140,7 +144,7 @@ class PostService
                 return $query->where('created_at', '<=', $request->date_end);
             })
             ->when(isset($request->search_query), function ($query) use ($request) {
-                $search_query = '%'.$request->search_query.'%';
+                $search_query = '%' . $request->search_query . '%';
 
                 return $query->where('caption', 'LIKE', $search_query)
                     ->orWhere('description', 'LIKE', $search_query);
@@ -155,7 +159,7 @@ class PostService
                     break;
                 default:
                     $sort = $this->getSort($s);
-                    $posts = $posts->orderBy('posts.'.$sort[0], $sort[1]);
+                    $posts = $posts->orderBy('posts.' . $sort[0], $sort[1]);
             }
         } else {
             $posts = $posts->inRandomOrder();
@@ -172,20 +176,20 @@ class PostService
             $query->whereBetween('posts.price', [$filters['price_min'], $filters['price_max']]);
         }
 
-        if (! empty($filters['brands']) || ! empty($filters['colors']) || ! empty($filters['sizes'])) {
+        if (!empty($filters['brands']) || !empty($filters['colors']) || !empty($filters['sizes'])) {
 
             $query->whereHas('posts.product', function ($query) use ($filters) {
-                if (! empty($filters['brands'])) {
+                if (!empty($filters['brands'])) {
                     $query->whereIn('brand_id', $filters['brands']);
                 }
 
-                if (! empty($filters['colors'])) {
+                if (!empty($filters['colors'])) {
                     $query->whereHas('colors', function ($query) use ($filters) {
                         $query->whereIn('colors.id', $filters['colors']);
                     });
                 }
 
-                if (! empty($filters['sizes'])) {
+                if (!empty($filters['sizes'])) {
                     $query->whereHas('sizes', function ($query) use ($filters) {
                         $query->whereIn('sizes.id', $filters['sizes']);
                     });
@@ -193,7 +197,7 @@ class PostService
             });
         }
 
-        if (! empty($filters['sort'])) {
+        if (!empty($filters['sort'])) {
             $direction = Str::startsWith($filters['sort'], '-') ? 'desc' : 'asc';
             $sortField = ltrim($filters['sort'], '-');
 

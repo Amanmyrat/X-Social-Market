@@ -105,6 +105,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['role:super-admin|admin']], 
                 Route::get('/{post}', [AdminPostController::class, 'postDetails']);
                 Route::post('/update/{post}', [AdminPostController::class, 'update']);
                 Route::post('/delete', [AdminPostController::class, 'delete']);
+
+                Route::post('/inactive', [AdminPostController::class, 'inactiveList']);
             });
 
         Route::prefix('admins')->middleware('role:super-admin')

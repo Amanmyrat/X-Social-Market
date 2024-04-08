@@ -11,6 +11,7 @@ use App\Http\Resources\Admin\Post\PostResourceCollection;
 use App\Models\Post;
 use App\Services\Admin\PostService;
 use Illuminate\Http\JsonResponse;
+use Request;
 
 class AdminPostController extends Controller
 {
@@ -70,5 +71,20 @@ class AdminPostController extends Controller
             'success' => true,
             'message' => 'Successfully deleted',
         ]);
+    }
+
+    /**
+     * Non-active posts list
+     */
+    public function inactiveList(Request $request): PostResourceCollection
+    {
+        $limit = $request->get('limit') ?? 10;
+
+        $posts = Post::where('is_active', false)
+            ->with(['user', 'category', 'media'])
+            ->latest()
+            ->paginate($limit);
+
+        return new PostResourceCollection($posts);
     }
 }

@@ -20,9 +20,7 @@ class GuestPostController extends ApiBaseController
 {
     use HandlesUserPostInteractions, PreparesPostQuery;
 
-    public function __construct(
-        protected PostService $service
-    ) {
+    public function __construct(protected PostService $service) {
         parent::__construct();
     }
 

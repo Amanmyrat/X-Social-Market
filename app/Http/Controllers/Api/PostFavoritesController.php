@@ -37,7 +37,7 @@ class PostFavoritesController extends ApiBaseController
      */
     public function change(Post $post): JsonResponse
     {
-        $message = $this->service->change($post);
+        $message = $this->service->change($post, Auth::user());
 
         return $this->respondWithMessage($message);
     }

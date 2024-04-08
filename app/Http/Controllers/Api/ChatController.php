@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enum\ErrorMessage;
 use App\Http\Requests\ChatCreateRequest;
 use App\Models\Chat;
+use App\Models\User;
 use App\Services\ChatService;
 use App\Transformers\ChatTransformer;
 use Illuminate\Http\JsonResponse;
@@ -21,9 +23,19 @@ class ChatController extends ApiBaseController
      */
     public function createChat(ChatCreateRequest $request): JsonResponse
     {
-        $receiverUserId = $request->input('receiver_user_id');
-        $postId = $request->input('post_id') ?? null;
-        $chat = $this->chatService->findOrCreateChat($receiverUserId, $postId);
+        $validated = $request->validated();
+        $receiverUserId = $validated['receiver_user_id'];
+
+        $receiverUser = User::find($receiverUserId);
+
+        abort_if(
+            Auth::user()->type == 'user' && $receiverUser->type == 'user',
+            403,
+            ErrorMessage::GENERAL_ERROR->value
+        );
+
+        $postId = $validated['post_id'] ?? null;
+        $chat = $this->chatService->findOrCreateChat($receiverUserId, Auth::id(), $postId);
 
         return $this->respondWithItem($chat, new ChatTransformer());
     }
@@ -33,7 +45,7 @@ class ChatController extends ApiBaseController
      */
     public function listChats(): JsonResponse
     {
-        $chats = $this->chatService->listUserChats();
+        $chats = $this->chatService->listUserChats(Auth::user());
 
         return $this->respondWithCollection($chats, new ChatTransformer());
     }
@@ -47,7 +59,7 @@ class ChatController extends ApiBaseController
         abort_if(
             $chat->sender_user_id != $userId && $chat->receiver_user_id != $userId,
             403,
-            'Forbidden'
+            ErrorMessage::UNAUTHORIZED_ACCESS_ERROR
         );
 
         $chat->delete();

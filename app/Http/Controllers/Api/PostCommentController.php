@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\PostComment\PostCommentCreateRequest;
 use App\Models\Post;
 use App\Services\PostCommentService;
 use App\Transformers\CommentTransformer;
-use DB;
+use Auth;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class PostCommentController extends ApiBaseController
 {
+    public function __construct(protected PostCommentService $service)
+    {
+        parent::__construct();
+    }
+
     /**
      * Post comments
      */
@@ -24,26 +29,11 @@ class PostCommentController extends ApiBaseController
     /**
      * Add comment to given product
      */
-    public function addComment(Post $post, Request $request): JsonResponse
+    public function addComment(Post $post, PostCommentCreateRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'comment' => ['required', 'string', 'max:255'],
-            'parent_id' => [
-                'sometimes',
-                'int',
-                function ($attribute, $value, $fail) use ($post) {
-                    if ($value !== 0 && ! is_null($value)) {
-                        $parentComment = DB::table('post_comments')->where('id', $value)->first(['post_id']);
-                        if (! $parentComment) {
-                            $fail('The selected '.$attribute.' is invalid.');
-                        } elseif ($parentComment->post_id != $post->id) {
-                            $fail('The '.$attribute.' does not belong to the provided post.');
-                        }
-                    }
-                },
-            ],
-        ]);
-        PostCommentService::addComment($validated, $post);
+        $validated = $request->validated();
+
+        $this->service->addComment($validated, $post, Auth::user());
 
         return $this->respondWithMessage(trans('notification.comment_success'));
     }

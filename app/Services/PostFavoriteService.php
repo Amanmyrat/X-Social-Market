@@ -13,11 +13,8 @@ class PostFavoriteService
 {
     use PreparesPostQuery;
 
-    public function change(Post $post): string
+    public function change(Post $post, User $user): string
     {
-        /** @var User $user */
-        $user = Auth::user();
-
         $favorite = $post->favorites()->where('user_id', $user->id)->first();
 
         if ($favorite) {

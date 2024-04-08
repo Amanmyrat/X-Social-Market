@@ -2,11 +2,14 @@
 
 namespace App\Services;
 
+use App\Enum\ErrorMessage;
 use App\Jobs\ProcessMessageRead;
 use App\Models\Chat;
 use App\Models\Message;
 use App\Models\Post;
 use App\Models\Story;
+use App\Models\User;
+use Auth;
 use DB;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;

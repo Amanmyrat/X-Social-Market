@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enum\ErrorMessage;
 use App\Http\Requests\MessageSendRequest;
 use App\Jobs\ProcessMessageSent;
 use App\Models\Chat;
@@ -56,6 +57,12 @@ class MessageController extends ApiBaseController
      */
     public function readMessage(Message $message): JsonResponse
     {
+        abort_if(
+            Auth::id() != $message->receiver_user_id,
+            403,
+            ErrorMessage::UNAUTHORIZED_ACCESS_ERROR->value
+        );
+
         $this->messageService->readMessage($message);
 
         return response()->json(['message' => 'Message marked as read']);
@@ -66,6 +73,12 @@ class MessageController extends ApiBaseController
      */
     public function readAllUnreadMessages(Chat $chat): JsonResponse
     {
+        abort_if(
+            Auth::id() != $chat->sender_user_id
+            || Auth::id() != $chat->receiver_user_id,
+            403,
+            ErrorMessage::UNAUTHORIZED_ACCESS_ERROR->value
+        );
         $this->messageService->readAllMessages($chat);
 
         return response()->json([
@@ -81,8 +94,7 @@ class MessageController extends ApiBaseController
         $userId = Auth::id();
         abort_if(
             $message->sender_user_id != $userId && $message->receiver_user_id != $userId,
-            403,
-            'Forbidden'
+            403
         );
 
         $message->delete();

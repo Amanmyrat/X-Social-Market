@@ -5,11 +5,16 @@ namespace App\Http\Controllers\Api;
 use App\Models\Post;
 use App\Services\PostRatingService;
 use App\Transformers\PostRatingTransformer;
+use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PostRatingController extends ApiBaseController
 {
+    public function __construct(protected PostRatingService $service)
+    {
+        parent::__construct();
+    }
     /**
      * Post's ratings
      */
@@ -27,7 +32,7 @@ class PostRatingController extends ApiBaseController
             'rating' => ['required', 'integer', 'between:1,5'],
         ]);
 
-        PostRatingService::addRating($validated, $post);
+        $this->service->addRating($validated, $post, Auth::user());
 
         return $this->respondWithMessage(trans('notification.rating_success'));
     }

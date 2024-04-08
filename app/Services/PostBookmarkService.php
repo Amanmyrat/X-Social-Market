@@ -13,11 +13,8 @@ class PostBookmarkService
 {
     use PreparesPostQuery;
 
-    public function add(Post $post): string
+    public function add(Post $post, User $user): string
     {
-        /** @var User $user */
-        $user = Auth::user();
-
         $bookmark = $post->bookmarks()->where('user_id', $user->id)->first();
 
         if ($bookmark) {

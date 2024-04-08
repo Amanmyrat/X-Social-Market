@@ -3,12 +3,13 @@
 namespace App\Services;
 
 use App\Models\Chat;
+use App\Models\User;
 use Auth;
 use Illuminate\Database\Eloquent\Collection;
 
 class ChatService
 {
-    public function findOrCreateChat(int $receiverUserId, ?int $postId = null): Chat
+    public function findOrCreateChat(int $receiverUserId, int $userId, ?int $postId = null): Chat
     {
         $existingChat = $this->findExistingChat($receiverUserId, $postId);
 
@@ -16,7 +17,11 @@ class ChatService
             return $existingChat;
         }
 
-        return $this->createNewChat($receiverUserId, $postId);
+        return Chat::create([
+            'sender_user_id' => $userId,
+            'receiver_user_id' => $receiverUserId,
+            'post_id' => $postId,
+        ]);
     }
 
     private function findExistingChat($receiverUserId, $postId): ?Chat
@@ -32,19 +37,8 @@ class ChatService
         })->first();
     }
 
-    private function createNewChat(int $receiverUserId, ?int $postId = null): Chat
+    public function listUserChats(User $user): Collection
     {
-        return Chat::create([
-            'sender_user_id' => auth()->id(),
-            'receiver_user_id' => $receiverUserId,
-            'post_id' => $postId,
-        ]);
-    }
-
-    public function listUserChats(): Collection
-    {
-        $user = Auth::user();
-
         return $user
             ->chats()
             ->with('post.media')

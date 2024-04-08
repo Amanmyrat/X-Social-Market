@@ -41,7 +41,7 @@ class OtpService
      */
     public static function confirmOTP(array $validated): void
     {
-        $otpCode = OtpCode::where('phone', $validated['phone'])->first();
+        $otpCode = OtpCode::where('phone', $validated['phone'])->latest()->first();
 
         if (! $otpCode || $otpCode->code != $validated['code']) {
             throw new Exception(ErrorMessage::OTP_DID_NOT_MATCH_ERROR->value);
@@ -50,6 +50,5 @@ class OtpService
         if (Carbon::now() > $otpCode->valid_until) {
             throw new Exception(ErrorMessage::OTP_TIMEOUT_ERROR->value);
         }
-
     }
 }

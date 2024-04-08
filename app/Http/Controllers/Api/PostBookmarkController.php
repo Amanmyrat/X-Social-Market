@@ -24,8 +24,7 @@ class PostBookmarkController extends ApiBaseController
      */
     public function bookmarks(): JsonResponse
     {
-        $user = Auth::user();
-        $posts = $this->service->getUserBookmarkPosts($user);
+        $posts = $this->service->getUserBookmarkPosts(Auth::user());
         $userInteractionsDTO = $this->getUserInteractionsDTO();
 
         return $this->respondWithCollection($posts, new PostTransformer($userInteractionsDTO));
@@ -36,7 +35,7 @@ class PostBookmarkController extends ApiBaseController
      */
     public function change(Post $post): JsonResponse
     {
-        $message = $this->service->add($post);
+        $message = $this->service->add($post, Auth::user());
 
         return $this->respondWithMessage($message);
     }

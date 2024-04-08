@@ -4,18 +4,19 @@ namespace App\Services;
 
 use App\Models\Post;
 use App\Models\PostComment;
+use App\Models\User;
 use Auth;
 
 class PostCommentService
 {
-    public static function addComment($validated, Post $post): void
+    public function addComment($validated, Post $post, User $user): void
     {
         $comment = new PostComment([
             'comment' => $validated['comment'],
             'parent_id' => $validated['parent_id'] ?? 0,
         ]);
 
-        $comment->user()->associate(Auth::user());
+        $comment->user()->associate($user);
         $comment->post()->associate($post);
         $comment->save();
 

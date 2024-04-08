@@ -15,6 +15,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -25,17 +26,17 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property string $phone
  * @property string $username
  * @property string|null $email
- * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property Carbon|null $email_verified_at
  * @property mixed $password
  * @property string $type
  * @property string|null $device_token
- * @property \Illuminate\Support\Carbon|null $last_activity
+ * @property Carbon|null $last_activity
  * @property string|null $remember_token
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property bool $is_online
  * @property bool $is_active
- * @property \Illuminate\Support\Carbon|null $blocked_at
+ * @property Carbon|null $blocked_at
  * @property string|null $block_reason
  * @property-read Collection<int, User> $blockedUsers
  * @property-read int|null $blocked_users_count

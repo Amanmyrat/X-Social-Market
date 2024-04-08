@@ -11,4 +11,5 @@ enum ErrorMessage: string
     case OTP_DID_NOT_SENT_ERROR = 'otp_did_not_sent_error';
     case OTP_TIMEOUT_ERROR = 'otp_timeout_error';
     case OTP_DID_NOT_MATCH_ERROR = 'otp_did_not_match_error';
+    case UNAUTHORIZED_ACCESS_ERROR = 'unauthorized_access_error';
 }

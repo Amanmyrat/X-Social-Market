@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enum\ErrorMessage;
 use App\Http\Requests\Post\PostFilterRequest;
 use App\Http\Requests\PostRequest;
 use App\Models\Category;
@@ -38,10 +39,16 @@ class PostController extends ApiBaseController
      */
     public function create(PostRequest $request): JsonResponse
     {
+        abort_if(
+            Auth::user()->type != User::TYPE_SELLER,
+            403,
+            ErrorMessage::UNAUTHORIZED_ACCESS_ERROR->value
+        );
+
         $validated = $request->validated();
 
         try {
-            $this->service->create($validated, $request->user()->id);
+            $this->service->create($validated, Auth::user()->id);
 
             return Response::json([
                 'success' => true,
@@ -60,6 +67,12 @@ class PostController extends ApiBaseController
      */
     public function update(Post $post, PostRequest $request): JsonResponse
     {
+        abort_if(
+            Auth::id() != $post->user_id,
+            403,
+            ErrorMessage::UNAUTHORIZED_ACCESS_ERROR->value
+        );
+
         $validated = $request->validated();
 
         try {
@@ -79,6 +92,11 @@ class PostController extends ApiBaseController
      */
     public function delete(Post $post): JsonResponse
     {
+        abort_if(
+            Auth::id() != $post->user_id,
+            403,
+            ErrorMessage::UNAUTHORIZED_ACCESS_ERROR->value
+        );
         $post->delete();
 
         return $this->respondWithMessage('Successfully deleted');
@@ -105,6 +123,12 @@ class PostController extends ApiBaseController
      */
     public function myPosts(): JsonResponse
     {
+        abort_if(
+            Auth::user()->type !== User::TYPE_SELLER,
+            403,
+            ErrorMessage::UNAUTHORIZED_ACCESS_ERROR->value
+        );
+
         $user = Auth::user();
         $postsQuery = $this->getUserPostsQuery($user);
         $posts = $postsQuery->paginate(10);

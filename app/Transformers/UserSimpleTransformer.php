@@ -23,6 +23,7 @@ class UserSimpleTransformer extends TransformerAbstract
         ];
 
         if ($this->isFollowingEnabled) {
+            $result['private'] = $user->profile?->private ?? false;
             $result['isFollowing'] = Auth::user()->followings()->where('users.id', $user->id)->exists();
         }
 

@@ -22,7 +22,6 @@ use App\Http\Controllers\Api\StoryReportController;
 use App\Http\Controllers\Api\StoryViewController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserProfileController;
-use App\Http\Controllers\Api\UserProfileViewStatisticsController;
 use App\Http\Controllers\Api\UserReportController;
 use App\Http\Controllers\Api\UserStatisticsController;
 use Illuminate\Support\Facades\Route;

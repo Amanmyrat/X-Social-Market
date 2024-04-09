@@ -23,6 +23,7 @@ class ContactResource extends JsonResource
                 'username' => $user['username'],
                 'full_name' => $user['full_name'],
                 'image' => $user['image'],
+                'private' => $user['private'],
                 'isFollowing' => $user['isFollowing'],
             ] : null,
         ];

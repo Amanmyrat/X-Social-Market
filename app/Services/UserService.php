@@ -86,6 +86,7 @@ class UserService
                     'username' => $user->username,
                     'full_name' => $user->profile?->full_name,
                     'image' => $user->profile?->image_urls,
+                    'private' => $user->profile?->private ?? false,
                     'isFollowing' => $isFollowed,
                 ] : null,
             ];

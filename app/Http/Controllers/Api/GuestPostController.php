@@ -96,7 +96,9 @@ class GuestPostController extends ApiBaseController
      */
     public function comments(Post $post): JsonResponse
     {
-        return $this->respondWithCollection($post->comments, new CommentTransformer());
+        $comments = $post->comments()->whereNull('blocked_at')->get();
+
+        return $this->respondWithCollection($comments, new CommentTransformer());
     }
 
     /**

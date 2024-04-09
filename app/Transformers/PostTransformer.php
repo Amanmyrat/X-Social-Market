@@ -34,6 +34,7 @@ class PostTransformer extends TransformerAbstract
             'isBookmark' => in_array($post->id, $this->userInteractions->bookmarkedPostIds),
             'isViewed' => in_array($post->id, $this->userInteractions->viewedPostIds),
             'is_following' => $post->is_following ?? null,
+            'private' => $post->user->profile?->private ?? false,
             'has_unviewed_story' => $post->has_unviewed_story ?? null,
             'score' => $post->score ?? '',
         ];

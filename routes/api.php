@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\StoryReportController;
 use App\Http\Controllers\Api\StoryViewController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserProfileController;
+use App\Http\Controllers\Api\UserProfileViewStatisticsController;
 use App\Http\Controllers\Api\UserReportController;
 use App\Http\Controllers\Api\UserStatisticsController;
 use Illuminate\Support\Facades\Route;
@@ -73,7 +74,8 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/search', [UserController::class, 'search']);
         Route::post('/check/contacts', [UserController::class, 'checkContacts']);
         Route::post('/{user}/report', [UserReportController::class, 'reportUser']);
-        Route::post('/statistics', UserStatisticsController::class);
+        Route::post('/statistics', [UserStatisticsController::class, 'statistics']);
+        Route::post('/statistics/profile/views', [UserStatisticsController::class, 'profileViewStatistics']);
     });
 
     Route::prefix('users/profile')->group(function () {

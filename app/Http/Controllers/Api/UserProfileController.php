@@ -38,17 +38,19 @@ class UserProfileController extends ApiBaseController
      */
     public function get(User $user): JsonResponse
     {
-        $viewExists = ProfileView::where('user_profile_id', $user->profile->id)
-            ->where('viewer_id', Auth::id())
-            ->whereDate('viewed_at', today())
-            ->exists();
+        if ($user->profile()->exists()) {
+            $viewExists = ProfileView::where('user_profile_id', $user->profile->id)
+                ->where('viewer_id', Auth::id())
+                ->whereDate('viewed_at', today())
+                ->exists();
 
-        if (!$viewExists) {
-            ProfileView::create([
-                'user_profile_id' => $user->profile->id,
-                'viewer_id' => Auth::id(),
-                'viewed_at' => today(),
-            ]);
+            if (!$viewExists) {
+                ProfileView::create([
+                    'user_profile_id' => $user->profile->id,
+                    'viewer_id' => Auth::id(),
+                    'viewed_at' => today(),
+                ]);
+            }
         }
 
         return $this->respondWithItem(

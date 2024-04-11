@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Resources\Admin\PostComment\PostCommentResource;
 use App\Models\PostComment;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Throwable;
 
 class AdminCommentController

@@ -15,7 +15,7 @@ class PostsStatisticsResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'active_posts_count' =>  $this->resource['active_posts_count'],
+            'active_posts_count' => $this->resource['active_posts_count'],
             'most_viewed_post' => $this->resource['most_viewed_post'],
             'most_favorited_post' => $this->resource['most_favorited_post'],
             'most_bookmarked_post' => $this->resource['most_bookmarked_post'],

@@ -13,6 +13,7 @@ class PostStatisticsService extends BaseStatisticsService
         $startDate = $this->getStartDateForPeriod($period);
 
         $activePosts = Post::where('user_id', $userId)->where('is_active', true)->count();
+
         return [
             'active_posts_count' => $activePosts,
             'most_viewed_post' => $this->getMostViewedPost($userId, $startDate),
@@ -59,7 +60,9 @@ class PostStatisticsService extends BaseStatisticsService
     protected function getMostViewedPost($userId, $startDate): ?array
     {
         $post = $this->baseEngagementQuery($userId, $startDate, 'views')->first();
-        if (!$post) return null;
+        if (! $post) {
+            return null;
+        }
 
         $activeUsersCount = $this->calculateEngagedUsersCount($post->id, $startDate);
 
@@ -107,7 +110,9 @@ class PostStatisticsService extends BaseStatisticsService
 
         $post = Post::where('id', $postId)
             ->withCount(['views' => function ($query) use ($startDate) {
-                if ($startDate) $query->where('created_at', '>=', $startDate);
+                if ($startDate) {
+                    $query->where('created_at', '>=', $startDate);
+                }
             }, 'favorites', 'comments', 'bookmarks'])
             ->firstOrFail();
 
@@ -148,11 +153,9 @@ class PostStatisticsService extends BaseStatisticsService
         $followerViewsCount = $postViews->intersect($followerIds)->count();
         $nonFollowerViewsCount = $postViews->diff($followerIds)->count();
 
-
         return [
             'follower_views_count' => $followerViewsCount,
-            'non_follower_views_count' => $nonFollowerViewsCount
+            'non_follower_views_count' => $nonFollowerViewsCount,
         ];
     }
-
 }

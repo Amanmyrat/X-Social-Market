@@ -22,7 +22,7 @@ class FollowerService
             Follower::create([
                 'following_user_id' => $user->id,
                 'followed_user_id' => $following_user_id,
-                'unfollowed_at' => null // This might be omitted if your default is null
+                'unfollowed_at' => null, // This might be omitted if your default is null
             ]);
         }
     }

@@ -24,10 +24,10 @@ class PostCommentCreateRequest extends FormRequest
             $parentCommentId = $this->input('parent_id');
             $post = $this->route('post');
 
-            if (!is_null($parentCommentId) && $parentCommentId !== 0) {
+            if (! is_null($parentCommentId) && $parentCommentId !== 0) {
                 $parentComment = PostComment::find($parentCommentId, ['post_id']);
 
-                if (!$parentComment) {
+                if (! $parentComment) {
                     $validator->errors()->add('parent_id', 'The selected parent_id is invalid.');
                 } elseif ($parentComment->post_id != $post->id) {
                     $validator->errors()->add('parent_id', 'The parent_id does not belong to the provided post.');
@@ -35,5 +35,4 @@ class PostCommentCreateRequest extends FormRequest
             }
         });
     }
-
 }

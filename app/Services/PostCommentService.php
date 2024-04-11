@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Post;
 use App\Models\PostComment;
 use App\Models\User;
-use Auth;
 
 class PostCommentService
 {

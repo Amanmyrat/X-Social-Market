@@ -29,7 +29,7 @@ class PostNotificationSent implements ShouldBroadcast
      */
     public function broadcastOn(): PrivateChannel
     {
-        return new PrivateChannel('App.Models.User.' . $this->notification->notifiable->user->id);
+        return new PrivateChannel('App.Models.User.'.$this->notification->notifiable->user->id);
     }
 
     /**
@@ -63,8 +63,8 @@ class PostNotificationSent implements ShouldBroadcast
                     'full_name' => $this->notification->notifiable->user->profile?->full_name,
                     'image' => $this->notification->notifiable->user->profile?->image_urls,
                 ],
-                'created_at' => $this->notification->created_at
-            ]
+                'created_at' => $this->notification->created_at,
+            ],
         ];
     }
 }

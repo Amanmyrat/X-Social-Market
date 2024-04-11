@@ -2,11 +2,8 @@
 
 namespace App\Services\Statistics;
 
-use App\Http\Resources\Statistics\ProfileViewStatisticsResource;
 use App\Models\ProfileView;
 use Auth;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 
 class ProfileViewStatisticsService extends BaseStatisticsService
 {
@@ -14,7 +11,7 @@ class ProfileViewStatisticsService extends BaseStatisticsService
     {
         $startDate = $this->getStartDateForPeriod($period);
 
-        $profileViews = ProfileView::where('user_profile_id',Auth::user()->profile->id)
+        $profileViews = ProfileView::where('user_profile_id', Auth::user()->profile->id)
             ->when($startDate, function ($query) use ($startDate) {
                 $query->where('created_at', '>=', $startDate);
             })
@@ -36,6 +33,7 @@ class ProfileViewStatisticsService extends BaseStatisticsService
         $nonFollowerViews = $profileViews->count() - $followerViews;
 
         $totalViews = $profileViews->count();
+
         return [
             'followers' => $totalViews > 0 ? round(($followerViews / $totalViews) * 100, 2) : 0,
             'non_followers' => $totalViews > 0 ? round(($nonFollowerViews / $totalViews) * 100, 2) : 0,
@@ -53,13 +51,14 @@ class ProfileViewStatisticsService extends BaseStatisticsService
         foreach ($profileViews as $view) {
             $gender = optional($view->viewer->profile)->gender ?? 'undefined';
             $gender = strtolower($gender);
-            if (!in_array($gender, ['male', 'female'])) {
+            if (! in_array($gender, ['male', 'female'])) {
                 $gender = 'undefined';
             }
             $genderCounts[$gender]++;
         }
 
         $totalViews = $profileViews->count();
+
         return $totalViews > 0 ? array_map(function ($count) use ($totalViews) {
             return round(($count / $totalViews) * 100, 2);
         }, $genderCounts) : $genderCounts;
@@ -85,9 +84,9 @@ class ProfileViewStatisticsService extends BaseStatisticsService
         }
 
         $totalViews = $profileViews->count();
+
         return $totalViews > 0 ? array_map(function ($count) use ($totalViews) {
             return round(($count / $totalViews) * 100, 2);
         }, $ageRanges) : $ageRanges;
     }
-
 }

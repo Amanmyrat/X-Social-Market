@@ -86,21 +86,21 @@ class UserStatisticsService extends BaseStatisticsService
         return $query->count();
     }
 
-    protected function getBestPost($userId, $startDate): Post|null
+    protected function getBestPost($userId, $startDate): ?Post
     {
         $bestPostId = PostView::whereHas('post', function ($query) use ($userId) {
-                $query->where('user_id', $userId);
+            $query->where('user_id', $userId);
+        })
+            ->when($startDate, function ($query) use ($startDate) {
+                $query->where('created_at', '>=', $startDate);
             })
-                ->when($startDate, function ($query) use ($startDate) {
-                    $query->where('created_at', '>=', $startDate);
-                })
-                ->select(['post_id', DB::raw('COUNT(*) as total_views')])
-                ->groupBy('post_id')
-                ->orderByDesc('total_views')
-                ->first()
+            ->select(['post_id', DB::raw('COUNT(*) as total_views')])
+            ->groupBy('post_id')
+            ->orderByDesc('total_views')
+            ->first()
                 ->post_id ?? null;
 
-        if (!$bestPostId) {
+        if (! $bestPostId) {
             return null;
         }
 
@@ -152,5 +152,4 @@ class UserStatisticsService extends BaseStatisticsService
 
         return $bestPost;
     }
-
 }

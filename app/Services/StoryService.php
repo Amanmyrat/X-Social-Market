@@ -20,7 +20,7 @@ class StoryService
         DB::transaction(function () use ($validated, $user) {
 
             $isActive = $validated['type'] === 'post';
-            if (!$isActive && $user->type === User::TYPE_SELLER) {
+            if (! $isActive && $user->type === User::TYPE_SELLER) {
                 $activePostsCount = $user->posts()->where('is_active', true)->count();
                 $isActive = $activePostsCount >= 10;
             }

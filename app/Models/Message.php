@@ -4,18 +4,18 @@ namespace App\Models;
 
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Crypt;
 use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Facades\Crypt;
 
 /**
  * App\Models\Message
@@ -158,6 +158,7 @@ class Message extends Model implements HasMedia
                         'medias' => $this->image_urls,
                     ];
                 }
+
                 return json_decode($value, true);
             }
         );

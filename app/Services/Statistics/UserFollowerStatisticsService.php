@@ -62,6 +62,7 @@ class UserFollowerStatisticsService extends BaseStatisticsService
         }
 
         $totalCount = array_sum($genderCounts);
+
         return array_map(function ($count) use ($totalCount) {
             return round(($count / $totalCount) * 100, 2);
         }, $genderCounts);
@@ -94,6 +95,7 @@ class UserFollowerStatisticsService extends BaseStatisticsService
         }
 
         $totalCount = array_sum($ageRanges);
+
         return array_map(function ($count) use ($totalCount) {
             return round(($count / $totalCount) * 100, 2);
         }, $ageRanges);

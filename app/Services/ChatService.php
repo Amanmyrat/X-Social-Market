@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Chat;
 use App\Models\User;
-use Auth;
 use Illuminate\Database\Eloquent\Collection;
 
 class ChatService

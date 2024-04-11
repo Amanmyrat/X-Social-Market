@@ -70,13 +70,14 @@ class UserEngagementStatisticsService extends BaseStatisticsService
 
         foreach ($users as $user) {
             $gender = $user->profile ? strtolower($user->profile->gender ?? 'undefined') : 'undefined';
-            if (!in_array($gender, ['male', 'female'])) {
+            if (! in_array($gender, ['male', 'female'])) {
                 $gender = 'undefined';
             }
             $genderCounts[$gender]++;
         }
 
         $totalCount = array_sum($genderCounts);
+
         return $totalCount ? array_map(function ($count) use ($totalCount) {
             return round($count / $totalCount * 100, 2);
         }, $genderCounts) : $genderCounts;
@@ -105,6 +106,7 @@ class UserEngagementStatisticsService extends BaseStatisticsService
         }
 
         $totalCount = array_sum($ageRanges);
+
         return $totalCount ? array_map(function ($count) use ($totalCount) {
             return round(($count / $totalCount) * 100, 2);
         }, $ageRanges) : $ageRanges;
@@ -122,8 +124,8 @@ class UserEngagementStatisticsService extends BaseStatisticsService
             'ratings' => $this->aggregateEngagements('post_ratings', $postIds, $startDate),
         ];
 
-        $totalCountsPerUser = collect($engagements)->flatMap(fn($e) => $e)->groupBy('user_id')
-            ->map(fn($actions) => $actions->sum('count'))
+        $totalCountsPerUser = collect($engagements)->flatMap(fn ($e) => $e)->groupBy('user_id')
+            ->map(fn ($actions) => $actions->sum('count'))
             ->sortDesc()
             ->take($topN);
 
@@ -140,7 +142,7 @@ class UserEngagementStatisticsService extends BaseStatisticsService
             return [
                 'user' => $user,
                 'details' => $userEngagements,
-                'total_engagements' => array_sum($userEngagements)
+                'total_engagements' => array_sum($userEngagements),
             ];
         });
 

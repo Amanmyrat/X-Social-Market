@@ -22,7 +22,7 @@ class TopActiveUsersStatisticsResource extends JsonResource
                 'image' => $this->resource['user']->profile?->image_urls,
             ],
             'details' => $this->resource['details'],
-            'total_engagements' => $this->resource['total_engagements']
+            'total_engagements' => $this->resource['total_engagements'],
         ];
     }
 }

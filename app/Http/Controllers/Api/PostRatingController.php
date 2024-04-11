@@ -15,6 +15,7 @@ class PostRatingController extends ApiBaseController
     {
         parent::__construct();
     }
+
     /**
      * Post's ratings
      */

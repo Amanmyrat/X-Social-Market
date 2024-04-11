@@ -31,7 +31,7 @@ class FollowerRequestController extends ApiBaseController
         abort_if($exists, 403, 'record_exists');
 
         $user = User::with('profile')->firstWhere('id', $validated['following_id']);
-        abort_if((!$user->profile()->exists() || !$user->profile->private), 403, ErrorMessage::USER_PRIVATE_ERROR->value);
+        abort_if((! $user->profile()->exists() || ! $user->profile->private), 403, ErrorMessage::USER_PRIVATE_ERROR->value);
 
         $this->service->followRequest($validated['following_id'], Auth::user());
 
@@ -70,7 +70,7 @@ class FollowerRequestController extends ApiBaseController
         $followingRequest = FollowRequest::where('followed_user_id', Auth::id())
             ->where('following_user_id', $user->id)->first();
 
-        abort_if(!$followingRequest, 404);
+        abort_if(! $followingRequest, 404);
 
         $this->service->follow($user->id, Auth::user());
 
@@ -89,7 +89,7 @@ class FollowerRequestController extends ApiBaseController
         $followingRequest = FollowRequest::where('followed_user_id', Auth::id())
             ->where('following_user_id', $user->id)->first();
 
-        abort_if(!$followingRequest, 404);
+        abort_if(! $followingRequest, 404);
 
         $followingRequest->delete();
 

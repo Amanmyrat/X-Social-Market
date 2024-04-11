@@ -44,7 +44,7 @@ class UserProfileController extends ApiBaseController
                 ->whereDate('viewed_at', today())
                 ->exists();
 
-            if (!$viewExists) {
+            if (! $viewExists) {
                 ProfileView::create([
                     'user_profile_id' => $user->profile->id,
                     'viewer_id' => Auth::id(),

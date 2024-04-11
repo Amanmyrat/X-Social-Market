@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Resources\Admin\Story\StoryResource;
 use App\Models\Story;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Throwable;
 
 class AdminStoryController

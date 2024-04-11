@@ -8,6 +8,7 @@ use App\Http\Resources\Statistics\PostsStatisticsResource;
 use App\Http\Resources\Statistics\PostStatisticsResource;
 use App\Http\Resources\Statistics\ProfileViewStatisticsResource;
 use App\Http\Resources\Statistics\TopActiveUsersStatisticsResource;
+use App\Http\Resources\Statistics\UserStatisticsResource;
 use App\Models\Post;
 use App\Services\Statistics\PostStatisticsService;
 use App\Services\Statistics\ProfileViewStatisticsService;
@@ -16,19 +17,17 @@ use App\Services\Statistics\UserFollowerStatisticsService;
 use App\Services\Statistics\UserStatisticsService;
 use Auth;
 use Illuminate\Http\Request;
-use App\Http\Resources\Statistics\UserStatisticsResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserStatisticsController
 {
     public function __construct(
-        protected UserStatisticsService           $statisticsService,
-        protected ProfileViewStatisticsService    $profileViewStatisticsService,
+        protected UserStatisticsService $statisticsService,
+        protected ProfileViewStatisticsService $profileViewStatisticsService,
         protected UserEngagementStatisticsService $userEngagementStatisticsService,
-        protected PostStatisticsService           $postStatisticsService,
-        protected UserFollowerStatisticsService   $followerStatisticsService,
-    )
-    {
+        protected PostStatisticsService $postStatisticsService,
+        protected UserFollowerStatisticsService $followerStatisticsService,
+    ) {
 
     }
 

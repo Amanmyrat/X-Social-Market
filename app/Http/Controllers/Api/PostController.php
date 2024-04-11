@@ -19,7 +19,6 @@ use Auth;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Response;
 use Throwable;
 
 class PostController extends ApiBaseController

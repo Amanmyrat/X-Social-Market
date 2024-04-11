@@ -6,7 +6,6 @@ use App\Models\Post;
 use App\Models\PostBookmark;
 use App\Models\User;
 use App\Traits\PreparesPostQuery;
-use Auth;
 use Illuminate\Support\Collection;
 
 class PostBookmarkService

@@ -48,12 +48,16 @@ class PostController extends ApiBaseController
         $validated = $request->validated();
 
         try {
-            $this->service->create($validated, Auth::user()->id);
+            $post = $this->service->create($validated, Auth::user()->id);
 
-            return Response::json([
-                'success' => true,
-                'message' => 'Successfully created a new post',
-            ]);
+            $userInteractionsDTO = $this->getUserInteractionsDTO();
+
+            $post->load(['user.profile', 'media', 'product'])
+                ->loadAvg('ratings', 'rating')
+                ->loadCount(['favorites', 'comments', 'views']);
+
+            return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO));
+
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
@@ -76,12 +80,15 @@ class PostController extends ApiBaseController
         $validated = $request->validated();
 
         try {
-            $this->service->update($post, $validated);
+            $post = $this->service->update($post, $validated);
 
-            return Response::json([
-                'success' => true,
-                'message' => 'Successfully updated',
-            ]);
+            $userInteractionsDTO = $this->getUserInteractionsDTO();
+
+            $post->load(['user.profile', 'media', 'product'])
+                ->loadAvg('ratings', 'rating')
+                ->loadCount(['favorites', 'comments', 'views']);
+
+            return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO));
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }

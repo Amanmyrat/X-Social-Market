@@ -19,40 +19,88 @@ class PostService
     /**
      * @throws Throwable
      */
-    public function create(array $validated, int $userId): void
+    public function create(array $validated, int $userId): Post
     {
         $postData = Arr::except($validated, 'product');
         $productData = Arr::only($validated, 'product')['product'] ?? [];
 
-        try {
-            DB::transaction(function () use ($postData, $productData, $userId) {
-                $activePostsCount = Post::where('user_id', $userId)->where('is_active', true)->count();
-                $isActive = $activePostsCount >= 10;
+        return DB::transaction(function () use ($postData, $productData, $userId) {
+            $activePostsCount = Post::where('user_id', $userId)->where('is_active', true)->count();
+            $isActive = $activePostsCount >= 10;
 
-                $post = Post::create($postData + [
-                        'user_id' => $userId,
-                        'is_active' => $isActive,
-                    ]);
+            $post = Post::create($postData + [
+                    'user_id' => $userId,
+                    'is_active' => $isActive,
+                ]);
 
-                $medias = $postData['media_type'] == 'image'
-                    ? 'images'
-                    : 'videos';
+            $medias = $postData['media_type'] == 'image'
+                ? 'images'
+                : 'videos';
 
-                $post->addMultipleMediaFromRequest([$medias])
-                    ->each(function ($fileAdder) {
-                        $fileAdder->toMediaCollection('post_medias');
-                    });
+            $post->addMultipleMediaFromRequest([$medias])
+                ->each(function ($fileAdder) {
+                    $fileAdder->toMediaCollection('post_medias');
+                });
 
-                if ($post->category->has_product) {
+            if ($post->category->has_product) {
+                $product = new Product($productData);
+
+                $uniqueColorIds = collect($productData['options']['colors'] ?? [])
+                    ->pluck('color_id')->unique()->values()->all();
+
+                $uniqueSizeIds = collect($productData['options']['colors'] ?? [])
+                    ->flatMap(function ($color) {
+                        return collect($color['sizes'])->pluck('size_id');
+                    })->unique()->values()->all();
+
+                $product->post()->associate($post);
+                $product->save();
+
+                $product->colors()->attach($uniqueColorIds);
+                $product->sizes()->attach($uniqueSizeIds);
+            }
+
+            return $post;
+        });
+
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function update(Post $post, array $validated): Post
+    {
+        $postData = Arr::except($validated, 'product');
+        $productData = Arr::only($validated, 'product')['product'] ?? [];
+
+        return DB::transaction(function () use ($postData, $productData, $post) {
+            $medias = $postData['media_type'] == 'image'
+                ? 'images'
+                : 'videos';
+
+            $post->clearMediaCollection();
+
+            $post->addMultipleMediaFromRequest([$medias])
+                ->each(function ($fileAdder) {
+                    $fileAdder->toMediaCollection('post_medias');
+                });
+            if ($post->category->has_product) {
+                $product = $post->product;
+
+                $uniqueColorIds = collect($productData['options']['colors'] ?? [])
+                    ->pluck('color_id')->unique()->values()->all();
+
+                $uniqueSizeIds = collect($productData['options']['colors'] ?? [])
+                    ->flatMap(function ($color) {
+                        return collect($color['sizes'])->pluck('size_id');
+                    })->unique()->values()->all();
+
+                if ($product) {
+                    $product->colors()->sync($uniqueColorIds);
+                    $product->sizes()->sync($uniqueSizeIds);
+                    $product->update($productData);
+                } else {
                     $product = new Product($productData);
-
-                    $uniqueColorIds = collect($productData['options']['colors'] ?? [])
-                        ->pluck('color_id')->unique()->values()->all();
-
-                    $uniqueSizeIds = collect($productData['options']['colors'] ?? [])
-                        ->flatMap(function ($color) {
-                            return collect($color['sizes'])->pluck('size_id');
-                        })->unique()->values()->all();
 
                     $product->post()->associate($post);
                     $product->save();
@@ -60,68 +108,14 @@ class PostService
                     $product->colors()->attach($uniqueColorIds);
                     $product->sizes()->attach($uniqueSizeIds);
                 }
-            });
 
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
-        }
-    }
+            } elseif ($post->product()->exists()) {
+                $post->product->delete();
+            }
+            $post->update($postData);
 
-    /**
-     * @throws Throwable
-     */
-    public function update(Post $post, array $validated): void
-    {
-        $postData = Arr::except($validated, 'product');
-        $productData = Arr::only($validated, 'product')['product'] ?? [];
-
-        try {
-            DB::transaction(function () use ($postData, $productData, $post) {
-                $medias = $postData['media_type'] == 'image'
-                    ? 'images'
-                    : 'videos';
-
-                $post->clearMediaCollection();
-
-                $post->addMultipleMediaFromRequest([$medias])
-                    ->each(function ($fileAdder) {
-                        $fileAdder->toMediaCollection('post_medias');
-                    });
-                if ($post->category->has_product) {
-                    $product = $post->product;
-
-                    $uniqueColorIds = collect($productData['options']['colors'] ?? [])
-                        ->pluck('color_id')->unique()->values()->all();
-
-                    $uniqueSizeIds = collect($productData['options']['colors'] ?? [])
-                        ->flatMap(function ($color) {
-                            return collect($color['sizes'])->pluck('size_id');
-                        })->unique()->values()->all();
-
-                    if ($product) {
-                        $product->colors()->sync($uniqueColorIds);
-                        $product->sizes()->sync($uniqueSizeIds);
-                        $product->update($productData);
-                    } else {
-                        $product = new Product($productData);
-
-                        $product->post()->associate($post);
-                        $product->save();
-
-                        $product->colors()->attach($uniqueColorIds);
-                        $product->sizes()->attach($uniqueSizeIds);
-                    }
-
-                } elseif ($post->product()->exists()) {
-                    $post->product->delete();
-                }
-                $post->update($postData);
-            });
-
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
-        }
-
+            return $post;
+        });
     }
 
     public function searchPosts(Request $request): LengthAwarePaginator

@@ -18,6 +18,9 @@ class CommentTransformer extends TransformerAbstract
         return [
             'id' => $comment->id,
             'comment' => $comment->comment,
+            'is_active' => $comment->is_active,
+            'blocked_at' => $comment->blocked_at,
+            'block_reason' => $comment->block_reason,
             'date' => $comment->created_at,
         ];
     }

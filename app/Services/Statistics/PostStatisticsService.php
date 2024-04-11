@@ -2,16 +2,9 @@
 
 namespace App\Services\Statistics;
 
-use App\Models\Follower;
 use App\Models\Post;
-use App\Models\PostBookmark;
-use App\Models\PostFavorite;
-use App\Models\PostView;
-use App\Models\ProfileView;
-use Auth;
 use DB;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Carbon;
 
 class PostStatisticsService extends BaseStatisticsService
 {
@@ -28,7 +21,8 @@ class PostStatisticsService extends BaseStatisticsService
         ];
     }
 
-    protected function calculateEngagedUsersCount($postId, $startDate) {
+    protected function calculateEngagedUsersCount($postId, $startDate)
+    {
         $queries = [];
 
         foreach (['post_favorites', 'post_comments', 'post_bookmarks', 'post_ratings'] as $table) {
@@ -105,6 +99,60 @@ class PostStatisticsService extends BaseStatisticsService
             'media_type' => $post->media_type,
             'media' => $post->first_image_urls,
         ] : null;
+    }
+
+    public function getPostStatistics($postId, $userId, $period): array
+    {
+        $startDate = $this->getStartDateForPeriod($period);
+
+        $post = Post::where('id', $postId)
+            ->withCount(['views' => function ($query) use ($startDate) {
+                if ($startDate) $query->where('created_at', '>=', $startDate);
+            }, 'favorites', 'comments', 'bookmarks'])
+            ->firstOrFail();
+
+        $followersDistribution = $this->getPostViewFollowerDistribution($postId, $userId, $startDate);
+
+        return [
+            'post' => [
+                'id' => $post->id,
+                'caption' => $post->caption,
+                'created_at' => $post->created_at,
+                'updated_at' => $post->updated_at,
+                'media_type' => $post->media_type,
+                'media' => $post->first_image_urls,
+            ],
+            'view_count' => $post->views_count,
+            'followers_distribution' => $followersDistribution,
+            'favorite_count' => $post->favorites_count,
+            'comment_count' => $post->comments_count,
+            'bookmark_count' => $post->bookmarks_count,
+        ];
+    }
+
+    private function getPostViewFollowerDistribution($postId, $userId, $startDate): array
+    {
+        $postViews = DB::table('post_views')
+            ->where('post_id', $postId)
+            ->when($startDate, function ($query) use ($startDate) {
+                $query->where('created_at', '>=', $startDate);
+            })
+            ->pluck('user_id');
+
+        // Fetch the follower IDs of the post owner
+        $followerIds = DB::table('followers')
+            ->where('followed_user_id', $userId)
+            ->pluck('following_user_id');
+
+        // Calculate follower and non-follower views
+        $followerViewsCount = $postViews->intersect($followerIds)->count();
+        $nonFollowerViewsCount = $postViews->diff($followerIds)->count();
+
+
+        return [
+            'follower_views_count' => $followerViewsCount,
+            'non_follower_views_count' => $nonFollowerViewsCount
+        ];
     }
 
 }

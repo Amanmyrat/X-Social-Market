@@ -76,6 +76,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/statistics', [UserStatisticsController::class, 'statistics']);
         Route::post('/statistics/profile/views', [UserStatisticsController::class, 'profileViewStatistics']);
         Route::post('/statistics/active/users', [UserStatisticsController::class, 'activeUsersStatistics']);
+        Route::post('/statistics/top/active/users', [UserStatisticsController::class, 'topActiveUsersStatistics']);
     });
 
     Route::prefix('users/profile')->group(function () {

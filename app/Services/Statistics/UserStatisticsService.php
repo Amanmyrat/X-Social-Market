@@ -8,8 +8,6 @@ use App\Models\PostView;
 use App\Models\ProfileView;
 use Auth;
 use DB;
-use Illuminate\Http\Request;
-use App\Http\Resources\Statistics\UserStatisticsResource;
 use Illuminate\Support\Carbon;
 
 class UserStatisticsService extends BaseStatisticsService

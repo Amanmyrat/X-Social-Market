@@ -2,9 +2,11 @@
 
 namespace App\Services\Statistics;
 
+use App\Models\Post;
 use App\Models\User;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Support\Collection;
 
 class UserEngagementStatisticsService extends BaseStatisticsService
 {
@@ -106,5 +108,53 @@ class UserEngagementStatisticsService extends BaseStatisticsService
         return $totalCount ? array_map(function ($count) use ($totalCount) {
             return round(($count / $totalCount) * 100, 2);
         }, $ageRanges) : $ageRanges;
+    }
+
+    public function getTopActiveUsers($userId, $topN, $period)
+    {
+        $startDate = $this->getStartDateForPeriod($period);
+        $postIds = Post::where('user_id', $userId)->pluck('id');
+
+        $engagements = [
+            'favorites' => $this->aggregateEngagements('post_favorites', $postIds, $startDate),
+            'comments' => $this->aggregateEngagements('post_comments', $postIds, $startDate),
+            'bookmarks' => $this->aggregateEngagements('post_bookmarks', $postIds, $startDate),
+            'ratings' => $this->aggregateEngagements('post_ratings', $postIds, $startDate),
+        ];
+
+        $totalCountsPerUser = collect($engagements)->flatMap(fn($e) => $e)->groupBy('user_id')
+            ->map(fn($actions) => $actions->sum('count'))
+            ->sortDesc()
+            ->take($topN);
+
+        $users = User::whereIn('id', $totalCountsPerUser->keys())->with('profile.media')->get();
+
+        $detailedResults = $users->map(function ($user) use ($engagements) {
+            $userEngagements = [
+                'favorites' => $engagements['favorites']->where('user_id', $user->id)->sum('count') ?? 0,
+                'comments' => $engagements['comments']->where('user_id', $user->id)->sum('count') ?? 0,
+                'bookmarks' => $engagements['bookmarks']->where('user_id', $user->id)->sum('count') ?? 0,
+                'ratings' => $engagements['ratings']->where('user_id', $user->id)->sum('count') ?? 0,
+            ];
+
+            return [
+                'user' => $user,
+                'details' => $userEngagements,
+                'total_engagements' => array_sum($userEngagements)
+            ];
+        });
+
+        return $detailedResults->sortByDesc('total_engagements')->values()->all();
+    }
+
+    protected function aggregateEngagements($table, $postIds, $startDate): Collection
+    {
+        return DB::table($table)
+            ->select('user_id', DB::raw('COUNT(*) as count'))
+            ->whereIn('post_id', $postIds)
+            ->where('created_at', '>=', $startDate)
+            ->groupBy('user_id')
+            ->get()
+            ->keyBy('user_id');
     }
 }

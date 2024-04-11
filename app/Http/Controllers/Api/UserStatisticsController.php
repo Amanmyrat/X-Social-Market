@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\Statistics\ActiveUsersStatisticsResource;
+use App\Http\Resources\Statistics\FollowerStatisticsResource;
 use App\Http\Resources\Statistics\PostsStatisticsResource;
 use App\Http\Resources\Statistics\PostStatisticsResource;
 use App\Http\Resources\Statistics\ProfileViewStatisticsResource;
@@ -11,6 +12,7 @@ use App\Models\Post;
 use App\Services\Statistics\PostStatisticsService;
 use App\Services\Statistics\ProfileViewStatisticsService;
 use App\Services\Statistics\UserEngagementStatisticsService;
+use App\Services\Statistics\UserFollowerStatisticsService;
 use App\Services\Statistics\UserStatisticsService;
 use Auth;
 use Illuminate\Http\Request;
@@ -24,6 +26,7 @@ class UserStatisticsController
         protected ProfileViewStatisticsService    $profileViewStatisticsService,
         protected UserEngagementStatisticsService $userEngagementStatisticsService,
         protected PostStatisticsService           $postStatisticsService,
+        protected UserFollowerStatisticsService   $followerStatisticsService,
     )
     {
 
@@ -123,5 +126,22 @@ class UserStatisticsController
         );
 
         return new PostStatisticsResource($statistics);
+    }
+
+    /**
+     * Followers statistics
+     */
+    public function followersStatistics(Request $request): FollowerStatisticsResource
+    {
+        $request->validate([
+            'period' => 'required|in:1d,10d,1m,6m,1y,all',
+        ]);
+
+        $statistics = $this->followerStatisticsService->get(
+            Auth::id(),
+            $request->period
+        );
+
+        return new FollowerStatisticsResource($statistics);
     }
 }

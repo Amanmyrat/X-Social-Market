@@ -31,4 +31,14 @@ use Illuminate\Support\Carbon;
 class Follower extends Model
 {
     use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'following_user_id',
+        'followed_user_id',
+    ];
 }

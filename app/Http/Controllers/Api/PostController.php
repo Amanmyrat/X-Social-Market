@@ -27,7 +27,8 @@ class PostController extends ApiBaseController
 
     public function __construct(
         protected PostService $service
-    ) {
+    )
+    {
         parent::__construct();
     }
 
@@ -136,8 +137,11 @@ class PostController extends ApiBaseController
         );
 
         $user = Auth::user();
-        $postsQuery = $this->getUserPostsQuery($user);
-        $posts = $postsQuery->paginate(10);
+
+        $posts = $user->posts()
+            ->where('is_active', true)
+            ->latest()
+            ->paginate(10);
 
         return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }

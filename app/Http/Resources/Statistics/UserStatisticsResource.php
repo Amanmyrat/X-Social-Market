@@ -19,13 +19,13 @@ class UserStatisticsResource extends JsonResource
             'active_users_count' => $this->resource['postEngagementsCount'],
             'new_followers_count' => $this->resource['newFollowersCount'],
             'new_post_count' => $this->resource['postCount'],
-            'best_post' => [
+            'best_post' => $this->resource['bestPost'] != null ? [
                 'caption' => $this->resource['bestPost']->caption,
                 'view_count' => $this->resource['bestPost']->view_count,
                 'active_users_count' => $this->resource['bestPost']->engaged_users_count,
                 'media_type' => $this->resource['bestPost']->media_type,
                 'media' => $this->resource['bestPost']->first_image_urls,
-            ],
+            ] : null,
         ];
     }
 }

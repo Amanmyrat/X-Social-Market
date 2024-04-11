@@ -54,31 +54,32 @@ class UserStatisticsService extends BaseStatisticsService
 
     protected function getPostEngagementsCount($userId, $startDate): int
     {
-        $posts = Post::where('user_id', $userId)
+        // Use a single query to gather all unique user IDs from engagements within the date range.
+        $engagements = DB::table('posts')
+            ->where('posts.user_id', $userId)
+            ->leftJoin('post_favorites', 'posts.id', '=', 'post_favorites.post_id')
+            ->leftJoin('post_comments', 'posts.id', '=', 'post_comments.post_id')
+            ->leftJoin('post_bookmarks', 'posts.id', '=', 'post_bookmarks.post_id')
+            ->leftJoin('post_ratings', 'posts.id', '=', 'post_ratings.post_id')
+            ->select('post_favorites.user_id as favorite_user_id', 'post_comments.user_id as comment_user_id', 'post_bookmarks.user_id as bookmark_user_id', 'post_ratings.user_id as rating_user_id')
             ->when($startDate, function ($query) use ($startDate) {
-                $query->where('created_at', '>=', $startDate);
+                $query->where(function ($q) use ($startDate) {
+                    $q->where('post_favorites.created_at', '>=', $startDate)
+                        ->orWhere('post_comments.created_at', '>=', $startDate)
+                        ->orWhere('post_bookmarks.created_at', '>=', $startDate)
+                        ->orWhere('post_ratings.created_at', '>=', $startDate);
+                });
             })
             ->get();
 
-        $uniqueUserIds = collect();
+        // Flatten the list of user IDs from different columns and remove null values
+        $userIds = $engagements->flatMap(function ($item) {
+            return [$item->favorite_user_id, $item->comment_user_id, $item->bookmark_user_id, $item->rating_user_id];
+        })->filter()->unique();
 
-        foreach ($posts as $post) {
-            $favorites = DB::table('post_favorites')->where('post_id', $post->id)->select('user_id');
-            $comments = DB::table('post_comments')->where('post_id', $post->id)->select('user_id');
-            $bookmarks = DB::table('post_bookmarks')->where('post_id', $post->id)->select('user_id');
-            $ratings = DB::table('post_ratings')->where('post_id', $post->id)->select('user_id');
-
-            $engagementUserIds = $favorites
-                ->unionAll($comments)
-                ->unionAll($bookmarks)
-                ->unionAll($ratings)
-                ->pluck('user_id');
-
-            $uniqueUserIds = $uniqueUserIds->merge($engagementUserIds);
-        }
-
-        return $uniqueUserIds->unique()->count();
+        return $userIds->count();
     }
+
 
 
     protected function getNewFollowersCount($userId, $startDate): int

@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\Statistics\ActiveUsersStatisticsResource;
 use App\Http\Resources\Statistics\ProfileViewStatisticsResource;
 use App\Services\Statistics\ProfileViewStatisticsService;
+use App\Services\Statistics\UserEngagementStatisticsService;
 use App\Services\Statistics\UserStatisticsService;
+use Auth;
 use Illuminate\Http\Request;
 use App\Http\Resources\Statistics\UserStatisticsResource;
 
 class UserStatisticsController
 {
     public function __construct(
-        protected UserStatisticsService        $statisticsService,
-        protected ProfileViewStatisticsService $profileViewStatisticsService)
+        protected UserStatisticsService           $statisticsService,
+        protected ProfileViewStatisticsService    $profileViewStatisticsService,
+        protected UserEngagementStatisticsService $userEngagementStatisticsService,
+    )
     {
 
     }
@@ -43,5 +48,19 @@ class UserStatisticsController
         $statistics = $this->profileViewStatisticsService->get($request->period);
 
         return new ProfileViewStatisticsResource($statistics);
+    }
+
+    /**
+     * Active users statistics
+     */
+    public function activeUsersStatistics(Request $request): ActiveUsersStatisticsResource
+    {
+        $request->validate([
+            'period' => 'required|in:1d,10d,1m,6m,1y,all',
+        ]);
+
+        $statistics = $this->userEngagementStatisticsService->get(Auth::id(), $request->period);
+
+        return new ActiveUsersStatisticsResource($statistics);
     }
 }

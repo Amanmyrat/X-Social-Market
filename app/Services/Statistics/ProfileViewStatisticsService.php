@@ -29,17 +29,6 @@ class ProfileViewStatisticsService extends BaseStatisticsService
         ];
     }
 
-    private function calculateAgeRange($age): string
-    {
-        if ($age === 'undefined') return $age;
-        if ($age <= 17) return '13-17';
-        if ($age <= 24) return '18-24';
-        if ($age <= 34) return '25-34';
-        if ($age <= 44) return '35-44';
-        if ($age <= 64) return '45-64';
-        return '65+';
-    }
-
     private function getFollowerDistribution($profileViews): array
     {
         $followerIds = Auth::user()->followers()->pluck('users.id')->toArray();
@@ -78,7 +67,6 @@ class ProfileViewStatisticsService extends BaseStatisticsService
 
     private function getAgeDistribution($profileViews): array
     {
-        // Define age ranges
         $ageRanges = [
             '13-17' => 0,
             '18-24' => 0,

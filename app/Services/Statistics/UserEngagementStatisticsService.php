@@ -152,7 +152,9 @@ class UserEngagementStatisticsService extends BaseStatisticsService
         return DB::table($table)
             ->select('user_id', DB::raw('COUNT(*) as count'))
             ->whereIn('post_id', $postIds)
-            ->where('created_at', '>=', $startDate)
+            ->when($startDate, function ($query) use ($startDate) {
+                $query->where('created_at', '>=', $startDate);
+            })
             ->groupBy('user_id')
             ->get()
             ->keyBy('user_id');

@@ -26,19 +26,6 @@ class UserStatisticsService extends BaseStatisticsService
         ];
     }
 
-    protected function getStartDateForPeriod($period): ?Carbon
-    {
-        return match ($period) {
-            '1d' => now()->subDay(),
-            '10d' => now()->subDays(10),
-            '1m' => now()->subMonth(),
-            '6m' => now()->subMonths(6),
-            '1y' => now()->subYear(),
-            'all' => null,
-            default => now(),
-        };
-    }
-
     protected function getProfileViewsCount($startDate): int
     {
         $query = ProfileView::where('user_profile_id', Auth::user()->profile->id);
@@ -77,8 +64,6 @@ class UserStatisticsService extends BaseStatisticsService
 
         return $userIds->count();
     }
-
-
 
     protected function getNewFollowersCount($userId, $startDate): int
     {

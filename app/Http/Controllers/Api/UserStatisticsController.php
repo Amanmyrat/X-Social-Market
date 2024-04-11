@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\Statistics\ActiveUsersStatisticsResource;
+use App\Http\Resources\Statistics\PostsStatisticsResource;
 use App\Http\Resources\Statistics\ProfileViewStatisticsResource;
 use App\Http\Resources\Statistics\TopActiveUsersStatisticsResource;
+use App\Services\Statistics\PostStatisticsService;
 use App\Services\Statistics\ProfileViewStatisticsService;
 use App\Services\Statistics\UserEngagementStatisticsService;
 use App\Services\Statistics\UserStatisticsService;
@@ -19,6 +21,7 @@ class UserStatisticsController
         protected UserStatisticsService           $statisticsService,
         protected ProfileViewStatisticsService    $profileViewStatisticsService,
         protected UserEngagementStatisticsService $userEngagementStatisticsService,
+        protected PostStatisticsService $postStatisticsService,
     )
     {
 
@@ -83,5 +86,22 @@ class UserStatisticsController
         );
 
         return TopActiveUsersStatisticsResource::collection($statistics);
+    }
+
+    /**
+     * Posts statistics
+     */
+    public function postsStatistics(Request $request): PostsStatisticsResource
+    {
+        $request->validate([
+            'period' => 'required|in:1d,10d,1m,6m,1y,all',
+        ]);
+
+        $statistics = $this->postStatisticsService->get(
+            Auth::id(),
+            $request->period
+        );
+
+        return new PostsStatisticsResource($statistics);
     }
 }

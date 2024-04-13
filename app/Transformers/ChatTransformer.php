@@ -18,6 +18,7 @@ class ChatTransformer extends TransformerAbstract
             'id' => $chat->id,
             'sender_user_id' => $chat->sender_user_id,
             'receiver_user_id' => $chat->receiver_user_id,
+            '$this->created_at' => $chat->created_at,
             'unread_messages' => $chat->unreadMessagesCount(),
         ];
     }

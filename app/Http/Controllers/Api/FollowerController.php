@@ -44,7 +44,7 @@ class FollowerController extends ApiBaseController
     {
         $validated = $request->validate(
             [
-                'following_id' => ['required', 'integer', 'exists:'.User::class.',id', 'exists:'.Follower::class.',following_user_id'],
+                'following_id' => ['required', 'integer', 'exists:'.User::class.',id', 'exists:'.Follower::class.',follow_user_id'],
             ]
         );
         $this->service->unfollow($validated['following_id'], Auth::user());

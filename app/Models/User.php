@@ -95,7 +95,6 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     public const TYPE_USER = 'user';
-
     public const TYPE_SELLER = 'seller';
 
     /**
@@ -154,22 +153,23 @@ class User extends Authenticatable
     }
 
     /**
-     * Get user followers.
+     * Get all the followers for the user.
+     *
      */
     public function followers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'followers', 'following_user_id', 'followed_user_id')
+        return $this->belongsToMany(User::class, 'followers', 'follow_user_id', 'user_id')
             ->withPivot('unfollowed_at')
             ->wherePivotNull('unfollowed_at')
             ->withTimestamps();
     }
 
     /**
-     * Get user followings
+     * Get all the users this user is following.
      */
     public function followings(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'followers', 'followed_user_id', 'following_user_id')
+        return $this->belongsToMany(User::class, 'followers', 'user_id', 'follow_user_id')
             ->withPivot('unfollowed_at')
             ->wherePivotNull('unfollowed_at')
             ->withTimestamps();
@@ -180,7 +180,7 @@ class User extends Authenticatable
      */
     public function outgoingRequests(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'follow_requests', 'following_user_id', 'followed_user_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'follow_requests', 'user_id', 'follow_user_id')->withTimestamps();
     }
 
     /**
@@ -188,7 +188,7 @@ class User extends Authenticatable
      */
     public function incomingRequests(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'follow_requests', 'followed_user_id', 'following_user_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'follow_requests', 'follow_user_id', 'user_id')->withTimestamps();
     }
 
     public function posts(): HasMany

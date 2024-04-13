@@ -6,16 +6,18 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
  * App\Models\Follower
  *
  * @property int $id
- * @property int $following_user_id
- * @property int $followed_user_id
+ * @property int $user_id
+ * @property int $follow_user_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property Carbon|null $unfollowed_at
  *
  * @method static Builder|Follower newModelQuery()
  * @method static Builder|Follower newQuery()
@@ -38,7 +40,28 @@ class Follower extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'following_user_id',
-        'followed_user_id',
+        'user_id',
+        'follow_user_id',
+        'unfollowed_at',
     ];
+
+    /**
+     * User who follows.
+     *
+     * @return BelongsTo
+     */
+    public function follower(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * User being followed.
+     *
+     * @return BelongsTo
+     */
+    public function followed(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'follow_user_id');
+    }
 }

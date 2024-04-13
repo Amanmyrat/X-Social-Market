@@ -25,26 +25,26 @@ class UserFollowerStatisticsService extends BaseStatisticsService
 
     protected function getNewFollowersUserIds($userId, $startDate): array
     {
-        $query = Follower::where('followed_user_id', $userId)
+        $query = Follower::where('follow_user_id', $userId)
             ->whereNull('unfollowed_at');
 
         if ($startDate) {
             $query->where('created_at', '>=', $startDate);
         }
 
-        return $query->pluck('following_user_id')->toArray();
+        return $query->pluck('user_id')->toArray();
     }
 
     protected function getNewUnfollowersUserIds($userId, $startDate): array
     {
-        $query = Follower::where('followed_user_id', $userId)
+        $query = Follower::where('follow_user_id', $userId)
             ->whereNotNull('unfollowed_at');
 
         if ($startDate) {
             $query->where('unfollowed_at', '>=', $startDate);
         }
 
-        return $query->pluck('following_user_id')->toArray();
+        return $query->pluck('user_id')->toArray();
     }
 
     protected function getGenderDistribution(array $userIds): array

@@ -66,7 +66,7 @@ class UserStatisticsService extends BaseStatisticsService
 
     protected function getNewFollowersCount($userId, $startDate): int
     {
-        $query = Follower::where('followed_user_id', $userId);
+        $query = Follower::where('follow_user_id', $userId);
 
         if ($startDate) {
             $query->where('created_at', '>=', $startDate);

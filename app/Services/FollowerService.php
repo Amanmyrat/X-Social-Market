@@ -7,10 +7,10 @@ use App\Models\User;
 
 class FollowerService
 {
-    public function follow(int $following_user_id, User $user): void
+    public function follow(int $user_id, User $user): void
     {
-        $follower = Follower::where('following_user_id', $user->id)
-            ->where('followed_user_id', $following_user_id)
+        $follower = Follower::where('user_id', $user->id)
+            ->where('follow_user_id', $user_id)
             ->first();
 
         if ($follower) {
@@ -20,17 +20,17 @@ class FollowerService
             }
         } else {
             Follower::create([
-                'following_user_id' => $user->id,
-                'followed_user_id' => $following_user_id,
+                'user_id' => $user->id,
+                'follow_user_id' => $user_id,
                 'unfollowed_at' => null, // This might be omitted if your default is null
             ]);
         }
     }
 
-    public function unfollow($following_user_id, User $user): void
+    public function unfollow($user_id, User $user): void
     {
-        $follower = Follower::where('following_user_id', $user->id)
-            ->where('followed_user_id', $following_user_id)
+        $follower = Follower::where('user_id', $user->id)
+            ->where('follow_user_id', $user_id)
             ->first();
 
         if ($follower) {

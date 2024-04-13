@@ -146,8 +146,8 @@ class PostStatisticsService extends BaseStatisticsService
 
         // Fetch the follower IDs of the post owner
         $followerIds = DB::table('followers')
-            ->where('followed_user_id', $userId)
-            ->pluck('following_user_id');
+            ->where('follow_user_id', $userId)
+            ->pluck('user_id');
 
         // Calculate follower and non-follower views
         $followerViewsCount = $postViews->intersect($followerIds)->count();

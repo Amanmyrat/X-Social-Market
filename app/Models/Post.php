@@ -195,9 +195,9 @@ class Post extends Model implements HasMedia
         }
 
         return $query->leftJoin('followers', function ($join) use ($user) {
-            $join->on('followers.following_user_id', '=', 'posts.user_id')
-                ->where('followers.followed_user_id', '=', $user->id);
-        })->addSelect(['posts.*', DB::raw('CASE WHEN followers.followed_user_id IS NOT NULL THEN true ELSE false END AS is_following')]);
+            $join->on('followers.user_id', '=', 'posts.user_id')
+                ->where('followers.follow_user_id', '=', $user->id);
+        })->addSelect(['posts.*', DB::raw('CASE WHEN followers.follow_user_id IS NOT NULL THEN true ELSE false END AS is_following')]);
     }
 
     public function scopeIsActive($query)
@@ -246,7 +246,7 @@ class Post extends Model implements HasMedia
             ) * 1 +
             (
                 CASE WHEN EXISTS (
-                    SELECT 1 FROM followers WHERE followers.followed_user_id = posts.user_id AND followers.following_user_id = $userId
+                    SELECT 1 FROM followers WHERE followers.follow_user_id = posts.user_id AND followers.user_id = $userId
                 ) THEN 100 ELSE 0 END
             ) +
             (
@@ -282,8 +282,8 @@ class Post extends Model implements HasMedia
             ->join('users', 'posts.user_id', '=', 'users.id')
             ->leftJoin('user_profiles', 'users.id', '=', 'user_profiles.user_id')
             ->leftJoin('followers', function ($join) use ($userId) {
-                $join->on('followers.followed_user_id', '=', 'users.id')
-                    ->where('followers.following_user_id', '=', $userId);
+                $join->on('followers.follow_user_id', '=', 'users.id')
+                    ->where('followers.user_id', '=', $userId);
             })
             ->leftJoin('blocked_users', function ($join) use ($userId) {
                 $join->on('users.id', '=', 'blocked_users.blocked_user_id')
@@ -302,8 +302,8 @@ class Post extends Model implements HasMedia
                     // Or the current user is following the post's user
                     $q->select(DB::raw(1))
                         ->from('followers')
-                        ->whereRaw('followers.followed_user_id = users.id')
-                        ->where('followers.following_user_id', '=', $userId);
+                        ->whereRaw('followers.follow_user_id = users.id')
+                        ->where('followers.user_id', '=', $userId);
                 });
             })
             ->groupBy('posts.id');
@@ -313,10 +313,10 @@ class Post extends Model implements HasMedia
         })
             ->leftJoin('followers as f2', function ($join) use ($userId) {
                 // Ensure the is_following flag is correctly set for each post
-                $join->on('f2.following_user_id', '=', 'posts.user_id')
-                    ->where('f2.followed_user_id', '=', $userId);
+                $join->on('f2.user_id', '=',  $userId)
+                    ->where('f2.follow_user_id', '=', 'posts.user_id');
             })
-            ->select('posts.*', 'scored_posts.score', 'scored_posts.has_unviewed_story', DB::raw('CASE WHEN f2.followed_user_id IS NOT NULL THEN true ELSE false END AS is_following'))
+            ->select('posts.*', 'scored_posts.score', 'scored_posts.has_unviewed_story', DB::raw('CASE WHEN f2.follow_user_id IS NOT NULL THEN true ELSE false END AS is_following'))
             ->with(['user.profile', 'media'])
             ->withAvg('ratings', 'rating')
             ->orderBy('scored_posts.score', 'DESC');
@@ -342,8 +342,8 @@ class Post extends Model implements HasMedia
             ->join('users', 'posts.user_id', '=', 'users.id')
             ->leftJoin('user_profiles', 'users.id', '=', 'user_profiles.user_id')
             ->leftJoin('followers', function ($join) use ($userId) {
-                $join->on('followers.followed_user_id', '=', 'users.id')
-                    ->where('followers.following_user_id', '=', $userId);
+                $join->on('followers.follow_user_id', '=', 'users.id')
+                    ->where('followers.user_id', '=', $userId);
             })
             ->leftJoin('blocked_users', function ($join) use ($userId) {
                 $join->on('users.id', '=', 'blocked_users.blocked_user_id')
@@ -359,7 +359,7 @@ class Post extends Model implements HasMedia
                         ->orWhere('user_profiles.private', '=', false);
                 })->orWhere(function ($q) {
                     // Or the current user is following the post's user
-                    $q->whereNotNull('followers.followed_user_id');
+                    $q->whereNotNull('followers.follow_user_id');
                 });
             });
     }

@@ -31,7 +31,7 @@ class UserService
 
     public function search(array $validated): LengthAwarePaginator
     {
-        $limit = $validated['limit'];
+        $limit = $validated['limit'] ?? 10;
 
         $users = User::with('profile')
             ->when(isset($validated['search_query']), function ($query) use ($validated) {

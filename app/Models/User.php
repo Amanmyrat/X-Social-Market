@@ -180,7 +180,7 @@ class User extends Authenticatable
      */
     public function outgoingRequests(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'follow_requests', 'user_id', 'follow_user_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'follow_requests', 'following_user_id', 'followed_user_id')->withTimestamps();
     }
 
     /**
@@ -188,7 +188,7 @@ class User extends Authenticatable
      */
     public function incomingRequests(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'follow_requests', 'follow_user_id', 'user_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'follow_requests', 'followed_user_id', 'following_user_id')->withTimestamps();
     }
 
     public function posts(): HasMany

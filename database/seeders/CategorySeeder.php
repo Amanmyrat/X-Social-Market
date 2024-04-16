@@ -32,10 +32,8 @@ class CategorySeeder extends Seeder
                 'has_product' => in_array($data['title'], ['Aýal-gyzlar geýim', 'Erkek geýim', 'Çaga geýim'])
             ]);
 
-            $iconPath = public_path('storage/seeder/category_icons/' . $data['icon']);
-            if (file_exists($iconPath)) {
-                $category->addMedia($iconPath)->toMediaCollection('category_images');
-            }
+            $category->addMediaFromDisk('/category_icons/' . $data['icon'], 'seeders')->toMediaCollection('category_images');
+
         }
     }
 }

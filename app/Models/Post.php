@@ -313,8 +313,8 @@ class Post extends Model implements HasMedia
         })
             ->leftJoin('followers as f2', function ($join) use ($userId) {
                 // Ensure the is_following flag is correctly set for each post
-                $join->on('f2.user_id', '=',  $userId)
-                    ->where('f2.follow_user_id', '=', 'posts.user_id');
+                $join->on('f2.user_id', '=', 'posts.user_id')
+                    ->where('f2.follow_user_id', '=', $userId);
             })
             ->select('posts.*', 'scored_posts.score', 'scored_posts.has_unviewed_story', DB::raw('CASE WHEN f2.follow_user_id IS NOT NULL THEN true ELSE false END AS is_following'))
             ->with(['user.profile', 'media'])

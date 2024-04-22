@@ -20,7 +20,7 @@ class FollowerSeeder extends Seeder
         $allUserIds = User::pluck('id')->all();
 
         $totalUsersCount = User::count();
-        User::with('profile')->chunk(750, function ($users) use ($allUserIds,$totalUsersCount) {
+        User::with('profile')->chunk(1000, function ($users) use ($allUserIds, $totalUsersCount) {
             $followersData = [];
             $followRequestsData = [];
 
@@ -53,11 +53,15 @@ class FollowerSeeder extends Seeder
                 }
             }
             if (!empty($followersData)) {
-                DB::table('followers')->insert($followersData);
+                foreach (array_chunk($followersData, 5000) as $chunk) {
+                    DB::table('followers')->insert($chunk);
+                }
             }
 
             if (!empty($followRequestsData)) {
-                DB::table('follow_requests')->insert($followRequestsData);
+                foreach (array_chunk($followRequestsData, 5000) as $chunk) {
+                    DB::table('follow_requests')->insert($chunk);
+                }
             }
         });
 

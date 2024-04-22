@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
         DB::disableQueryLog();
 
         $faker = Faker::create();
-        $userCount = 1000;
+        $userCount = 10000;
         $users = [];
 
         $password = Hash::make('12345678');

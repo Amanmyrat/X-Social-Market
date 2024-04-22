@@ -20,6 +20,7 @@ class UserProfileSeeder extends Seeder
 
         DB::table('users')->orderBy('id')->chunk(200, function ($users) use ($faker, $locationIds, $categoryIds) {
             $userProfiles = [];
+            $createdAt = now()->toDateTimeString();
             foreach ($users as $user) {
                 $isSeller = $user->type == 'seller';
                 $userProfiles[] = [
@@ -34,8 +35,8 @@ class UserProfileSeeder extends Seeder
                     'payment_available' => $isSeller ? $faker->boolean : false,
                     'verified' => $isSeller ? $faker->boolean : false,
                     'private' => $faker->boolean,
-                    'created_at' => now()->toDateTimeString(),
-                    'updated_at' => now()->toDateTimeString(),
+                    'created_at' => $createdAt,
+                    'updated_at' => $createdAt,
                 ];
             }
             DB::table('user_profiles')->insert($userProfiles);

@@ -27,6 +27,8 @@ class BrandSeeder extends Seeder
                 'title' => $brand,
                 'type' => 'simple',
                 'is_active' => true,
+                'created_at' => now()->toDateTimeString(),
+                'updated_at' => now()->toDateTimeString(),
             ]);
         }
 
@@ -35,6 +37,8 @@ class BrandSeeder extends Seeder
                 'title' => $brand,
                 'type' => 'clothing',
                 'is_active' => true,
+                'created_at' => now()->toDateTimeString(),
+                'updated_at' => now()->toDateTimeString(),
             ]);
         }
     }

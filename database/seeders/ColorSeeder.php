@@ -29,6 +29,8 @@ class ColorSeeder extends Seeder
                 'title' => $color['title'],
                 'code' => $color['code'],
                 'is_active' => true,
+                'created_at' => now()->toDateTimeString(),
+                'updated_at' => now()->toDateTimeString(),
             ]);
         }
     }

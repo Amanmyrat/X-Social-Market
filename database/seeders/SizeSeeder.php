@@ -22,6 +22,8 @@ class SizeSeeder extends Seeder
             DB::table('sizes')->insert([
                 'title' => $size,
                 'is_active' => true,
+                'created_at' => now()->toDateTimeString(),
+                'updated_at' => now()->toDateTimeString(),
             ]);
         }
     }

@@ -24,6 +24,8 @@ class PostSeeder extends Seeder
         $categoryIds = Category::pluck('id')->toArray();
         $userIds = User::where('type', User::TYPE_SELLER)->pluck('id')->toArray();
 
+        $createdAt = now()->toDateTimeString();
+
         $posts = [];
         for ($i = 0; $i < $postCount; $i++) {
             $category_id = $faker->randomElement($categoryIds);
@@ -39,8 +41,8 @@ class PostSeeder extends Seeder
                 'location' => 'Ashgabat',
                 'can_comment' => $faker->boolean,
                 'is_active' => true,
-                'created_at' => now()->toDateTimeString(),
-                'updated_at' => now()->toDateTimeString(),
+                'created_at' => $createdAt,
+                'updated_at' => $createdAt,
             ];
         }
 

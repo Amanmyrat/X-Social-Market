@@ -28,6 +28,8 @@ class ReportTypeSeeder extends Seeder
                 'title' => $type['title'],
                 'is_active' => true,
                 'message_required' => $type['message_required'],
+                'created_at' => now()->toDateTimeString(),
+                'updated_at' => now()->toDateTimeString(),
             ]);
         }
     }

@@ -25,6 +25,8 @@ class LocationSeeder extends Seeder
             DB::table('locations')->insert([
                 'title' => $location,
                 'is_active' => true,
+                'created_at' => now()->toDateTimeString(),
+                'updated_at' => now()->toDateTimeString(),
             ]);
         }
     }

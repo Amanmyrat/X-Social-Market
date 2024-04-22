@@ -34,12 +34,12 @@ class UserSeeder extends Seeder
                 'password' => $password,
                 'type' => $faker->randomElement(['user', 'seller']),
                 'device_token' => '',
-                'last_activity' => now(),
-                'created_at' => now()->toDateTimeString(),
-                'updated_at' => now()->toDateTimeString(),
                 'is_active' => true,
                 'blocked_at' => null,
                 'block_reason' => null,
+                'last_activity' => now(),
+                'created_at' => now()->toDateTimeString(),
+                'updated_at' => now()->toDateTimeString(),
             ];
 
         }

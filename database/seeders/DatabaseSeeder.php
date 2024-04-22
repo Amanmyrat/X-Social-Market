@@ -25,6 +25,9 @@ class DatabaseSeeder extends Seeder
             FollowerSeeder::class,
             PostSeeder::class,
             ProductSeeder::class,
+            PostEngagementSeeder::class,
+            ChatSeeder::class,
+            MessageSeeder::class,
         ]);
     }
 }

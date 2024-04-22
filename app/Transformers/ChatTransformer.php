@@ -18,14 +18,14 @@ class ChatTransformer extends TransformerAbstract
             'id' => $chat->id,
             'sender_user_id' => $chat->sender_user_id,
             'receiver_user_id' => $chat->receiver_user_id,
-            '$this->created_at' => $chat->created_at,
-            'unread_messages' => $chat->unreadMessagesCount(),
+            'created_at' => $chat->created_at,
+            'unread_messages' => $chat->messages_count ?? 0,
         ];
     }
 
     public function includeReceiver(Chat $chat): Item
     {
-        return $this->item($chat->getReceiver(), new UserSimpleTransformer());
+        return $this->item($chat->receiver, new UserSimpleTransformer());
     }
 
     public function includeProduct(Chat $chat): ?Item
@@ -39,8 +39,8 @@ class ChatTransformer extends TransformerAbstract
 
     public function includeLastMessage(Chat $chat): ?Item
     {
-        if ($chat->messages()->count()) {
-            return $this->item($chat->messages()->latest()->first(), new MessageTransformer());
+        if ($chat->latestMessage) {
+            return $this->item($chat->latestMessage, new MessageTransformer());
         }
 
         return null;

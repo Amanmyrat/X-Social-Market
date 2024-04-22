@@ -119,7 +119,9 @@ class MessageService
             })->orWhere(function ($query) use ($userId) {
                 $query->where('receiver_user_id', $userId)
                     ->whereNull('receiver_deleted_at');
-            })->latest()->paginate();
+            })
+            ->with('media')
+            ->latest()->paginate();
     }
 
     /**

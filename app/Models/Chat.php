@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -50,15 +51,14 @@ class Chat extends Model
         'post_id',
     ];
 
-    protected $hidden = [
-        'deleted_at',
-        'created_at',
-        'updated_at',
-    ];
-
     public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
+    }
+
+    public function latestMessage(): HasOne
+    {
+        return $this->hasOne(Message::class)->latest();
     }
 
     public function post(): BelongsTo
@@ -66,13 +66,9 @@ class Chat extends Model
         return $this->belongsTo(Post::class)->withDefault();
     }
 
-    public function getReceiver(): Model|User|null
+    public function receiver(): BelongsTo
     {
-        if ($this->sender_user_id === auth()->id()) {
-            return User::firstWhere('id', $this->receiver_user_id);
-        } else {
-            return User::firstWhere('id', $this->sender_user_id);
-        }
+        return $this->belongsTo(User::class, 'receiver_user_id');
     }
 
     public function scopeWhereNotDeleted($query): mixed
@@ -94,15 +90,5 @@ class Chat extends Model
                 //include conversations without messages
                 ->orWhereDoesntHave('messages');
         });
-    }
-
-    public function unreadMessagesCount(): int
-    {
-        /** @var User $user */
-        $user = Auth::user();
-
-        return Message::where('chat_id', $this->id)
-            ->where('receiver_user_id', $user->id)
-            ->whereNull('read_at')->count();
     }
 }

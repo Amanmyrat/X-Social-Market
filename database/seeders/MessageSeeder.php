@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\Chat;
 use App\Models\Message;
-use App\Models\User;
 use DB;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Crypt;
 
 class MessageSeeder extends Seeder
 {
@@ -36,7 +36,7 @@ class MessageSeeder extends Seeder
                     'sender_user_id' => $senderId,
                     'receiver_user_id' => $receiverId,
                     'type' => 'message',
-                    'body' => $body,
+                    'body' => Crypt::encrypt($body),
                     'extra' => null,
                     'read_at' => null,
                     'sender_deleted_at' => null,
@@ -45,7 +45,6 @@ class MessageSeeder extends Seeder
                     'updated_at' => now(),
                 ];
 
-                // Toggle sender index for next message
                 $senderIndex = 1 - $senderIndex;
             }
 

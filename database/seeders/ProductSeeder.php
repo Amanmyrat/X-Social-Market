@@ -28,7 +28,7 @@ class ProductSeeder extends Seeder
 
 
         DB::table('posts')->whereIn('category_id', $categoryIdsWithProducts)
-            ->orderBy('id')->chunk(5000, function ($posts) use ($faker, $brandIds, $colorIds, $sizeIds) {
+            ->orderBy('id')->chunk(1000, function ($posts) use ($faker, $brandIds, $colorIds, $sizeIds) {
                 $products = [];
                 $createdAt = now()->toDateTimeString();
                 foreach ($posts as $post) {

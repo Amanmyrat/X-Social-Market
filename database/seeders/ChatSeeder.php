@@ -16,7 +16,7 @@ class ChatSeeder extends Seeder
     public function run(): void
     {
         DB::disableQueryLog();
-        $users = User::where('type', User::TYPE_USER)->limit(10)->get();
+        $users = User::where('type', User::TYPE_USER)->limit(25)->get();
         $sellers = User::where('type', User::TYPE_SELLER)->get();
         $postIds = DB::table('posts')->pluck('id')->all();
         $faker = Faker::create();

@@ -100,7 +100,7 @@ class PostEngagementSeeder extends Seeder
 
     private function insertInteractions($modelClass, $data)
     {
-        foreach (array_chunk($data, 5000) as $chunk) {
+        foreach (array_chunk($data, 1000) as $chunk) {
             $modelClass::insert($chunk);
         }
     }

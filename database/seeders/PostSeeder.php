@@ -19,7 +19,7 @@ class PostSeeder extends Seeder
         DB::disableQueryLog();
 
         $faker = Faker::create();
-        $postCount = 100000;
+        $postCount = 10000;
 
         $categoryIds = Category::pluck('id')->toArray();
         $userIds = User::where('type', User::TYPE_SELLER)->pluck('id')->toArray();

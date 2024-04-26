@@ -65,7 +65,7 @@ class PostEngagementSeeder extends Seeder
                     'user_id' => $faker->randomElement($userIds),
                     'post_id' => $postId,
                     'comment' => $faker->sentence(),
-                    'is_active' => true,
+                    'is_active' => $faker->boolean(70),
                     'created_at' => $createdAt,
                     'updated_at' => $createdAt,
                 ];

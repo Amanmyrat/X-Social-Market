@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             PostEngagementSeeder::class,
             ChatSeeder::class,
             MessageSeeder::class,
+            StorySeeder::class,
         ]);
     }
 }

@@ -25,6 +25,7 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'manage-posts', 'display_name' => 'Harytlary dolandyrmak', 'guard_name' => 'admin'],
             ['name' => 'manage-reports', 'display_name' => 'Reportlary dolandyrmak', 'guard_name' => 'admin'],
             ['name' => 'manage-options', 'display_name' => 'Haryt goşmaçalary dolandyrmak', 'guard_name' => 'admin'],
+            ['name' => 'manage-inactive', 'display_name' => 'Moderatorlyk', 'guard_name' => 'admin'],
         ];
 
         foreach ($permissions as $permission) {

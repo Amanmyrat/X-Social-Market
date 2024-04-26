@@ -103,11 +103,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['role:super-admin|admin']], 
         Route::prefix('posts')->middleware('permission:manage-posts')
             ->group(function () {
                 Route::post('/', [AdminPostController::class, 'list']);
-                Route::get('/{post}', [AdminPostController::class, 'postDetails']);
-                Route::post('/update/{post}', [AdminPostController::class, 'update']);
                 Route::post('/delete', [AdminPostController::class, 'delete']);
 
-                Route::post('/inactive', [AdminPostController::class, 'inactiveList']);
+                Route::middleware(['permission:manage-inactive'])->group(function () {
+                    Route::get('/{post}', [AdminPostController::class, 'postDetails']);
+                    Route::post('/update/{post}', [AdminPostController::class, 'update']);
+                    Route::post('/inactive', [AdminPostController::class, 'inactiveList']);
+                });
             });
 
         Route::prefix('admins')->middleware('role:super-admin')
@@ -121,14 +123,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['role:super-admin|admin']], 
                 Route::post('/permissions', [AdminAdminController::class, 'permissions']);
             });
 
-        Route::prefix('comments')->middleware('permission:manage-posts')
+        Route::prefix('comments')->middleware('permission:manage-inactive')
             ->group(function () {
                 Route::post('/', [AdminCommentController::class, 'list']);
                 Route::post('/accept/{comment}', [AdminCommentController::class, 'accept']);
                 Route::post('/decline/{comment}', [AdminCommentController::class, 'decline']);
             });
 
-        Route::prefix('stories')
+        Route::prefix('stories')->middleware('permission:manage-inactive')
             ->group(function () {
                 Route::post('/', [AdminStoryController::class, 'list']);
                 Route::post('/accept/{story}', [AdminStoryController::class, 'accept']);

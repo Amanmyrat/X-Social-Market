@@ -11,7 +11,7 @@ use App\Http\Resources\Admin\Post\PostResourceCollection;
 use App\Models\Post;
 use App\Services\Admin\PostService;
 use Illuminate\Http\JsonResponse;
-use Request;
+use Illuminate\Http\Request;
 
 class AdminPostController extends Controller
 {

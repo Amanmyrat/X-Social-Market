@@ -19,6 +19,7 @@ class PostFilterRequest extends FormRequest
         $allowedSortOptionsString = implode(',', $allowedSortOptions);
 
         return [
+            'user_id' => ['filled', 'exists:users,id'],
             'price_min' => ['filled', 'integer'],
             'price_max' => ['filled', 'integer'],
 

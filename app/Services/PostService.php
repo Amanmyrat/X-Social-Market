@@ -171,6 +171,10 @@ class PostService
     {
         $query = Post::query();
 
+        if (isset($filters['user_id'])) {
+            $query->where('posts.user_id', $filters['user_id']);
+        }
+
         if (isset($filters['price_min'], $filters['price_max'])) {
             $query->whereBetween('posts.price', [$filters['price_min'], $filters['price_max']]);
         }

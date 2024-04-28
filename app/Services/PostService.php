@@ -139,10 +139,14 @@ class PostService
             ->when(isset($request->date_end), function ($query) use ($request) {
                 return $query->where('created_at', '<=', $request->date_end);
             })
-            ->when(isset($request->search_query), function ($query) use ($request) {
-                $search_query = '%' . strtolower($request->search_query) . '%';
-                return $query->whereRaw('LOWER(posts.caption) LIKE ?', [$search_query])
-                    ->orWhereRaw('LOWER(posts.description) LIKE ?', [$search_query]);
+            ->where(function ($q) use ($request) {
+                if (isset($request->search_query)) {
+                    $search_query = '%' . strtolower($request->search_query) . '%';
+                    $q->where(function ($q) use ($search_query) {
+                        $q->whereRaw('LOWER(posts.caption) LIKE ?', [$search_query])
+                            ->orWhereRaw('LOWER(posts.description) LIKE ?', [$search_query]);
+                    });
+                }
             });
 
         if ($s = $request->get('sort')) {

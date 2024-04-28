@@ -32,9 +32,38 @@ trait HandlesUserPostInteractions
     }
 
     /**
+     * Get the current user's following users IDs.
+     */
+    public function getUserFollowingsIds(): array
+    {
+        $user = Auth::user();
+
+        return $user ? $user->followings()->pluck('follow_user_id')->toArray() : [];
+    }
+
+    /**
+     * Get the current user's following users IDs.
+     */
+    public function getUserStoryViewUserIds(): array
+    {
+        $user = Auth::user();
+
+        return $user ? $user->followings()
+            ->with(['stories' => function ($query) {
+                $query->where('created_at', '>=', now()->subDay())
+                 ->where('is_active', true);
+            }])
+            ->whereDoesntHave('stories.views', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->pluck('users.id')
+            ->toArray() : [];
+    }
+
+    /**
      * General method to retrieve user post interaction IDs based on a given relationship.
      *
-     * @param  string  $relationshipMethod  The method name of the user's post interaction relationship.
+     * @param string $relationshipMethod The method name of the user's post interaction relationship.
      */
     protected function getUserPostInteractionIds(string $relationshipMethod): array
     {

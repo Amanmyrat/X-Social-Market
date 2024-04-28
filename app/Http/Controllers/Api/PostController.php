@@ -15,6 +15,7 @@ use App\Transformers\GuestPostTransformer;
 use App\Transformers\PostDetailsTransformer;
 use App\Transformers\PostSimpleTransformer;
 use App\Transformers\PostTransformer;
+use App\Transformers\PostTransformer2;
 use Auth;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -154,8 +155,20 @@ class PostController extends ApiBaseController
         $userInteractionsDTO = $this->getUserInteractionsDTO();
 
         $posts = Post::withRecommendationScore(Auth::id())->paginate(10);
-
         return $this->respondWithPaginator($posts, new PostTransformer($userInteractionsDTO));
+    }
+
+    /**
+     * Recommended posts 2
+     */
+    public function recommendedPosts2(): JsonResponse
+    {
+        $userInteractionsDTO = $this->getUserInteractionsDTO();
+        $followings = $this->getUserFollowingsIds();
+        $storyViewUsers = $this->getUserStoryViewUserIds();
+
+        $posts = Post::withRecommendationScore2(Auth::id())->paginate(10);
+        return $this->respondWithPaginator($posts, new PostTransformer2($userInteractionsDTO, $followings, $storyViewUsers));
     }
 
     /**

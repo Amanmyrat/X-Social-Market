@@ -266,7 +266,7 @@ class Post extends Model implements HasMedia
                     JOIN post_bookmarks ON post_bookmarks.post_id = posts.id AND post_bookmarks.user_id = $userId
                 ) THEN 10 ELSE 0 END
             ) +
-            GREATEST(5 - EXTRACT(DAY FROM NOW() - posts.created_at), 0) AS score
+            GREATEST(5 - EXTRACT(DAY FROM NOW() - posts.created_at), 0) AS score,
             (
                 SELECT CASE WHEN COUNT(stories.id) > 0 THEN true ELSE false END
                 FROM stories
@@ -275,7 +275,7 @@ class Post extends Model implements HasMedia
                 AND stories.created_at >= NOW() - INTERVAL '24 hours'
                 AND story_views.id IS NULL
             ) AS has_unviewed_story
-            ";
+        ";
 
         $subQuery = DB::table('posts')
             ->selectRaw($scoreSelect)
@@ -297,7 +297,7 @@ class Post extends Model implements HasMedia
                 $query->where(function ($q) {
                     // Include posts if the profile is not private or does not exist
                     $q->whereNull('user_profiles.private') // Profile is either not private
-                        ->orWhere('user_profiles.private', '=', false);
+                    ->orWhere('user_profiles.private', '=', false);
                 })->orWhereExists(function ($q) use ($userId) {
                     // Or the current user is following the post's user
                     $q->select(DB::raw(1))
@@ -321,119 +321,186 @@ class Post extends Model implements HasMedia
             ->withAvg('ratings', 'rating')
             ->orderBy('scored_posts.score', 'DESC');
     }
-//        return $query->joinSub($subQuery, 'scored_posts', function ($join) {
-//            $join->on('posts.id', '=', 'scored_posts.id');
-//        })
-////            ->leftJoin('followers as f2', function ($join) use ($userId) {
-////                // Ensure the is_following flag is correctly set for each post
-////                $join->on('f2.user_id', '=', 'posts.user_id')
-////                    ->where('f2.follow_user_id', '=', $userId);
-////            })
-//            ->select('posts.*',
-//                'scored_posts.score',
-////                'scored_posts.has_unviewed_story',
-////                DB::raw('CASE WHEN f2.follow_user_id IS NOT NULL THEN true ELSE false END AS is_following')
-//            )
-//            ->with(['user.profile.media', 'media'])
-//            ->withAvg('ratings', 'rating')
+
+    public function scopeWithRecommendationScore22(Builder $query, int $userId): Builder
+    {
+        $scoreSelect = "
+            posts.id,
+            (
+                SELECT COUNT(*) FROM post_favorites WHERE post_favorites.post_id = posts.id
+            ) * 1 +
+            (
+                SELECT COUNT(*) FROM post_comments WHERE post_comments.post_id = posts.id
+            ) * 2 +
+            (
+                SELECT COUNT(*) FROM post_bookmarks WHERE post_bookmarks.post_id = posts.id
+            ) * 1 +
+            (
+                CASE WHEN EXISTS (
+                    SELECT 1 FROM followers WHERE followers.follow_user_id = posts.user_id AND followers.user_id = $userId
+                ) THEN 100 ELSE 0 END
+            ) +
+            (
+                CASE WHEN NOT EXISTS (
+                    SELECT 1 FROM post_views WHERE post_views.post_id = posts.id AND post_views.user_id = $userId
+                ) THEN 50 ELSE 0 END
+            ) +
+            (
+               CASE WHEN posts.category_id IN (
+                    SELECT posts.category_id FROM posts
+                    JOIN post_favorites ON post_favorites.post_id = posts.id AND post_favorites.user_id = $userId
+                    UNION
+                    SELECT posts.category_id FROM posts
+                    JOIN post_comments ON post_comments.post_id = posts.id AND post_comments.user_id = $userId
+                    UNION
+                    SELECT posts.category_id FROM posts
+                    JOIN post_bookmarks ON post_bookmarks.post_id = posts.id AND post_bookmarks.user_id = $userId
+                ) THEN 10 ELSE 0 END
+            ) +
+            GREATEST(5 - EXTRACT(DAY FROM NOW() - posts.created_at), 0) AS score,
+            (
+                SELECT CASE WHEN COUNT(stories.id) > 0 THEN true ELSE false END
+                FROM stories
+                LEFT JOIN story_views ON stories.id = story_views.story_id AND story_views.user_id = $userId
+                WHERE stories.user_id = posts.user_id
+                AND stories.created_at >= NOW() - INTERVAL '24 hours'
+                AND story_views.id IS NULL
+            ) AS has_unviewed_story
+        ";
+
+        $subQuery = DB::table('posts')
+            ->selectRaw($scoreSelect)
+            ->join('users', 'posts.user_id', '=', 'users.id')
+            ->leftJoin('blocked_users', function ($join) use ($userId) {
+                $join->on('users.id', '=', 'blocked_users.blocked_user_id')
+                    ->where('blocked_users.user_id', '=', $userId); // Current user is blocking
+            })
+            ->where('posts.is_active', true)
+            ->whereNull('users.blocked_at') // Admin has not blocked the user
+            ->where('users.is_active', true) // Admin has not disabled user
+            ->whereNull('blocked_users.id') // Current user has not blocked the user
+            ->groupBy('posts.id');
+
+        return $query->joinSub($subQuery, 'scored_posts', function ($join) {
+            $join->on('posts.id', '=', 'scored_posts.id');
+        })
+            ->select('posts.*',
+                'scored_posts.score',
+                'scored_posts.has_unviewed_story'
+            )
+            ->with(['user.profile', 'media'])
+            ->withAvg('ratings', 'rating')
+            ->orderBy('scored_posts.score', 'DESC');
+    }
+
+//    public function scopeWithRecommendationScore2(Builder $query, int $userId): Builder
+//    {
+//        $favoriteCount = DB::table('post_favorites')
+//            ->select('post_id', DB::raw('COUNT(*) AS count'))
+//            ->groupBy('post_id');
+//
+//        $commentCount = DB::table('post_comments')
+//            ->select('post_id', DB::raw('COUNT(*) AS count'))
+//            ->groupBy('post_id');
+//
+//        $bookmarkCount = DB::table('post_bookmarks')
+//            ->select('post_id', DB::raw('COUNT(*) AS count'))
+//            ->groupBy('post_id');
+//
+////        // Derived list of preferred categories
+////        $preferredCategories = DB::table('post_favorites')
+////            ->select('category_id')
+////            ->where('user_id', $userId)
+////            ->union(
+////                DB::table('post_comments')
+////                    ->select('category_id')
+////                    ->where('user_id', $userId)
+////            )
+////            ->union(
+////                DB::table('post_bookmarks')
+////                    ->select('category_id')
+////                    ->where('user_id', $userId)
+////            )
+////            ->pluck('category_id');
+//
+//        // Main scoring sub-query with optimized joins
+//        $subQuery = DB::table('posts')
+//                ->selectRaw(
+//                    'posts.id,
+//            COALESCE(fav.count, 0) * 1 +
+//            COALESCE(com.count, 0) * 2 +
+//            COALESCE(bm.count, 0) * 1 +
+//
+//
+//            GREATEST(5 - EXTRACT(DAY FROM NOW() - posts.created_at), 0) AS score'
+//                )
+//            ->leftJoin(DB::raw('(' . $favoriteCount->toSql() . ') AS fav'), 'fav.post_id', '=', 'posts.id')
+//            ->leftJoin(DB::raw('(' . $commentCount->toSql() . ') AS com'), 'com.post_id', '=', 'posts.id')
+//            ->leftJoin(DB::raw('(' . $bookmarkCount->toSql() . ') AS bm'), 'bm.post_id', '=', 'posts.id');
+//
+//        // Final query
+//        return $query
+//            ->joinSub($subQuery, 'scored_posts', function ($join) {
+//                $join->on('posts.id', '=', 'scored_posts.id');
+//            })
+//            ->select('posts.*', 'scored_posts.score')
 //            ->orderBy('scored_posts.score', 'DESC');
 //    }
 
     public function scopeWithRecommendationScore2(Builder $query, int $userId): Builder
     {
-        return $query
-            ->select(
-                'posts.*',
-                DB::raw('(
-                    SELECT COUNT(*) FROM post_favorites WHERE post_favorites.post_id = posts.id
-                    ) * 1 +
-                    (
-                        SELECT COUNT(*) FROM post_comments WHERE post_comments.post_id = posts.id
-                    ) * 2 +
-                    (
-                        SELECT COUNT(*) FROM post_bookmarks WHERE post_bookmarks.post_id = posts.id
-                    ) * 1 +
-                    (
-                        CASE WHEN EXISTS (
-                            SELECT 1 FROM followers WHERE followers.follow_user_id = posts.user_id AND followers.user_id = ?
-                        ) THEN 100 ELSE 0 END
-                    ) +
-                    (
-                        CASE WHEN NOT EXISTS (
-                            SELECT 1 FROM post_views WHERE post_views.post_id = posts.id AND post_views.user_id = ?
-                        ) THEN 50 ELSE 0 END
-                    ) +
-                    (
-                       CASE WHEN posts.category_id IN (
-                            SELECT posts.category_id FROM posts
-                            JOIN post_favorites ON post_favorites.post_id = posts.id AND post_favorites.user_id = ?
-                            UNION
-                            SELECT posts.category_id FROM posts
-                            JOIN post_comments ON post_comments.post_id = posts.id AND post_comments.user_id = ?
-                            UNION
-                            SELECT posts.category_id FROM posts
-                            JOIN post_bookmarks ON post_bookmarks.post_id = posts.id AND post_bookmarks.user_id = ?
-                        ) THEN 10 ELSE 0 END
-                    ) +
-                    GREATEST(5 - EXTRACT(DAY FROM NOW() - posts.created_at), 0) AS score,
-                    (
-                        SELECT CASE WHEN COUNT(stories.id) > 0 THEN true ELSE false END
-                        FROM stories
-                        LEFT JOIN story_views ON stories.id = story_views.story_id AND story_views.user_id = ?
-                        WHERE stories.user_id = posts.user_id
-                        AND stories.created_at >= NOW() - INTERVAL \'24 hours\'
-                        AND story_views.id IS NULL
-                    ) AS has_unviewed_story'
-            ))
-            ->with(['user.profile.media', 'media'])
-            ->withAvg('ratings', 'rating')
-            ->leftJoin('followers as f2', function ($join) use ($userId) {
-                // Ensure the is_following flag is correctly set for each post
-                $join->on('f2.user_id', '=', 'posts.user_id')
-                    ->where('f2.follow_user_id', '=', $userId);
-            })
-            ->leftJoinSub(
-                function ($subQuery) use ($userId) {
-                    $subQuery
-                        ->select('posts.id')
-                        ->from('posts')
-                        ->join('users', 'posts.user_id', '=', 'users.id')
-                        ->leftJoin('user_profiles', 'users.id', '=', 'user_profiles.user_id')
-                        ->leftJoin('followers', function ($join) use ($userId) {
-                            $join->on('followers.follow_user_id', '=', 'users.id')
-                                ->where('followers.user_id', '=', $userId);
-                        })
-                        ->leftJoin('blocked_users', function ($join) use ($userId) {
-                            $join->on('users.id', '=', 'blocked_users.blocked_user_id')
-                                ->where('blocked_users.user_id', '=', $userId); // Current user is blocking
-                        })
-                        ->where('posts.is_active', true)
-                        ->whereNull('users.blocked_at') // Admin has not blocked the user
-                        ->where('users.is_active', true) // Admin has not disabled user
-                        ->whereNull('blocked_users.id') // Current user has not blocked the user
-                        ->where(function ($query) use ($userId) {
-                            $query->where(function ($q) {
-                                // Include posts if the profile is not private or does not exist
-                                $q->whereNull('user_profiles.private') // Profile is either not private
-                                ->orWhere('user_profiles.private', '=', false);
-                            })->orWhereExists(function ($q) use ($userId) {
-                                // Or the current user is following the post's user
-                                $q->select(DB::raw(1))
-                                    ->from('followers')
-                                    ->whereRaw('followers.follow_user_id = users.id')
-                                    ->where('followers.user_id', '=', $userId);
-                            });
-                        })
-                        ->groupBy('posts.id');
-                },
-                'scored_posts',
-                'posts.id',
-                '=',
-                'scored_posts.id'
-            )
-            ->orderBy('score', 'DESC');
-    }
+        $postCountSubQuery = DB::table('posts')
+            ->select('posts.id')
+            ->selectRaw('
+            COUNT(DISTINCT post_favorites.id) AS favorite_count,
+            COUNT(DISTINCT post_comments.id) AS comment_count,
+            COUNT(DISTINCT post_bookmarks.id) AS bookmark_count,
+            (
+                CASE
+                    WHEN EXISTS (SELECT 1 FROM followers WHERE followers.follow_user_id = posts.user_id AND followers.user_id = ?)
+                    THEN 100 ELSE 0
+                END
+            ) AS follow_bonus,
+            (
+                CASE
+                    WHEN NOT EXISTS (SELECT 1 FROM post_views WHERE post_views.post_id = posts.id AND post_views.user_id = ?)
+                    THEN 50 ELSE 0
+                END
+            ) AS view_bonus
+        ', [$userId, $userId])
+            ->leftJoin('post_favorites', 'posts.id', '=', 'post_favorites.post_id')
+            ->leftJoin('post_comments', 'posts.id', '=', 'post_comments.post_id')
+            ->leftJoin('post_bookmarks', 'posts.id', '=', 'post_bookmarks.post_id')
+            ->groupBy('posts.id');
 
+        $scoreSubQuery = DB::table('posts')
+            ->select('posts.id')
+            ->selectRaw('
+            (favorite_count * 1 + comment_count * 2 + bookmark_count * 1 + follow_bonus + view_bonus +
+            GREATEST(5 - EXTRACT(DAY FROM NOW() - posts.created_at), 0)) AS score
+        ')
+            ->joinSub($postCountSubQuery, 'post_counts', function ($join) {
+                $join->on('posts.id', '=', 'post_counts.id');
+            })
+            ->join('users', 'posts.user_id', '=', 'users.id')
+            ->leftJoin('blocked_users', function ($join) use ($userId) {
+                $join->on('users.id', '=', 'blocked_users.blocked_user_id')
+                    ->where('blocked_users.user_id', '=', $userId); // Current user is blocking
+            })
+            ->where('posts.is_active', true)
+            ->whereNull('users.blocked_at') // Admin has not blocked the user
+            ->where('users.is_active', true) // Admin has not disabled user
+            ->whereNull('blocked_users.id') // Current user has not blocked the user
+            ->groupBy('posts.id', 'favorite_count', 'comment_count', 'bookmark_count', 'follow_bonus', 'view_bonus');
+
+        return $query->joinSub($scoreSubQuery, 'scored_posts', function ($join) {
+            $join->on('posts.id', '=', 'scored_posts.id');
+        })
+            ->select('posts.*', 'scored_posts.score') // Avoid references to undefined columns
+            ->with(['user.profile.media', 'media']) // Eager-load relationships
+            ->withAvg('ratings', 'rating') // Get average rating
+            ->orderBy('scored_posts.score', 'DESC'); // Order by score
+    }
 
     /**
      * Scope a query to only include active posts from users who are not blocked by the current user, have not been blocked by admins,

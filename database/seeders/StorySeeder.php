@@ -15,8 +15,8 @@ class StorySeeder extends Seeder
      */
     public function run(): void
     {
-        $storyCount = 1000;
-        $defaultStoryCount = 700;
+        $storyCount = 5;
+        $defaultStoryCount = 2;
         $users = User::pluck('id');
         $posts = Post::pluck('id');
 

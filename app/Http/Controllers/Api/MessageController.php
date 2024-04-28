@@ -75,7 +75,7 @@ class MessageController extends ApiBaseController
     {
         abort_if(
             Auth::id() != $chat->sender_user_id
-            || Auth::id() != $chat->receiver_user_id,
+            && Auth::id() != $chat->receiver_user_id,
             403,
             ErrorMessage::UNAUTHORIZED_ACCESS_ERROR->value
         );
@@ -93,7 +93,8 @@ class MessageController extends ApiBaseController
     {
         $userId = Auth::id();
         abort_if(
-            $message->sender_user_id != $userId && $message->receiver_user_id != $userId,
+            $message->sender_user_id != $userId
+            && $message->receiver_user_id != $userId,
             403
         );
 

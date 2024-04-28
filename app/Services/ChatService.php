@@ -40,7 +40,7 @@ class ChatService
     {
         return $user
             ->chats()
-            ->with(['post.media', 'latestMessage', 'receiver.profile.media'])
+            ->with(['post.media', 'latestMessage', 'receiverBasedOnCurrentUser.profile.media'])
             ->withCount(['messages' => function ($query) use ($user) {
                 $query->where('receiver_user_id', $user->id)
                     ->whereNull('read_at');

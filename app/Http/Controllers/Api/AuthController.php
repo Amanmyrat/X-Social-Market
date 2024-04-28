@@ -11,6 +11,11 @@ use Illuminate\Http\JsonResponse;
 
 class AuthController extends ApiBaseController
 {
+    public function __construct(protected AuthService $service)
+    {
+        parent::__construct();
+    }
+
     /**
      * Create User
      *
@@ -20,7 +25,7 @@ class AuthController extends ApiBaseController
      */
     public function register(RegisterRequest $request): JsonResponse
     {
-        $user = AuthService::register($request->validated());
+        $user = $this->service->register($request->validated());
 
         $user = array_merge($user->toArray(), ['token' => $user->createToken('mobile', ['role:user'])->plainTextToken]);
 
@@ -39,7 +44,7 @@ class AuthController extends ApiBaseController
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        AuthService::login($request);
+        $this->service->login($request);
 
         $user = array_merge($request->user()->toArray(), ['token' => $request->user()->createToken('mobile', ['role:user'])->plainTextToken]);
 

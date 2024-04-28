@@ -10,25 +10,30 @@ use Illuminate\Validation\ValidationException;
 
 class AuthService
 {
+
     /**
      * @throws Exception
      */
-    public static function register($registerData): ?User
+    public function register($registerData): ?User
     {
-        return User::create([
-            'username' => 'ulanyjy_'.random_int(10000000, 99999999),
+        $user = User::create([
+            'username' => 'ulanyjy_' . random_int(10000000, 99999999),
             'phone' => $registerData['phone'],
             'password' => Hash::make($registerData['password']),
             'device_token' => $registerData['device_token'],
             'last_activity' => now(),
             'type' => User::TYPE_USER,
         ]);
+
+        $user?->profile()->create([]);
+
+        return $user;
     }
 
     /**
      * @throws ValidationException
      */
-    public static function login(LoginRequest $request): void
+    public function login(LoginRequest $request): void
     {
         $request->authenticate();
         $request->user()->update(

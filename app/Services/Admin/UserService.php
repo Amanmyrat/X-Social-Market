@@ -15,13 +15,15 @@ class UserService
 
     public function list(string $type, int $limit, ?string $search_query = null, ?string $sort = null): LengthAwarePaginator
     {
-        $query = User::where('type', $type)->when(isset($search_query), function ($query) use ($search_query) {
-            $search_query = '%'.$search_query.'%';
+        $query = User::where('type', $type)
+            ->when(isset($search_query), function ($query) use ($search_query) {
+                $search_query = '%' . strtolower($search_query) . '%';
 
-            return $query->whereHas('profile', function ($q) use ($search_query) {
-                $q->where('full_name', $search_query);
-            })->orWhere('phone', 'LIKE', $search_query)->orWhere('username', 'LIKE', $search_query);
-        });
+                return $query->whereHas('profile', function ($q) use ($search_query) {
+                    $q->whereRaw('LOWER(full_name) LIKE ?', [$search_query]);
+                })->orWhereRaw('LOWER(phone) LIKE ?', [$search_query])
+                    ->orWhereRaw('LOWER(username) LIKE ?', [$search_query]);
+            });
 
         $this->applySorting($query, $sort, ['username', 'is_active', 'created_at']);
 

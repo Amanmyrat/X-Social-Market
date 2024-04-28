@@ -51,8 +51,8 @@ class UniversalService
 
         // Apply search query if provided
         if (! is_null($search_query)) {
-            $search_query = '%'.$search_query.'%';
-            $query->where('title', 'LIKE', $search_query);
+            $search_query = '%' . strtolower($search_query) . '%';
+            $query->whereRaw('LOWER(title) LIKE ?' ,[$search_query]);
         }
 
         // Sorting logic

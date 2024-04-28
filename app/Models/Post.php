@@ -480,6 +480,7 @@ class Post extends Model implements HasMedia
     public function scopeActiveAndNotBlocked(Builder $query, ?int $userId): Builder
     {
         return $query
+            ->select('posts.*')
             ->join('users', 'posts.user_id', '=', 'users.id')
             ->leftJoin('blocked_users', function ($join) use ($userId) {
                 $join->on('users.id', '=', 'blocked_users.blocked_user_id')

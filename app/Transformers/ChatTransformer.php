@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use App\Models\Chat;
+use Auth;
 use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
 
@@ -25,7 +26,16 @@ class ChatTransformer extends TransformerAbstract
 
     public function includeReceiver(Chat $chat): Item
     {
-        return $this->item($chat->receiverBasedOnCurrentUser, new UserSimpleTransformer());
+        $currentUser = Auth::user();
+
+        // Determine the correct receiver
+        $receiver = ($currentUser->id == $chat->sender_user_id)
+            ? $chat->receiver
+            : $chat->sender;
+
+//        dd($receiver);
+
+        return $this->item($receiver, new UserSimpleTransformer());
     }
 
     public function includeProduct(Chat $chat): ?Item

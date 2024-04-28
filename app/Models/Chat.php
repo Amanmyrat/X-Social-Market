@@ -71,16 +71,9 @@ class Chat extends Model
         return $this->belongsTo(User::class, 'receiver_user_id');
     }
 
-    public function receiverBasedOnCurrentUser(): BelongsTo
+    public function sender(): BelongsTo
     {
-        $currentUser = Auth::user();
-
-        if ($currentUser->id == $this->sender_user_id) {
-            return $this->belongsTo(User::class, 'receiver_user_id');
-        }else {
-            return $this->belongsTo(User::class, 'sender_user_id');
-        }
-
+        return $this->belongsTo(User::class, 'sender_user_id');
     }
 
     public function scopeWhereNotDeleted($query): mixed

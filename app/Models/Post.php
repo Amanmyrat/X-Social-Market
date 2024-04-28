@@ -481,32 +481,14 @@ class Post extends Model implements HasMedia
     {
         return $query
             ->join('users', 'posts.user_id', '=', 'users.id')
-            ->leftJoin('user_profiles', 'users.id', '=', 'user_profiles.user_id')
-            ->leftJoin('followers', function ($join) use ($userId) {
-                $join->on('followers.follow_user_id', '=', 'users.id')
-                    ->where('followers.user_id', '=', $userId);
-            })
             ->leftJoin('blocked_users', function ($join) use ($userId) {
                 $join->on('users.id', '=', 'blocked_users.blocked_user_id')
                     ->where('blocked_users.user_id', $userId);
             })
-            ->where(function ($q) use ($userId) {
-                $q->where('posts.is_active', true)
-                    ->whereNull('users.blocked_at') // Admin has not blocked the user
-                    ->where('users.is_active', true) // Admin has not disabled the user
-                    ->whereNull('blocked_users.id') // Current user has not blocked the user
-                    ->where(function ($query) use ($userId) {
-                        $query->where(function ($q) {
-                            // Include posts if the profile is not private or does not exist
-                            $q->whereNull('user_profiles.private')
-                                ->orWhere('user_profiles.private', false);
-                        })->orWhere(function ($q) use ($userId){
-                            // Or the current user is following the post's user
-                            $q->whereNotNull('followers.follow_user_id')
-                                ->where('followers.user_id', $userId);
-                        });
-                    });
-            });
+            ->where('posts.is_active', true)
+            ->whereNull('users.blocked_at') // Admin has not blocked the user
+            ->where('users.is_active', true) // Admin has not disabled the user
+            ->whereNull('blocked_users.id'); // Current user has not blocked the user
     }
 
     public function registerMediaCollections(): void

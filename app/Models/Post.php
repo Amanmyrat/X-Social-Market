@@ -495,15 +495,16 @@ class Post extends Model implements HasMedia
                     ->whereNull('users.blocked_at') // Admin has not blocked the user
                     ->where('users.is_active', true) // Admin has not disabled the user
                     ->whereNull('blocked_users.id') // Current user has not blocked the user
-                    ->where(function ($q) {
-                        // Profile is public or non-private
-                        $q->whereNull('user_profiles.private')
-                            ->orWhere('user_profiles.private', false);
-                    })
-                    ->orWhere(function ($q) use ($userId) {
-                        // Current user follows the post's user
-                        $q->whereNotNull('followers.follow_user_id')
-                            ->where('followers.user_id', $userId);
+                    ->where(function ($query) use ($userId) {
+                        $query->where(function ($q) {
+                            // Include posts if the profile is not private or does not exist
+                            $q->whereNull('user_profiles.private')
+                                ->orWhere('user_profiles.private', false);
+                        })->orWhere(function ($q) use ($userId){
+                            // Or the current user is following the post's user
+                            $q->whereNotNull('followers.follow_user_id')
+                                ->where('followers.user_id', $userId);
+                        });
                     });
             });
     }

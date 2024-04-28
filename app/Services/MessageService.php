@@ -108,20 +108,24 @@ class MessageService
     /**
      * Get all messages
      */
-    public function listMessages($chatId): LengthAwarePaginator
+    public function listMessages(Chat $chat): LengthAwarePaginator
     {
         $userId = auth()->id();
 
-        return Message::where('chat_id', $chatId)
+        return $chat->messages()
             ->where(function ($query) use ($userId) {
-                $query->where('sender_user_id', $userId)
-                    ->whereNull('sender_deleted_at');
-            })->orWhere(function ($query) use ($userId) {
-                $query->where('receiver_user_id', $userId)
-                    ->whereNull('receiver_deleted_at');
+                $query->where(function ($subQuery) use ($userId) {
+                    $subQuery->where('sender_user_id', $userId)
+                        ->whereNull('sender_deleted_at');
+                })
+                    ->orWhere(function ($subQuery) use ($userId) {
+                        $subQuery->where('receiver_user_id', $userId)
+                            ->whereNull('receiver_deleted_at');
+                    });
             })
             ->with('media')
-            ->latest()->paginate();
+            ->latest()
+            ->paginate(20);
     }
 
     /**

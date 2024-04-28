@@ -45,7 +45,7 @@ class MessageController extends ApiBaseController
     /**
      * Get all messages
      */
-    public function listMessages($chat): JsonResponse
+    public function listMessages(Chat $chat): JsonResponse
     {
         $messages = $this->messageService->listMessages($chat);
 

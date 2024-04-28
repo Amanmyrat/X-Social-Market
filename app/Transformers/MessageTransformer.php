@@ -11,6 +11,7 @@ class MessageTransformer extends TransformerAbstract
     {
         return [
             'id' => $message->id,
+            'chat_id' => $message->chat_id,
             'sender_user_id' => $message->sender_user_id,
             'receiver_user_id' => $message->receiver_user_id,
             'type' => $message->type,

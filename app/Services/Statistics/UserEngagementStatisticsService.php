@@ -13,17 +13,25 @@ class UserEngagementStatisticsService extends BaseStatisticsService
     public function get($userId, $period): array
     {
         $startDate = $this->getStartDateForPeriod($period);
-        $uniqueUserIds = $this->getUniqueEngagedUserIds($userId, $startDate);
+        $previousStartDate = $this->getPreviousStartDateForPeriod($period, $startDate);
+        $endDate = now();
 
+        $currentUniqueUserIds = $this->getUniqueEngagedUserIds($userId, $startDate, $endDate);
+        // Fetch engagement user IDs for the previous period
+        $previousUniqueUserIds = $this->getUniqueEngagedUserIds($userId, $previousStartDate, $startDate);
+
+        // Calculate distributions and changes
         return [
-            'total_engagements' => count($uniqueUserIds),
-            'followers_distribution' => $this->getFollowersDistribution($uniqueUserIds, $userId),
-            'gender_distribution' => $this->getGenderDistribution($uniqueUserIds),
-            'age_distribution' => $this->getAgeDistribution($uniqueUserIds),
+            'total_engagements' => count($currentUniqueUserIds),
+            'total_engagements_previous' => count($previousUniqueUserIds),
+            'total_engagements_change' => $this->calculatePercentageChange(count($previousUniqueUserIds), count($currentUniqueUserIds)),
+            'followers_distribution' => $this->getFollowersDistribution($currentUniqueUserIds, $previousUniqueUserIds, $userId),
+            'gender_distribution' => $this->getGenderDistribution($currentUniqueUserIds),
+            'age_distribution' => $this->getAgeDistribution($currentUniqueUserIds),
         ];
     }
 
-    protected function getUniqueEngagedUserIds($userId, $startDate): array
+    protected function getUniqueEngagedUserIds($userId, $startDate, $endDate): array
     {
         // Use a single query to gather all unique user IDs from engagements within the date range.
         $engagements = DB::table('posts')
@@ -41,6 +49,14 @@ class UserEngagementStatisticsService extends BaseStatisticsService
                         ->orWhere('post_ratings.created_at', '>=', $startDate);
                 });
             })
+            ->when($endDate, function ($query) use ($endDate) {
+                $query->where(function ($q) use ($endDate) {
+                    $q->where('post_favorites.created_at', '<', $endDate)
+                        ->orWhere('post_comments.created_at', '<', $endDate)
+                        ->orWhere('post_bookmarks.created_at', '<', $endDate)
+                        ->orWhere('post_ratings.created_at', '<', $endDate);
+                });
+            })
             ->get();
 
         // Flatten the list of user IDs from different columns and remove null values
@@ -50,16 +66,32 @@ class UserEngagementStatisticsService extends BaseStatisticsService
 
     }
 
-    protected function getFollowersDistribution($userIds, $userId): array
+    protected function getFollowersDistribution($currentUniqueUserIds, $previousUniqueUserIds, $userId): array
     {
         $followers = User::find($userId)->followers()->pluck('users.id')->toArray();
-        $followerCount = count(array_intersect($followers, $userIds));
-        $nonFollowerCount = count($userIds) - $followerCount;
-        $totalCount = count($userIds);
+
+        // Calculate current period distribution
+        $currentFollowerCount = count(array_intersect($followers, $currentUniqueUserIds));
+        $currentNonFollowerCount = count($currentUniqueUserIds) - $currentFollowerCount;
+        $currentTotalCount = count($currentUniqueUserIds);
+
+        // Calculate previous period distribution
+        $previousFollowerCount = count(array_intersect($followers, $previousUniqueUserIds));
+        $previousNonFollowerCount = count($previousUniqueUserIds) - $previousFollowerCount;
+        $previousTotalCount = count($previousUniqueUserIds);
+
+        // Calculate percentages
+        $currentFollowersPercentage = $currentTotalCount ? round($currentFollowerCount / $currentTotalCount * 100, 2) : 0;
+        $previousFollowersPercentage = $previousTotalCount ? round($previousFollowerCount / $previousTotalCount * 100, 2) : 0;
+
+        $currentNonFollowersPercentage = $currentTotalCount ? round($currentNonFollowerCount / $currentTotalCount * 100, 2) : 0;
+        $previousNonFollowersPercentage = $previousTotalCount ? round($previousNonFollowerCount / $previousTotalCount * 100, 2) : 0;
 
         return [
-            'followers' => $totalCount ? round($followerCount / $totalCount * 100, 2) : 0,
-            'non_followers' => $totalCount ? round($nonFollowerCount / $totalCount * 100, 2) : 0,
+            'followers' => $currentFollowersPercentage,
+            'followers_previous' => $previousFollowersPercentage,
+            'non_followers' => $currentNonFollowersPercentage,
+            'non_followers_previous' => $previousNonFollowersPercentage
         ];
     }
 

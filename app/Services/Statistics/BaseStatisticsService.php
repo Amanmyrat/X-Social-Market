@@ -19,6 +19,19 @@ class BaseStatisticsService
         };
     }
 
+    protected function getPreviousStartDateForPeriod(String $period, Carbon $currentStartDate): ?Carbon
+    {
+        return match ($period) {
+            '1d' => $currentStartDate->subDay(),
+            '10d' => $currentStartDate->subDays(10),
+            '1m' => $currentStartDate->subMonth(),
+            '6m' => $currentStartDate->subMonths(6),
+            '1y' => $currentStartDate->subYear(),
+            'all' => null,
+            default => $currentStartDate,
+        };
+    }
+
     protected function calculateAgeRange($age): string
     {
         if ($age === 'undefined') {

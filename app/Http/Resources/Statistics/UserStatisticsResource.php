@@ -14,18 +14,30 @@ class UserStatisticsResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $current = $this->resource['current'];
+        $previous = $this->resource['previous'];
         return [
-            'profile_views_count' => $this->resource['profileViewsCount'],
-            'active_users_count' => $this->resource['postEngagementsCount'],
-            'new_followers_count' => $this->resource['newFollowersCount'],
-            'new_post_count' => $this->resource['postCount'],
-            'best_post' => $this->resource['bestPost'] != null ? [
-                'caption' => $this->resource['bestPost']->caption,
-                'view_count' => $this->resource['bestPost']->view_count,
-                'active_users_count' => $this->resource['bestPost']->engaged_users_count,
-                'media_type' => $this->resource['bestPost']->media_type,
-                'media' => $this->resource['bestPost']->first_image_urls,
-            ] : null,
+            'profile_views_count' => $current['profileViewsCount'],
+            'profile_views_count_previous' => $previous['profileViewsCount'] ?? null,
+            'active_users_count' => $current['postEngagementsCount'],
+            'active_users_count_previous' => $previous['postEngagementsCount'] ?? null,
+            'new_followers_count' => $current['newFollowersCount'],
+            'new_followers_count_previous' => $previous['newFollowersCount'] ?? null,
+            'new_post_count' => $current['postCount'],
+            'new_post_count_previous' => $previous['postCount'] ?? null,
+            'best_post' => $this->formatBestPost($current['bestPost']),
+            'best_post_previous' => $previous ? $this->formatBestPost($previous['bestPost']) : null,
         ];
+    }
+
+    private function formatBestPost($post): ?array
+    {
+        return $post != null ? [
+            'caption' => $post->caption,
+            'view_count' => $post->view_count,
+            'active_users_count' => $post->engaged_users_count,
+            'media_type' => $post->media_type,
+            'media' => $post->first_image_urls,
+        ] : null;
     }
 }

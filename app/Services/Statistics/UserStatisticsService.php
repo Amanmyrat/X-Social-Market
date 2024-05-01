@@ -17,26 +17,53 @@ class UserStatisticsService extends BaseStatisticsService
         $startDate = $this->getStartDateForPeriod($period);
 
         return [
-            'profileViewsCount' => $this->getProfileViewsCount($startDate),
-            'postEngagementsCount' => $this->getPostEngagementsCount($userId, $startDate),
-            'newFollowersCount' => $this->getNewFollowersCount($userId, $startDate),
-            'postCount' => $this->getPostCount($userId, $startDate),
-            'bestPost' => $this->getBestPost($userId, $startDate),
+            'profileViewsCount' => $this->getProfileViewsCount($startDate, now()),
+            'postEngagementsCount' => $this->getPostEngagementsCount($userId, $startDate, now()),
+            'newFollowersCount' => $this->getNewFollowersCount($userId, $startDate, now()),
+            'postCount' => $this->getPostCount($userId, $startDate, now()),
+            'bestPost' => $this->getBestPost($userId, $startDate, now()),
         ];
     }
 
-    protected function getProfileViewsCount($startDate): int
+    public function getWithPrevious(string $period): array
+    {
+        $currentStats = $this->get($period);
+        $startDate = $this->getStartDateForPeriod($period);
+        $previousStartDate = $this->getPreviousStartDateForPeriod($period, $startDate);
+
+        if ($period === 'all') {
+            $previousStats = null;
+        } else {
+            $previousStats = [
+                'profileViewsCount' => $this->getProfileViewsCount($previousStartDate, $startDate),
+                'postEngagementsCount' => $this->getPostEngagementsCount(Auth::id(), $previousStartDate, $startDate),
+                'newFollowersCount' => $this->getNewFollowersCount(Auth::id(), $previousStartDate, $startDate),
+                'postCount' => $this->getPostCount(Auth::id(), $previousStartDate, $startDate),
+                'bestPost' => $this->getBestPost(Auth::id(), $previousStartDate, $startDate),
+            ];
+        }
+
+        return [
+            'current' => $currentStats,
+            'previous' => $previousStats
+        ];
+    }
+
+
+    protected function getProfileViewsCount($startDate, $endDate): int
     {
         $query = ProfileView::where('user_profile_id', Auth::user()->profile->id);
 
         if ($startDate) {
             $query->where('created_at', '>=', $startDate);
         }
-
+        if ($endDate) {
+            $query->where('created_at', '<', $endDate);
+        }
         return $query->count();
     }
 
-    protected function getPostEngagementsCount($userId, $startDate): int
+    protected function getPostEngagementsCount($userId, $startDate, $endDate): int
     {
         // Use a single query to gather all unique user IDs from engagements within the date range.
         $engagements = DB::table('posts')
@@ -54,6 +81,9 @@ class UserStatisticsService extends BaseStatisticsService
                         ->orWhere('post_ratings.created_at', '>=', $startDate);
                 });
             })
+            ->when($endDate, function ($query) use ($endDate) {
+                $query->where('post_favorites.created_at', '<', $endDate);
+            })
             ->get();
 
         // Flatten the list of user IDs from different columns and remove null values
@@ -64,43 +94,51 @@ class UserStatisticsService extends BaseStatisticsService
         return $userIds->count();
     }
 
-    protected function getNewFollowersCount($userId, $startDate): int
+    protected function getNewFollowersCount($userId, $startDate, $endDate): int
     {
-        $query = Follower::where('follow_user_id', $userId);
-
-        if ($startDate) {
-            $query->where('created_at', '>=', $startDate);
-        }
-
-        return $query->count();
-    }
-
-    protected function getPostCount($userId, $startDate): int
-    {
-        $query = Post::where('user_id', $userId);
-
-        if ($startDate) {
-            $query->where('created_at', '>=', $startDate);
-        }
-
-        return $query->count();
-    }
-
-    protected function getBestPost($userId, $startDate): ?Post
-    {
-        $bestPostId = PostView::whereHas('post', function ($query) use ($userId) {
-            $query->where('user_id', $userId);
-        })
+        $query = Follower::where('follow_user_id', $userId)
             ->when($startDate, function ($query) use ($startDate) {
                 $query->where('created_at', '>=', $startDate);
             })
-            ->select(['post_id', DB::raw('COUNT(*) as total_views')])
-            ->groupBy('post_id')
-            ->orderByDesc('total_views')
-            ->first()
+            ->when($endDate, function ($query) use ($endDate) {
+                $query->where('created_at', '<', $endDate);
+            });
+
+        return $query->count();
+
+    }
+
+    protected function getPostCount($userId, $startDate, $endDate): int
+    {
+        $query = Post::where('user_id', $userId)
+            ->when($startDate, function ($query) use ($startDate) {
+                $query->where('created_at', '>=', $startDate);
+            })
+            ->when($endDate, function ($query) use ($endDate) {
+                $query->where('created_at', '<', $endDate);
+            });
+
+        return $query->count();
+    }
+
+    protected function getBestPost($userId, $startDate, $endDate): ?Post
+    {
+        $bestPostId = PostView::whereHas('post', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+                ->when($startDate, function ($query) use ($startDate) {
+                    $query->where('created_at', '>=', $startDate);
+                })
+                ->when($endDate, function ($query) use ($endDate) {
+                    $query->where('created_at', '<', $endDate);
+                })
+                ->select(['post_id', DB::raw('COUNT(*) as total_views')])
+                ->groupBy('post_id')
+                ->orderByDesc('total_views')
+                ->first()
                 ->post_id ?? null;
 
-        if (! $bestPostId) {
+        if (!$bestPostId) {
             return null;
         }
 

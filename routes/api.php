@@ -73,13 +73,15 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/search', [UserController::class, 'search']);
         Route::post('/check/contacts', [UserController::class, 'checkContacts']);
         Route::post('/{user}/report', [UserReportController::class, 'reportUser']);
-        Route::post('/statistics', [UserStatisticsController::class, 'statistics']);
-        Route::post('/statistics/profile/views', [UserStatisticsController::class, 'profileViewStatistics']);
-        Route::post('/statistics/active/users', [UserStatisticsController::class, 'activeUsersStatistics']);
-        Route::post('/statistics/top/active/users', [UserStatisticsController::class, 'topActiveUsersStatistics']);
-        Route::post('/statistics/posts', [UserStatisticsController::class, 'postsStatistics']);
-        Route::post('/statistics/posts/{post}', [UserStatisticsController::class, 'onePostsStatistics']);
-        Route::post('/statistics/followers', [UserStatisticsController::class, 'followersStatistics']);
+        Route::prefix('statistics')->group(function () {
+            Route::post('/', [UserStatisticsController::class, 'statistics']);
+            Route::post('/profile/views', [UserStatisticsController::class, 'profileViewStatistics']);
+            Route::post('/active/users', [UserStatisticsController::class, 'activeUsersStatistics']);
+            Route::post('/top/active/users', [UserStatisticsController::class, 'topActiveUsersStatistics']);
+            Route::post('/posts', [UserStatisticsController::class, 'postsStatistics']);
+            Route::post('/posts/{post}', [UserStatisticsController::class, 'onePostsStatistics']);
+            Route::post('/followers', [UserStatisticsController::class, 'followersStatistics']);
+        });
     });
 
     Route::prefix('users/profile')->group(function () {
@@ -179,4 +181,4 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
 
 });
 
-require __DIR__.'/admin.php';
+require __DIR__ . '/admin.php';

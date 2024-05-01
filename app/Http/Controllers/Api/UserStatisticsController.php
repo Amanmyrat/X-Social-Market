@@ -40,7 +40,7 @@ class UserStatisticsController
             'period' => 'required|in:1d,10d,1m,6m,1y,all',
         ]);
 
-        $statistics = $this->statisticsService->get($request->period);
+        $statistics = $this->statisticsService->getWithPrevious($request->period);
 
         return new UserStatisticsResource($statistics);
     }

@@ -15,8 +15,11 @@ class FollowerStatisticsResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'followers_count' => $this->resource['new_followers_count'],
-            'unfollowers_count' => $this->resource['new_unfollowers_count'],
+            'total_followers_count' => $this->resource['total_followers_count'],
+            'total_followers_previous' => $this->resource['total_followers_previous'],
+            'total_followers_change' => $this->resource['total_followers_change'],
+            'new_followers_count' => $this->resource['new_followers_count'],
+            'new_unfollowers_count' => $this->resource['new_unfollowers_count'],
             'gender_distribution' => $this->resource['gender_distribution_new_followers'],
             'age_distribution' => $this->resource['age_distribution_new_followers'],
         ];

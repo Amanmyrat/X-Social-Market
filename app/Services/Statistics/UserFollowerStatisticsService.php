@@ -15,7 +15,18 @@ class UserFollowerStatisticsService extends BaseStatisticsService
         $newFollowersUserIds = $this->getNewFollowersUserIds($userId, $startDate);
         $newUnfollowersUserIds = $this->getNewUnfollowersUserIds($userId, $startDate);
 
+        $totalFollowersCount = Follower::where('follow_user_id', $userId)
+            ->whereNull('unfollowed_at')->count();
+
+        $previousTotalFollowersCount = Follower::where('follow_user_id', $userId)
+            ->whereNull('unfollowed_at')
+            ->where('created_at', '<', $startDate)
+            ->count();
+
         return [
+            'total_followers_count' => $totalFollowersCount,
+            'total_followers_previous' => $previousTotalFollowersCount,
+            'total_followers_change' => $this->calculatePercentageChange($previousTotalFollowersCount, $totalFollowersCount),
             'new_followers_count' => count($newFollowersUserIds),
             'new_unfollowers_count' => count($newUnfollowersUserIds),
             'gender_distribution_new_followers' => $this->getGenderDistribution($newFollowersUserIds),

@@ -5,15 +5,16 @@ namespace Database\Seeders;
 use App\Models\User;
 use DB;
 use Exception;
+use Faker\Factory as Faker;
 use Hash;
 use Illuminate\Database\Seeder;
-use Faker\Factory as Faker;
 use Throwable;
 
 class UserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
      * @throws Exception
      * @throws Throwable
      */
@@ -29,7 +30,7 @@ class UserSeeder extends Seeder
         for ($i = 0; $i < $userCount; $i++) {
             $users[] = [
                 'phone' => $faker->unique()->numberBetween(61000000, 71000000),
-                'username' => 'ulanyjy_' . $faker->unique()->numberBetween(10000000, 99999999),
+                'username' => 'ulanyjy_'.$faker->unique()->numberBetween(10000000, 99999999),
                 'email' => null,
                 'password' => $password,
                 'type' => $faker->randomElement(['user', 'seller']),

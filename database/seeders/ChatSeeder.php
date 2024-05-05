@@ -34,12 +34,12 @@ class ChatSeeder extends Seeder
                         ? $faker->randomElement($postIds) : null,
                     'deleted_at' => null,
                     'created_at' => now(),
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
             });
 
             $uniqueChats = $uniqueChats->unique(function ($chat) {
-                return $chat['sender_user_id'] . '-' . $chat['receiver_user_id'];
+                return $chat['sender_user_id'].'-'.$chat['receiver_user_id'];
             });
 
             Chat::insert($uniqueChats->toArray());

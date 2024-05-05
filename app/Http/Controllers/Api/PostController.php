@@ -28,8 +28,7 @@ class PostController extends ApiBaseController
 
     public function __construct(
         protected PostService $service
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -155,6 +154,7 @@ class PostController extends ApiBaseController
         $userInteractionsDTO = $this->getUserInteractionsDTO();
 
         $posts = Post::withRecommendationScore(Auth::id())->paginate(10);
+
         return $this->respondWithPaginator($posts, new PostTransformer($userInteractionsDTO));
     }
 
@@ -168,6 +168,7 @@ class PostController extends ApiBaseController
         $storyViewUsers = $this->getUserStoryViewUserIds();
 
         $posts = Post::withRecommendationScore2(Auth::id())->paginate(10);
+
         return $this->respondWithPaginator($posts, new PostTransformer2($userInteractionsDTO, $followings, $storyViewUsers));
     }
 

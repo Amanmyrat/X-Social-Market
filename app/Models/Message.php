@@ -61,9 +61,13 @@ class Message extends Model implements HasMedia
     use InteractsWithMedia;
 
     public const TYPE_MESSAGE = 'message';
+
     public const TYPE_SHARE_STORY = 'share_story';
+
     public const TYPE_SHARE_POST = 'share_post';
+
     public const TYPE_MEDIA = 'media';
+
     public const TYPE_FILE = 'file';
 
     protected $fillable = [

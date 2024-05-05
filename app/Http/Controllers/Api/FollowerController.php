@@ -71,10 +71,11 @@ class FollowerController extends ApiBaseController
     public function userFollowers(User $user): JsonResponse
     {
         abort_if(
-            !Auth::user()->followers->contains($user),
+            ! Auth::user()->followers->contains($user),
             403,
             ErrorMessage::USER_PRIVATE_ERROR->value
         );
+
         return $this->respondWithCollection($user->followers, new UserSimpleTransformer(true));
     }
 
@@ -95,10 +96,11 @@ class FollowerController extends ApiBaseController
     public function userFollowings(User $user): JsonResponse
     {
         abort_if(
-            !Auth::user()->followers->contains($user),
+            ! Auth::user()->followers->contains($user),
             403,
             ErrorMessage::USER_PRIVATE_ERROR->value
         );
+
         return $this->respondWithCollection($user->followings, new UserSimpleTransformer(true));
     }
 }

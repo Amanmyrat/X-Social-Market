@@ -39,6 +39,7 @@ class Brand extends Model
     use HasFactory;
 
     public const TYPE_SIMPLE = 'simple';
+
     public const TYPE_CLOTHING = 'clothing';
 
     /**

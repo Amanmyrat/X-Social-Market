@@ -37,9 +37,9 @@ class UserService
             ->when(isset($validated['search_query']), function ($query) use ($validated) {
                 $search_query = '%'.strtolower($validated['search_query']).'%';
 
-                return $query->whereRaw('LOWER(username) LIKE ?' ,[$search_query])
+                return $query->whereRaw('LOWER(username) LIKE ?', [$search_query])
                     ->orWhereHas('profile', function ($query) use ($search_query) {
-                        $query->whereRaw('LOWER(full_name) LIKE ?' ,[$search_query]);
+                        $query->whereRaw('LOWER(full_name) LIKE ?', [$search_query]);
                     });
             });
 

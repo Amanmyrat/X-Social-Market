@@ -19,7 +19,7 @@ class BaseStatisticsService
         };
     }
 
-    protected function getPreviousStartDateForPeriod(String $period, Carbon $currentStartDate): ?Carbon
+    protected function getPreviousStartDateForPeriod(string $period, Carbon $currentStartDate): ?Carbon
     {
         return match ($period) {
             '1d' => $currentStartDate->subDay(),
@@ -61,6 +61,7 @@ class BaseStatisticsService
         if ($previous == 0) {
             return $current > 0 ? 100 : 0;
         }
+
         return round((($current - $previous) / $previous) * 100, 2);
     }
 }

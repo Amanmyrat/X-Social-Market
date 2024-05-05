@@ -95,6 +95,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     public const TYPE_USER = 'user';
+
     public const TYPE_SELLER = 'seller';
 
     /**
@@ -154,7 +155,6 @@ class User extends Authenticatable
 
     /**
      * Get all the followers for the user.
-     *
      */
     public function followers(): BelongsToMany
     {

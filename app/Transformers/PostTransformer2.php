@@ -11,10 +11,9 @@ class PostTransformer2 extends TransformerAbstract
 {
     public function __construct(
         protected UserPostInteractionsDTO $userInteractions,
-        protected array                   $followings,
-        protected array                   $storyViewUsers
-    )
-    {
+        protected array $followings,
+        protected array $storyViewUsers
+    ) {
     }
 
     protected array $defaultIncludes = [
@@ -49,5 +48,3 @@ class PostTransformer2 extends TransformerAbstract
         return $this->item($post->user, new UserSimpleTransformer());
     }
 }
-
-

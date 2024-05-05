@@ -26,7 +26,6 @@ class ProductSeeder extends Seeder
         $sizeIds = Size::pluck('id')->toArray();
         $faker = Faker::create();
 
-
         DB::table('posts')->whereIn('category_id', $categoryIdsWithProducts)
             ->orderBy('id')->chunk(1000, function ($posts) use ($faker, $brandIds, $colorIds, $sizeIds) {
                 $products = [];

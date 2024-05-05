@@ -18,7 +18,7 @@ class LocationSeeder extends Seeder
             'Balkan welaýaty',
             'Mary welaýaty',
             'Lebap welaýaty',
-            'Daşoguz welaýaty'
+            'Daşoguz welaýaty',
         ];
 
         foreach ($locations as $location) {

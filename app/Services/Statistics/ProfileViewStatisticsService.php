@@ -60,7 +60,7 @@ class ProfileViewStatisticsService extends BaseStatisticsService
             'followers' => $currentFollowerPercentage,
             'followers_previous' => $previousFollowerPercentage,
             'non_followers' => $currentNonFollowerPercentage,
-            'non_followers_previous' => $previousNonFollowerPercentage
+            'non_followers_previous' => $previousNonFollowerPercentage,
         ];
     }
 

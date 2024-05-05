@@ -17,7 +17,7 @@ class UserService
     {
         $query = User::where('type', $type)
             ->when(isset($search_query), function ($query) use ($search_query) {
-                $search_query = '%' . strtolower($search_query) . '%';
+                $search_query = '%'.strtolower($search_query).'%';
 
                 return $query->whereHas('profile', function ($q) use ($search_query) {
                     $q->whereRaw('LOWER(full_name) LIKE ?', [$search_query]);

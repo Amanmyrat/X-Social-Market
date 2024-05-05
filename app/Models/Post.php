@@ -297,7 +297,7 @@ class Post extends Model implements HasMedia
                 $query->where(function ($q) {
                     // Include posts if the profile is not private or does not exist
                     $q->whereNull('user_profiles.private') // Profile is either not private
-                    ->orWhere('user_profiles.private', '=', false);
+                        ->orWhere('user_profiles.private', '=', false);
                 })->orWhereExists(function ($q) use ($userId) {
                     // Or the current user is following the post's user
                     $q->select(DB::raw(1))
@@ -393,59 +393,59 @@ class Post extends Model implements HasMedia
             ->orderBy('scored_posts.score', 'DESC');
     }
 
-//    public function scopeWithRecommendationScore2(Builder $query, int $userId): Builder
-//    {
-//        $favoriteCount = DB::table('post_favorites')
-//            ->select('post_id', DB::raw('COUNT(*) AS count'))
-//            ->groupBy('post_id');
-//
-//        $commentCount = DB::table('post_comments')
-//            ->select('post_id', DB::raw('COUNT(*) AS count'))
-//            ->groupBy('post_id');
-//
-//        $bookmarkCount = DB::table('post_bookmarks')
-//            ->select('post_id', DB::raw('COUNT(*) AS count'))
-//            ->groupBy('post_id');
-//
-////        // Derived list of preferred categories
-////        $preferredCategories = DB::table('post_favorites')
-////            ->select('category_id')
-////            ->where('user_id', $userId)
-////            ->union(
-////                DB::table('post_comments')
-////                    ->select('category_id')
-////                    ->where('user_id', $userId)
-////            )
-////            ->union(
-////                DB::table('post_bookmarks')
-////                    ->select('category_id')
-////                    ->where('user_id', $userId)
-////            )
-////            ->pluck('category_id');
-//
-//        // Main scoring sub-query with optimized joins
-//        $subQuery = DB::table('posts')
-//                ->selectRaw(
-//                    'posts.id,
-//            COALESCE(fav.count, 0) * 1 +
-//            COALESCE(com.count, 0) * 2 +
-//            COALESCE(bm.count, 0) * 1 +
-//
-//
-//            GREATEST(5 - EXTRACT(DAY FROM NOW() - posts.created_at), 0) AS score'
-//                )
-//            ->leftJoin(DB::raw('(' . $favoriteCount->toSql() . ') AS fav'), 'fav.post_id', '=', 'posts.id')
-//            ->leftJoin(DB::raw('(' . $commentCount->toSql() . ') AS com'), 'com.post_id', '=', 'posts.id')
-//            ->leftJoin(DB::raw('(' . $bookmarkCount->toSql() . ') AS bm'), 'bm.post_id', '=', 'posts.id');
-//
-//        // Final query
-//        return $query
-//            ->joinSub($subQuery, 'scored_posts', function ($join) {
-//                $join->on('posts.id', '=', 'scored_posts.id');
-//            })
-//            ->select('posts.*', 'scored_posts.score')
-//            ->orderBy('scored_posts.score', 'DESC');
-//    }
+    //    public function scopeWithRecommendationScore2(Builder $query, int $userId): Builder
+    //    {
+    //        $favoriteCount = DB::table('post_favorites')
+    //            ->select('post_id', DB::raw('COUNT(*) AS count'))
+    //            ->groupBy('post_id');
+    //
+    //        $commentCount = DB::table('post_comments')
+    //            ->select('post_id', DB::raw('COUNT(*) AS count'))
+    //            ->groupBy('post_id');
+    //
+    //        $bookmarkCount = DB::table('post_bookmarks')
+    //            ->select('post_id', DB::raw('COUNT(*) AS count'))
+    //            ->groupBy('post_id');
+    //
+    ////        // Derived list of preferred categories
+    ////        $preferredCategories = DB::table('post_favorites')
+    ////            ->select('category_id')
+    ////            ->where('user_id', $userId)
+    ////            ->union(
+    ////                DB::table('post_comments')
+    ////                    ->select('category_id')
+    ////                    ->where('user_id', $userId)
+    ////            )
+    ////            ->union(
+    ////                DB::table('post_bookmarks')
+    ////                    ->select('category_id')
+    ////                    ->where('user_id', $userId)
+    ////            )
+    ////            ->pluck('category_id');
+    //
+    //        // Main scoring sub-query with optimized joins
+    //        $subQuery = DB::table('posts')
+    //                ->selectRaw(
+    //                    'posts.id,
+    //            COALESCE(fav.count, 0) * 1 +
+    //            COALESCE(com.count, 0) * 2 +
+    //            COALESCE(bm.count, 0) * 1 +
+    //
+    //
+    //            GREATEST(5 - EXTRACT(DAY FROM NOW() - posts.created_at), 0) AS score'
+    //                )
+    //            ->leftJoin(DB::raw('(' . $favoriteCount->toSql() . ') AS fav'), 'fav.post_id', '=', 'posts.id')
+    //            ->leftJoin(DB::raw('(' . $commentCount->toSql() . ') AS com'), 'com.post_id', '=', 'posts.id')
+    //            ->leftJoin(DB::raw('(' . $bookmarkCount->toSql() . ') AS bm'), 'bm.post_id', '=', 'posts.id');
+    //
+    //        // Final query
+    //        return $query
+    //            ->joinSub($subQuery, 'scored_posts', function ($join) {
+    //                $join->on('posts.id', '=', 'scored_posts.id');
+    //            })
+    //            ->select('posts.*', 'scored_posts.score')
+    //            ->orderBy('scored_posts.score', 'DESC');
+    //    }
 
     public function scopeWithRecommendationScore2(Builder $query, int $userId): Builder
     {
@@ -598,7 +598,7 @@ class Post extends Model implements HasMedia
 
         $media = $this->getFirstMedia('post_medias');
 
-        if ($this->media_type == 'video') {
+        if (str_starts_with( $media->mime_type, 'video')) {
             return [
                 'original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3)),
             ];
@@ -623,7 +623,7 @@ class Post extends Model implements HasMedia
 
             $mediaUrls = ['original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3))];
 
-            if ($this->media_type == 'image') {
+            if (str_starts_with( $media->mime_type, 'image')) {
                 $mediaUrls += [
                     'large_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
                     'medium_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),

@@ -51,7 +51,7 @@ trait HandlesUserPostInteractions
         return $user ? $user->followings()
             ->with(['stories' => function ($query) {
                 $query->where('created_at', '>=', now()->subDay())
-                 ->where('is_active', true);
+                    ->where('is_active', true);
             }])
             ->whereDoesntHave('stories.views', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
@@ -63,7 +63,7 @@ trait HandlesUserPostInteractions
     /**
      * General method to retrieve user post interaction IDs based on a given relationship.
      *
-     * @param string $relationshipMethod The method name of the user's post interaction relationship.
+     * @param  string  $relationshipMethod  The method name of the user's post interaction relationship.
      */
     protected function getUserPostInteractionIds(string $relationshipMethod): array
     {

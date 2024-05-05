@@ -91,7 +91,7 @@ class UserEngagementStatisticsService extends BaseStatisticsService
             'followers' => $currentFollowersPercentage,
             'followers_previous' => $previousFollowersPercentage,
             'non_followers' => $currentNonFollowersPercentage,
-            'non_followers_previous' => $previousNonFollowersPercentage
+            'non_followers_previous' => $previousNonFollowersPercentage,
         ];
     }
 

@@ -15,8 +15,8 @@ class StorySeeder extends Seeder
      */
     public function run(): void
     {
-        $storyCount = 5;
-        $defaultStoryCount = 2;
+        $storyCount = 10;
+        $defaultStoryCount = 0;
         $users = User::pluck('id');
         $posts = Post::pluck('id');
 
@@ -36,7 +36,7 @@ class StorySeeder extends Seeder
             ]);
 
             if ($type == 'default') {
-                $imagePath = '/posts/' . rand(1, 5) . '.png';
+                $imagePath = '/posts/'.rand(1, 5).'.png';
                 $story->addMediaFromDisk($imagePath, 'seeders')->toMediaCollection('story_images');
             }
         }

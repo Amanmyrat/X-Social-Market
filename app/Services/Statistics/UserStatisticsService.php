@@ -45,10 +45,9 @@ class UserStatisticsService extends BaseStatisticsService
 
         return [
             'current' => $currentStats,
-            'previous' => $previousStats
+            'previous' => $previousStats,
         ];
     }
-
 
     protected function getProfileViewsCount($startDate, $endDate): int
     {
@@ -60,6 +59,7 @@ class UserStatisticsService extends BaseStatisticsService
         if ($endDate) {
             $query->where('created_at', '<', $endDate);
         }
+
         return $query->count();
     }
 
@@ -124,21 +124,21 @@ class UserStatisticsService extends BaseStatisticsService
     protected function getBestPost($userId, $startDate, $endDate): ?Post
     {
         $bestPostId = PostView::whereHas('post', function ($query) use ($userId) {
-                $query->where('user_id', $userId);
+            $query->where('user_id', $userId);
+        })
+            ->when($startDate, function ($query) use ($startDate) {
+                $query->where('created_at', '>=', $startDate);
             })
-                ->when($startDate, function ($query) use ($startDate) {
-                    $query->where('created_at', '>=', $startDate);
-                })
-                ->when($endDate, function ($query) use ($endDate) {
-                    $query->where('created_at', '<', $endDate);
-                })
-                ->select(['post_id', DB::raw('COUNT(*) as total_views')])
-                ->groupBy('post_id')
-                ->orderByDesc('total_views')
-                ->first()
+            ->when($endDate, function ($query) use ($endDate) {
+                $query->where('created_at', '<', $endDate);
+            })
+            ->select(['post_id', DB::raw('COUNT(*) as total_views')])
+            ->groupBy('post_id')
+            ->orderByDesc('total_views')
+            ->first()
                 ->post_id ?? null;
 
-        if (!$bestPostId) {
+        if (! $bestPostId) {
             return null;
         }
 

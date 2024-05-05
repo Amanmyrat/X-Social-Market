@@ -10,14 +10,13 @@ use Illuminate\Validation\ValidationException;
 
 class AuthService
 {
-
     /**
      * @throws Exception
      */
     public function register($registerData): ?User
     {
         $user = User::create([
-            'username' => 'ulanyjy_' . random_int(10000000, 99999999),
+            'username' => 'ulanyjy_'.random_int(10000000, 99999999),
             'phone' => $registerData['phone'],
             'password' => Hash::make($registerData['password']),
             'device_token' => $registerData['device_token'],

@@ -19,9 +19,11 @@ class PostRequest extends FormRequest
             'description' => ['required', 'string', 'max:255'],
             'location' => ['required', 'string', 'max:255'],
             'can_comment' => ['required', 'boolean'],
-            'media_type' => ['required', 'in:image,video'],
-            'images' => ['required_if:media_type,image', 'max:8'],
-            'videos' => ['required_if:media_type,video', 'max:5'],
+            'media_type' => ['required', 'in:image,video,mixed'],
+//            'images' => ['required_if:media_type,image', 'max:8'],
+//            'videos' => ['required_if:media_type,video', 'max:5'],
+            'medias' => ['required', 'array', 'max:8'],
+            'medias.*' => ['required', 'file', 'mimes:jpg,jpeg,png,mp4'],
 
             /**
              * Required if category has product true

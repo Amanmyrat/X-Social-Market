@@ -28,15 +28,15 @@ class PostService
             $isActive = $activePostsCount >= 10;
 
             $post = Post::create($postData + [
-                    'user_id' => $userId,
-                    'is_active' => $isActive,
-                ]);
+                'user_id' => $userId,
+                'is_active' => $isActive,
+            ]);
 
-            $medias = $postData['media_type'] == 'image'
-                ? 'images'
-                : 'videos';
+//            $medias = $postData['media_type'] == 'image'
+//                ? 'images'
+//                : 'videos';
 
-            $post->addMultipleMediaFromRequest([$medias])
+            $post->addMultipleMediaFromRequest(['medias'])
                 ->each(function ($fileAdder) {
                     $fileAdder->toMediaCollection('post_medias');
                 });
@@ -73,13 +73,13 @@ class PostService
         $productData = Arr::only($validated, 'product')['product'] ?? [];
 
         return DB::transaction(function () use ($postData, $productData, $post) {
-            $medias = $postData['media_type'] == 'image'
-                ? 'images'
-                : 'videos';
+//            $medias = $postData['media_type'] == 'image'
+//                ? 'images'
+//                : 'videos';
 
             $post->clearMediaCollection();
 
-            $post->addMultipleMediaFromRequest([$medias])
+            $post->addMultipleMediaFromRequest(['medias'])
                 ->each(function ($fileAdder) {
                     $fileAdder->toMediaCollection('post_medias');
                 });
@@ -141,7 +141,7 @@ class PostService
             })
             ->where(function ($q) use ($request) {
                 if (isset($request->search_query)) {
-                    $search_query = '%' . strtolower($request->search_query) . '%';
+                    $search_query = '%'.strtolower($request->search_query).'%';
                     $q->where(function ($q) use ($search_query) {
                         $q->whereRaw('LOWER(posts.caption) LIKE ?', [$search_query])
                             ->orWhereRaw('LOWER(posts.description) LIKE ?', [$search_query]);
@@ -158,7 +158,7 @@ class PostService
                     break;
                 default:
                     $sort = $this->getSort($s);
-                    $posts = $posts->orderBy('posts.' . $sort[0], $sort[1]);
+                    $posts = $posts->orderBy('posts.'.$sort[0], $sort[1]);
             }
         } else {
             $posts = $posts->inRandomOrder();
@@ -179,20 +179,20 @@ class PostService
             $query->whereBetween('posts.price', [$filters['price_min'], $filters['price_max']]);
         }
 
-        if (!empty($filters['brands']) || !empty($filters['colors']) || !empty($filters['sizes'])) {
+        if (! empty($filters['brands']) || ! empty($filters['colors']) || ! empty($filters['sizes'])) {
 
             $query->whereHas('posts.product', function ($query) use ($filters) {
-                if (!empty($filters['brands'])) {
+                if (! empty($filters['brands'])) {
                     $query->whereIn('brand_id', $filters['brands']);
                 }
 
-                if (!empty($filters['colors'])) {
+                if (! empty($filters['colors'])) {
                     $query->whereHas('colors', function ($query) use ($filters) {
                         $query->whereIn('colors.id', $filters['colors']);
                     });
                 }
 
-                if (!empty($filters['sizes'])) {
+                if (! empty($filters['sizes'])) {
                     $query->whereHas('sizes', function ($query) use ($filters) {
                         $query->whereIn('sizes.id', $filters['sizes']);
                     });
@@ -200,7 +200,7 @@ class PostService
             });
         }
 
-        if (!empty($filters['sort'])) {
+        if (! empty($filters['sort'])) {
             $direction = Str::startsWith($filters['sort'], '-') ? 'desc' : 'asc';
             $sortField = ltrim($filters['sort'], '-');
 

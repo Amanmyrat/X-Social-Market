@@ -21,7 +21,7 @@ class CategorySeeder extends Seeder
             ['title' => 'Emläk', 'icon' => 'emlak.png'],
             ['title' => 'Saz gurallary', 'icon' => 'saz_gurallary.png'],
             ['title' => 'Haýwanat', 'icon' => 'haywanat.png'],
-            ['title' => 'Sport', 'icon' => 'sport.png']
+            ['title' => 'Sport', 'icon' => 'sport.png'],
         ];
 
         foreach ($categories as $data) {
@@ -29,10 +29,10 @@ class CategorySeeder extends Seeder
                 'title' => $data['title'],
                 'description' => '',
                 'is_active' => true,
-                'has_product' => in_array($data['title'], ['Aýal-gyzlar geýim', 'Erkek geýim', 'Çaga geýim'])
+                'has_product' => in_array($data['title'], ['Aýal-gyzlar geýim', 'Erkek geýim', 'Çaga geýim']),
             ]);
 
-            $category->addMediaFromDisk('/category_icons/' . $data['icon'], 'seeders')->toMediaCollection('category_images');
+            $category->addMediaFromDisk('/category_icons/'.$data['icon'], 'seeders')->toMediaCollection('category_images');
 
         }
     }

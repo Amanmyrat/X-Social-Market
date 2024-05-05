@@ -14,12 +14,12 @@ class BrandSeeder extends Seeder
     {
         $simpleBrands = [
             'Apple', 'Samsung', 'Xiaomi', 'Redmi', 'Bosch',
-            'JBL', 'Karaca Home', 'Asus', 'Akira'
+            'JBL', 'Karaca Home', 'Asus', 'Akira',
         ];
 
         $clothingBrands = [
             'Brioni', 'Lacoste', 'Stefano Ricci', 'Hugo Boss',
-            'Zara', 'Defacto', 'Adidas', 'Nike', 'Massimo Dutti'
+            'Zara', 'Defacto', 'Adidas', 'Nike', 'Massimo Dutti',
         ];
 
         foreach ($simpleBrands as $brand) {

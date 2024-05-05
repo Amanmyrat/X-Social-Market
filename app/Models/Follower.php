@@ -47,8 +47,6 @@ class Follower extends Model
 
     /**
      * User who follows.
-     *
-     * @return BelongsTo
      */
     public function follower(): BelongsTo
     {
@@ -57,8 +55,6 @@ class Follower extends Model
 
     /**
      * User being followed.
-     *
-     * @return BelongsTo
      */
     public function followed(): BelongsTo
     {

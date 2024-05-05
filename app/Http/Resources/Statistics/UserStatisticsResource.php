@@ -16,6 +16,7 @@ class UserStatisticsResource extends JsonResource
     {
         $current = $this->resource['current'];
         $previous = $this->resource['previous'];
+
         return [
             'profile_views_count' => $current['profileViewsCount'],
             'profile_views_count_previous' => $previous['profileViewsCount'] ?? null,

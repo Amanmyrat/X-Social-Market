@@ -588,6 +588,14 @@ class Post extends Model implements HasMedia
             ->blur(1)
             ->optimize()
             ->performOnCollections('post_medias');
+
+        $this->addMediaConversion('video_thumb')
+            ->format(Manipulations::FORMAT_WEBP)
+            ->width(368)
+            ->height(232)
+            ->extractVideoFrameAtSecond(3)
+            ->optimize()
+            ->performOnCollections('post_medias');
     }
 
     public function getFirstImageUrlsAttribute(): ?array
@@ -601,6 +609,7 @@ class Post extends Model implements HasMedia
         if (str_starts_with( $media->mime_type, 'video')) {
             return [
                 'original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3)),
+                'video_thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'video_thumb'),
             ];
         }
 
@@ -628,6 +637,10 @@ class Post extends Model implements HasMedia
                     'large_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
                     'medium_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
                     'thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
+                ];
+            }else{
+                $mediaUrls += [
+                    'video_thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'video_thumb'),
                 ];
             }
 

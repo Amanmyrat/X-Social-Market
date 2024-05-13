@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enum\ErrorMessage;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\ProfileView;
 use App\Models\User;
@@ -38,6 +39,12 @@ class UserProfileController extends ApiBaseController
      */
     public function get(User $user): JsonResponse
     {
+        abort_if(
+            Auth::user()->blockedUsers->contains($user) || $user->blocked_at != null,
+            403,
+            ErrorMessage::USER_BLOCKED_ERROR->value
+        );
+
         if ($user->profile()->exists()) {
             $viewExists = ProfileView::where('user_profile_id', $user->profile->id)
                 ->where('viewer_id', Auth::id())

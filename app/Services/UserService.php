@@ -6,6 +6,7 @@ use App\Jobs\ProcessUserOffline;
 use App\Jobs\ProcessUserOnline;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
@@ -33,7 +34,11 @@ class UserService
     {
         $limit = $validated['limit'] ?? 10;
 
+        $blockedUsersIds = Auth::user()->blockedUsers()->pluck('users.id')->toArray();
+
         $users = User::with('profile')
+            ->whereNotIn('id', $blockedUsersIds)
+            ->where('blocked_at', null)
             ->when(isset($validated['search_query']), function ($query) use ($validated) {
                 $search_query = '%'.strtolower($validated['search_query']).'%';
 

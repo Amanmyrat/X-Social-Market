@@ -45,6 +45,7 @@ class StoryController extends ApiBaseController
         /** @var User $user */
         $user = Auth::user();
         $stories = $user->stories()
+            ->with('post.media')
             ->where('valid_until', '>', now())
             ->where('is_active', true)
             ->whereNull('blocked_at')

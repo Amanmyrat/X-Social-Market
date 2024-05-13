@@ -13,7 +13,6 @@ class PostSimpleTransformer extends TransformerAbstract
             'id' => $post->id,
             'caption' => $post->caption,
             'price' => $post->price,
-            'media_type' => $post->media_type,
             'media' => $post->first_image_urls,
         ];
     }

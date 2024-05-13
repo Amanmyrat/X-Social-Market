@@ -71,7 +71,6 @@ class PostStatisticsService extends BaseStatisticsService
             'caption' => $post->caption,
             'view_count' => $post->views_count,
             'active_users_count' => $activeUsersCount,
-            'media_type' => $post->media_type,
             'media' => $post->first_image_urls,
         ];
     }
@@ -85,7 +84,6 @@ class PostStatisticsService extends BaseStatisticsService
             'caption' => $post->caption,
             'favorites_count' => $post->favorites_count,
             'comments_count' => $post->comments_count,
-            'media_type' => $post->media_type,
             'media' => $post->first_image_urls,
         ] : null;
     }
@@ -99,7 +97,6 @@ class PostStatisticsService extends BaseStatisticsService
             'caption' => $post->caption,
             'bookmarks_count' => $post->bookmarks_count,
             'view_count' => $post->views_count,
-            'media_type' => $post->media_type,
             'media' => $post->first_image_urls,
         ] : null;
     }
@@ -124,7 +121,6 @@ class PostStatisticsService extends BaseStatisticsService
                 'caption' => $post->caption,
                 'created_at' => $post->created_at,
                 'updated_at' => $post->updated_at,
-                'media_type' => $post->media_type,
                 'media' => $post->first_image_urls,
             ],
             'view_count' => $post->views_count,

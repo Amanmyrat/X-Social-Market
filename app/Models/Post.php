@@ -27,7 +27,6 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property int $id
  * @property int $user_id
  * @property int $category_id
- * @property string $media_type
  * @property string $caption
  * @property int $price
  * @property string $description
@@ -71,7 +70,6 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @method static Builder|Post whereDescription($value)
  * @method static Builder|Post whereId($value)
  * @method static Builder|Post whereLocation($value)
- * @method static Builder|Post whereMediaType($value)
  * @method static Builder|Post wherePrice($value)
  * @method static Builder|Post whereUpdatedAt($value)
  * @method static Builder|Post whereUserId($value)
@@ -95,7 +93,6 @@ class Post extends Model implements HasMedia
     protected $fillable = [
         'user_id',
         'category_id',
-        'media_type',
         'caption',
         'price',
         'description',

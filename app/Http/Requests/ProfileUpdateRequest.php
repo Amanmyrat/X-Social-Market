@@ -13,8 +13,8 @@ class ProfileUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => ['filled', 'string', 'min:3', 'alpha_dash', 'unique:'.User::class],
-            'email' => ['filled', 'email', 'unique:'.User::class],
+            'username' => ['filled', 'string', 'min:3', 'regex:/^[a-zA-Z0-9\._]+$/i', 'unique:' . User::class],
+            'email' => ['filled', 'email', 'unique:' . User::class],
             'profile.full_name' => ['filled', 'string', 'min:2'],
             'profile.bio' => ['filled', 'string', 'min:3'],
             'profile.location_id' => ['filled', 'exists:locations,id'],

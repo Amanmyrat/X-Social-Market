@@ -54,7 +54,6 @@ class PostNotificationSent implements ShouldBroadcast
                 'notification_type' => $notificationType,
                 'post' => [
                     'id' => $this->notification->post->id,
-                    'media_type' => $this->notification->post->media_type,
                     'media' => $this->notification->post->first_image_urls,
                 ],
                 'user' => [

@@ -23,7 +23,6 @@ class PostCommentResource extends JsonResource
             ],
             'post' => [
                 'id' => $this->resource->post->id,
-                'media_type' => $this->resource->post->media_type,
                 'media' => $this->resource->post->first_image_urls,
             ],
         ];

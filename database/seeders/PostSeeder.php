@@ -34,7 +34,6 @@ class PostSeeder extends Seeder
             $posts[] = [
                 'category_id' => $category_id,
                 'user_id' => $user_id,
-                'media_type' => 'image',
                 'caption' => 'Example Caption',
                 'price' => $faker->numberBetween(10, 1000),
                 'description' => 'Example Description',

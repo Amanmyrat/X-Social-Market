@@ -39,7 +39,6 @@ class PostResource extends JsonResource
                 'user' => $this->resource->user->username,
                 'category' => $this->resource->category->title,
                 'product' => new ProductResource($this->resource->product),
-                'media_type' => $this->resource->media_type,
                 'media' => $this->resource->image_urls,
             ];
         } else {
@@ -50,7 +49,6 @@ class PostResource extends JsonResource
                 'price' => $this->resource->price,
                 'is_active' => $this->resource->is_active,
                 'category' => $this->resource->category->title,
-                'media_type' => $this->resource->media_type,
                 'media' => $this->resource->first_image_urls,
             ];
         }

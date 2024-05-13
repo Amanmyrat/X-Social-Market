@@ -32,10 +32,6 @@ class PostService
                 'is_active' => $isActive,
             ]);
 
-//            $medias = $postData['media_type'] == 'image'
-//                ? 'images'
-//                : 'videos';
-
             $post->addMultipleMediaFromRequest(['medias'])
                 ->each(function ($fileAdder) {
                     $fileAdder->toMediaCollection('post_medias');
@@ -73,9 +69,6 @@ class PostService
         $productData = Arr::only($validated, 'product')['product'] ?? [];
 
         return DB::transaction(function () use ($postData, $productData, $post) {
-//            $medias = $postData['media_type'] == 'image'
-//                ? 'images'
-//                : 'videos';
 
             $post->clearMediaCollection();
 
@@ -123,7 +116,7 @@ class PostService
 
         $posts = Post::activeAndNotBlocked(Auth::id())
             ->with('media')
-            ->select(['posts.id', 'posts.caption', 'posts.price', 'posts.media_type'])
+            ->select(['posts.id', 'posts.caption', 'posts.price'])
             ->when(isset($request->categories), function ($query) use ($request) {
                 return $query->whereIn('category_id', $request->categories);
             })

@@ -28,7 +28,6 @@ class PostTransformer2 extends TransformerAbstract
             'price' => $post->price,
             'description' => $post->description,
             'location' => $post->location,
-            'media_type' => $post->media_type,
             'can_comment' => $post->can_comment,
             'created_at' => $post->created_at,
             'rating' => $post->ratings_avg_rating,

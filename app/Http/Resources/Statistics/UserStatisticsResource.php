@@ -37,7 +37,6 @@ class UserStatisticsResource extends JsonResource
             'caption' => $post->caption,
             'view_count' => $post->view_count,
             'active_users_count' => $post->engaged_users_count,
-            'media_type' => $post->media_type,
             'media' => $post->first_image_urls,
         ] : null;
     }

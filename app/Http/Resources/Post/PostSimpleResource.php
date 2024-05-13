@@ -18,7 +18,6 @@ class PostSimpleResource extends JsonResource
             'id' => $this->resource->id,
             'caption' => $this->resource->caption,
             'price' => $this->resource->price,
-            'media_type' => $this->resource->media_type,
             'media' => $this->resource->first_image_urls,
         ];
     }

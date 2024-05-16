@@ -110,8 +110,8 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     Route::post('/users/{user}/followings', [FollowerController::class, 'userFollowings']);
 
     Route::prefix('posts')->group(function () {
-        Route::post('/recommended', [PostController::class, 'recommendedPosts2']);
-        Route::post('/recommended2', [PostController::class, 'recommendedPosts']);
+        Route::post('/recommended', [PostController::class, 'recommendedPosts']);
+        Route::post('/recommended2', [PostController::class, 'recommendedPosts3']);
         Route::post('/my', [PostController::class, 'myPosts']);
         Route::post('/user/{user}', [PostController::class, 'userPosts']);
         Route::post('/create', [PostController::class, 'create']);

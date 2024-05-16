@@ -146,22 +146,11 @@ class PostController extends ApiBaseController
         return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }
 
+
     /**
      * Recommended posts
      */
     public function recommendedPosts(): JsonResponse
-    {
-        $userInteractionsDTO = $this->getUserInteractionsDTO();
-
-        $posts = Post::withRecommendationScore(Auth::id())->paginate(10);
-
-        return $this->respondWithPaginator($posts, new PostTransformer($userInteractionsDTO));
-    }
-
-    /**
-     * Recommended posts 2
-     */
-    public function recommendedPosts2(): JsonResponse
     {
         $userInteractionsDTO = $this->getUserInteractionsDTO();
         $followings = $this->getUserFollowingsIds();
@@ -170,6 +159,18 @@ class PostController extends ApiBaseController
         $posts = Post::withRecommendationScore2(Auth::id())->paginate(10);
 
         return $this->respondWithPaginator($posts, new PostTransformer2($userInteractionsDTO, $followings, $storyViewUsers));
+    }
+
+    /**
+     * Recommended posts 2
+     */
+    public function recommendedPosts2(): JsonResponse
+    {
+        $userInteractionsDTO = $this->getUserInteractionsDTO();
+
+        $posts = Post::withRecommendationScore(Auth::id())->paginate(10);
+
+        return $this->respondWithPaginator($posts, new PostTransformer($userInteractionsDTO));
     }
 
     /**

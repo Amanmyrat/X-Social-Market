@@ -44,7 +44,7 @@ class UserSeeder extends Seeder
             ];
 
         }
-        foreach (array_chunk($users, 5000) as $chunk) {
+        foreach (array_chunk($users, 500) as $chunk) {
             User::upsert($chunk, ['phone'], ['username', 'email', 'password', 'type', 'device_token', 'last_activity', 'created_at', 'updated_at', 'is_active', 'blocked_at', 'block_reason']);
         }
     }

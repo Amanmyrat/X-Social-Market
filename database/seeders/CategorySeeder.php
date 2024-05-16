@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 
 class CategorySeeder extends Seeder
 {
@@ -32,8 +33,12 @@ class CategorySeeder extends Seeder
                 'has_product' => in_array($data['title'], ['Aýal-gyzlar geýim', 'Erkek geýim', 'Çaga geýim']),
             ]);
 
-            $category->addMediaFromDisk('/category_icons/'.$data['icon'], 'seeders')->toMediaCollection('category_images');
+            $originalPath = '/category_icons/' . $data['icon'];
+            $temporaryPath = 'temp/' . $data['icon'];
 
+            Storage::disk('seeders')->copy($originalPath, $temporaryPath);
+
+            $category->addMediaFromDisk($temporaryPath, 'seeders')->toMediaCollection('category_images');
         }
     }
 }

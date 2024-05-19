@@ -174,7 +174,7 @@ class PostService
 
         if (! empty($filters['brands']) || ! empty($filters['colors']) || ! empty($filters['sizes'])) {
 
-            $query->whereHas('posts.product', function ($query) use ($filters) {
+            $query->whereHas('product', function ($query) use ($filters) {
                 if (! empty($filters['brands'])) {
                     $query->whereIn('brand_id', $filters['brands']);
                 }

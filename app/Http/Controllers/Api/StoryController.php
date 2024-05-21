@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\StoryRequest;
 use App\Http\Resources\Story\StoryResource;
 use App\Http\Resources\Story\UserStoryResource;
+use App\Models\Story;
 use App\Models\User;
 use App\Services\StoryService;
 use App\Traits\HandlesUserStoryInteractions;
@@ -34,6 +35,23 @@ class StoryController extends ApiBaseController
         return new JsonResponse([
             'success' => true,
             'message' => 'Successfully created a new story',
+        ]);
+    }
+
+    /**
+     * Delete story
+     *
+     * @throws Throwable
+     */
+    public function delete(Story $story): JsonResponse
+    {
+        abort_if($story->user_id != Auth::id(), 403, 'Permission denied');
+
+        $story->delete();
+
+        return new JsonResponse([
+            'success' => true,
+            'message' => 'Successfully deleted the story',
         ]);
     }
 

@@ -151,6 +151,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/my', [StoryController::class, 'myStories']);
         Route::post('/user/{user}', [StoryController::class, 'userStories']);
         Route::post('/create', [StoryController::class, 'create']);
+        Route::post('/{story}/delete', [StoryController::class, 'delete']);
 
         Route::post('/{story}/report', [StoryReportController::class, 'reportStory']);
         Route::post('/{story}/views', [StoryViewController::class, 'views']);

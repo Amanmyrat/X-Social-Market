@@ -33,8 +33,6 @@ class ChatTransformer extends TransformerAbstract
             ? $chat->receiver
             : $chat->sender;
 
-        //        dd($receiver);
-
         return $this->item($receiver, new UserSimpleTransformer());
     }
 

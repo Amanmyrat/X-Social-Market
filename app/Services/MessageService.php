@@ -80,15 +80,15 @@ class MessageService
     private function getPostDetails($postId): Post
     {
         /** @var Post $post */
-        $post = Post::with(['user:id,username,last_activity', 'media'])
+        $post = Post::with(['user:id,username,last_activity', 'user.profile.media', 'media'])
             ->where('id', $postId)
-            ->first(['id', 'user_id', 'caption']);
+            ->first(['id', 'user_id', 'caption', 'price']);
 
         if ($post) {
             $medias = $post->image_urls;
             unset($post->media);
             $post->media = $medias;
-
+            $post->user->image = $post->user->profile->image_urls;
         }
 
         return $post;

@@ -29,7 +29,6 @@ class StoryResource extends JsonResource
             'isFavorite' => $isFavorite,
             'created_at' => $this->resource->created_at,
             'post' => new PostSimpleResource($this->whenLoaded('post')),
-            'user' => new UserSimpleResource($this->whenLoaded('user')),
         ];
     }
 

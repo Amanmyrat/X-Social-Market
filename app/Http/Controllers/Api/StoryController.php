@@ -63,7 +63,7 @@ class StoryController extends ApiBaseController
         /** @var User $user */
         $user = Auth::user();
         $stories = $user->stories()
-            ->with(['post.media', 'user.profile.media'])
+            ->with(['post.media', 'post.user.profile.media'])
             ->where('valid_until', '>', now())
             ->where('is_active', true)
             ->whereNull('blocked_at')
@@ -82,7 +82,7 @@ class StoryController extends ApiBaseController
         $favoriteStoryIds = $this->getUserFavoriteStoryIds();
 
         $stories = $user->stories()
-            ->with(['post.media', 'user.profile.media'])
+            ->with(['post.media', 'post.user.profile.media'])
             ->where('valid_until', '>', now())
             ->where('is_active', true)
             ->whereNull('blocked_at')

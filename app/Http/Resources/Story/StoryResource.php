@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Story;
 
 use App\Http\Resources\Post\PostSimpleResource;
+use App\Http\Resources\UserSimpleResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -28,6 +29,7 @@ class StoryResource extends JsonResource
             'isFavorite' => $isFavorite,
             'created_at' => $this->resource->created_at,
             'post' => new PostSimpleResource($this->whenLoaded('post')),
+            'user' => new UserSimpleResource($this->whenLoaded('user')),
         ];
     }
 

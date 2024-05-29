@@ -28,7 +28,7 @@ class MessageRead implements ShouldBroadcast
      */
     public function broadcastOn(): PrivateChannel
     {
-        return new PrivateChannel('App.Models.User.'.$this->message->receiver_user_id);
+        return new PrivateChannel('App.Models.User.'.$this->message->sender_user_id);
     }
 
     /**

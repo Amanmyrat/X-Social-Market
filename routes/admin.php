@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminBrandController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminColorController;
 use App\Http\Controllers\Admin\AdminCommentController;
+use App\Http\Controllers\Admin\AdminExistenceController;
 use App\Http\Controllers\Admin\AdminLocationController;
 use App\Http\Controllers\Admin\AdminPostController;
 use App\Http\Controllers\Admin\AdminPostReportController;
@@ -136,5 +137,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['role:super-admin|admin']], 
                 Route::post('/accept/{story}', [AdminStoryController::class, 'accept']);
                 Route::post('/decline/{story}', [AdminStoryController::class, 'decline']);
             });
+
+        Route::post('/check/existence', [AdminExistenceController::class, 'checkExistence']);
+
     });
 });

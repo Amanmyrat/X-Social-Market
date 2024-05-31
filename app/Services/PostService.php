@@ -70,12 +70,14 @@ class PostService
 
         return DB::transaction(function () use ($postData, $productData, $post) {
 
-            $post->clearMediaCollection();
+            if($postData['medias']){
+                $post->clearMediaCollection();
 
-            $post->addMultipleMediaFromRequest(['medias'])
-                ->each(function ($fileAdder) {
-                    $fileAdder->toMediaCollection('post_medias');
-                });
+                $post->addMultipleMediaFromRequest(['medias'])
+                    ->each(function ($fileAdder) {
+                        $fileAdder->toMediaCollection('post_medias');
+                    });
+            }
             if ($post->category->has_product) {
                 $product = $post->product;
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Enum\ErrorMessage;
 use App\Http\Requests\Post\PostFilterRequest;
 use App\Http\Requests\PostRequest;
+use App\Http\Requests\PostUpdateRequest;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
@@ -69,7 +70,7 @@ class PostController extends ApiBaseController
      *
      * @throws Throwable
      */
-    public function update(Post $post, PostRequest $request): JsonResponse
+    public function update(Post $post, PostUpdateRequest $request): JsonResponse
     {
         abort_if(
             Auth::id() != $post->user_id,

@@ -13,6 +13,7 @@ class PostUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'category_id' => ['required', 'int', 'exists:categories,id'],
             'caption' => ['sometimes', 'string', 'max:255'],
             'price' => ['sometimes', 'int'],
             'description' => ['sometimes', 'string', 'max:255'],

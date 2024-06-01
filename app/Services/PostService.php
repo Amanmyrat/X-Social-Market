@@ -70,7 +70,7 @@ class PostService
 
         return DB::transaction(function () use ($postData, $productData, $post) {
 
-            if($postData['medias']){
+            if(isset($postData['medias'])){
                 $post->clearMediaCollection();
 
                 $post->addMultipleMediaFromRequest(['medias'])

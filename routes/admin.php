@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\AdminExistenceController;
 use App\Http\Controllers\Admin\AdminLocationController;
 use App\Http\Controllers\Admin\AdminPostController;
 use App\Http\Controllers\Admin\AdminPostReportController;
+use App\Http\Controllers\Admin\AdminPrivacyPolicyController;
 use App\Http\Controllers\Admin\AdminReportTypeController;
 use App\Http\Controllers\Admin\AdminSizeController;
 use App\Http\Controllers\Admin\AdminStoryController;
@@ -140,5 +141,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['role:super-admin|admin']], 
 
         Route::post('/check/existence', [AdminExistenceController::class, 'checkExistence']);
 
+        Route::get('/privacy', [AdminPrivacyPolicyController::class, 'getPrivacy']);
+        Route::post('/privacy', [AdminPrivacyPolicyController::class, 'storeOrUpdate']);
+        Route::delete('/privacy', [AdminPrivacyPolicyController::class, 'deletePrivacy']);
     });
 });

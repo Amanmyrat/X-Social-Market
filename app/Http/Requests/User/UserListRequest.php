@@ -24,7 +24,8 @@ class UserListRequest extends FormRequest
 
         return [
             'limit' => ['filled', 'integer'],
-            'sort' => ['filled', 'in:'.$allowedSortOptionsString],
+            'type' => ['string', 'in:user,seller'],
+            'sort' => ['filled', 'in:' . $allowedSortOptionsString],
         ];
     }
 }

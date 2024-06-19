@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\Brand\BrandListRequest;
 use App\Http\Resources\BrandResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\ColorResource;
@@ -41,9 +42,10 @@ class OptionsController extends ApiBaseController
     /**
      * Brands list
      */
-    public function brands(): AnonymousResourceCollection
+    public function brands(BrandListRequest $request): AnonymousResourceCollection
     {
-        $brands = Brand::where('is_active', true)->get();
+        $type = $validated['type'] ?? Brand::TYPE_SIMPLE;
+        $brands = Brand::where('type', $type)->where('is_active', true)->get();
 
         return BrandResource::collection($brands);
     }

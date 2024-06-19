@@ -48,7 +48,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  *
  * @mixin Eloquent
  */
-class Category extends Model implements HasMedia
+class Category extends BaseModel implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;

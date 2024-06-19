@@ -31,7 +31,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class BlockedUser extends Model
+class BlockedUser extends BaseModel
 {
     use HasFactory;
 

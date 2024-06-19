@@ -31,7 +31,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class PostView extends Model
+class PostView extends BaseModel
 {
     use HasFactory;
 

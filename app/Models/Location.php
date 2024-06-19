@@ -32,7 +32,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class Location extends Model
+class Location extends BaseModel
 {
     use HasFactory;
 

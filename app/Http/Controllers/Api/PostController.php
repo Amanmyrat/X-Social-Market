@@ -142,7 +142,7 @@ class PostController extends ApiBaseController
         $posts = $user->posts()
             ->where('is_active', true)
             ->latest()
-            ->paginate(10);
+            ->paginate(15);
 
         return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }

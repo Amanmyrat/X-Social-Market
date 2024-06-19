@@ -30,7 +30,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class OtpCode extends Model
+class OtpCode extends BaseModel
 {
     use HasFactory;
 

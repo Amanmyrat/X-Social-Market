@@ -47,7 +47,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class PostComment extends Model implements NotifiableModel
+class PostComment extends BaseModel implements NotifiableModel
 {
     use HasFactory;
 

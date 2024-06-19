@@ -31,7 +31,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class PostBookmark extends Model
+class PostBookmark extends BaseModel
 {
     use HasFactory;
 

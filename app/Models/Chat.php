@@ -40,7 +40,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class Chat extends Model
+class Chat extends BaseModel
 {
     use HasFactory;
 

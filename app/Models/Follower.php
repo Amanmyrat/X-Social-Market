@@ -30,7 +30,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class Follower extends Model
+class Follower extends BaseModel
 {
     use HasFactory;
 

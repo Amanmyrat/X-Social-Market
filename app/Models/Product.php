@@ -40,7 +40,7 @@ use Illuminate\Support\Collection;
  *
  * @mixin Eloquent
  */
-class Product extends Model
+class Product extends BaseModel
 {
     use HasFactory;
 

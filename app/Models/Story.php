@@ -52,7 +52,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  *
  * @mixin Eloquent
  */
-class Story extends Model implements HasMedia
+class Story extends BaseModel implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;

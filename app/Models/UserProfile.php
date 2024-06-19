@@ -59,7 +59,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  *
  * @mixin Eloquent
  */
-class UserProfile extends Model implements HasMedia
+class UserProfile extends BaseModel implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;

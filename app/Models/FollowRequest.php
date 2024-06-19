@@ -28,7 +28,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class FollowRequest extends Model
+class FollowRequest extends BaseModel
 {
     use HasFactory;
 }

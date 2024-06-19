@@ -80,7 +80,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  *
  * @mixin Eloquent
  */
-class Post extends Model implements HasMedia
+class Post extends BaseModel implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;

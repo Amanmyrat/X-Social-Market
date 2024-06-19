@@ -36,7 +36,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class PostFavorite extends Model implements NotifiableModel
+class PostFavorite extends BaseModel implements NotifiableModel
 {
     use HasFactory;
 

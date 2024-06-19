@@ -32,7 +32,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class ProfileView extends Model
+class ProfileView extends BaseModel
 {
     use HasFactory;
 

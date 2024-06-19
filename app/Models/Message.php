@@ -55,7 +55,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  *
  * @mixin Eloquent
  */
-class Message extends Model implements HasMedia
+class Message extends BaseModel implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;

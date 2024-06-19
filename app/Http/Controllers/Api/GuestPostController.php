@@ -35,7 +35,7 @@ class GuestPostController extends ApiBaseController
             ->where('posts.category_id', $post->category_id)
             ->activeAndNotBlocked(Auth::id())
             ->inRandomOrder()
-            ->limit(10)
+            ->limit(15)
             ->get();
 
         return $this->respondWithCollection($posts, new PostSimpleTransformer());
@@ -47,7 +47,7 @@ class GuestPostController extends ApiBaseController
     public function allPosts(): JsonResponse
     {
         $postsQuery = $this->getPostsQuery();
-        $posts = $postsQuery->inRandomOrder()->paginate(10);
+        $posts = $postsQuery->inRandomOrder()->paginate(15);
 
         return $this->respondWithPaginator($posts, new GuestPostTransformer());
     }

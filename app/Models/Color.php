@@ -31,7 +31,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class Color extends Model
+class Color extends BaseModel
 {
     use HasFactory;
 

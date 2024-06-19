@@ -36,7 +36,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class UserReport extends Model
+class UserReport extends BaseModel
 {
     use HasFactory;
 

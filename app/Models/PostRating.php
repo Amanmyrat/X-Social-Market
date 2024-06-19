@@ -38,7 +38,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class PostRating extends Model implements NotifiableModel
+class PostRating extends BaseModel implements NotifiableModel
 {
     use HasFactory;
 

@@ -120,7 +120,7 @@ class PostController extends ApiBaseController
             ->where('posts.category_id', $post->category_id)
             ->activeAndNotBlocked(Auth::id())
             ->inRandomOrder()
-            ->limit(10)
+            ->limit(15)
             ->get();
 
         return $this->respondWithCollection($posts, new PostSimpleTransformer());
@@ -157,7 +157,7 @@ class PostController extends ApiBaseController
         $followings = $this->getUserFollowingsIds();
         $storyViewUsers = $this->getUserStoryViewUserIds();
 
-        $posts = Post::withRecommendationScore2(Auth::id())->paginate(10);
+        $posts = Post::withRecommendationScore2(Auth::id())->paginate(15);
 
         return $this->respondWithPaginator($posts, new PostTransformer2($userInteractionsDTO, $followings, $storyViewUsers));
     }
@@ -169,7 +169,7 @@ class PostController extends ApiBaseController
     {
         $userInteractionsDTO = $this->getUserInteractionsDTO();
 
-        $posts = Post::withRecommendationScore(Auth::id())->paginate(10);
+        $posts = Post::withRecommendationScore(Auth::id())->paginate(15);
 
         return $this->respondWithPaginator($posts, new PostTransformer($userInteractionsDTO));
     }
@@ -180,7 +180,7 @@ class PostController extends ApiBaseController
     public function guestAllPosts(): JsonResponse
     {
         $postsQuery = $this->getPostsQuery();
-        $posts = $postsQuery->inRandomOrder()->paginate(10);
+        $posts = $postsQuery->inRandomOrder()->paginate(15);
 
         return $this->respondWithPaginator($posts, new GuestPostTransformer());
     }
@@ -191,7 +191,7 @@ class PostController extends ApiBaseController
     public function userPosts(User $user): JsonResponse
     {
         $postsQuery = $this->getUserPostsQuery($user);
-        $posts = $postsQuery->paginate(10);
+        $posts = $postsQuery->paginate(15);
 
         return $this->respondWithCollection($posts, new PostSimpleTransformer());
     }

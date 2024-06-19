@@ -71,7 +71,7 @@ class FollowerController extends ApiBaseController
     public function userFollowers(User $user): JsonResponse
     {
         abort_if(
-            ! Auth::user()->followers->contains($user),
+            ($user->profile->private && !Auth::user()->followers->contains($user) ),
             403,
             ErrorMessage::USER_PRIVATE_ERROR->value
         );
@@ -96,7 +96,7 @@ class FollowerController extends ApiBaseController
     public function userFollowings(User $user): JsonResponse
     {
         abort_if(
-            ! Auth::user()->followers->contains($user),
+            ($user->profile->private && !Auth::user()->followers->contains($user) ),
             403,
             ErrorMessage::USER_PRIVATE_ERROR->value
         );

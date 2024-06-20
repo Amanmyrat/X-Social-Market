@@ -114,7 +114,7 @@ class StoryController extends ApiBaseController
                 $query->where('valid_until', '>', now())
                     ->where('is_active', true)->whereNull('blocked_at')
                     ->orderBy('created_at', 'desc');
-            }, 'stories.post.media'])
+            }, 'stories.post.media', 'stories.post.user.profile.media'])
             ->get();
 
         $followingsStories = $followings->sort(function (User $a, User $b) use ($viewedStoryIds) {

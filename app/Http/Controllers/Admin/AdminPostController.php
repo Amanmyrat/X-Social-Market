@@ -10,6 +10,7 @@ use App\Http\Resources\Admin\Post\PostResource;
 use App\Http\Resources\Admin\Post\PostResourceCollection;
 use App\Models\Post;
 use App\Services\Admin\PostService;
+use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -52,6 +53,12 @@ class AdminPostController extends Controller
     public function update(Post $post, PostUpdateRequest $request): PostResource
     {
         $post->update($request->validated());
+
+        $reason = $request->input('reason');
+
+        if ($post->is_active == false && !empty($reason)) {
+            NotificationService::createPostStatusNotification($post, $post->id, $reason);
+        }
 
         $post = $post->load(['user', 'media', 'product', 'category'])
             ->loadCount(['favorites', 'comments', 'views', 'bookmarks'])

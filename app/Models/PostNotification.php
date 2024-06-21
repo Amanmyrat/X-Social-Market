@@ -38,7 +38,7 @@ class PostNotification extends BaseModel
 {
     use HasFactory;
 
-    protected $fillable = ['post_id', 'is_read'];
+    protected $fillable = ['post_id', 'is_read', 'comment_id', 'reason'];
 
     public function notifiable(): MorphTo
     {
@@ -48,5 +48,10 @@ class PostNotification extends BaseModel
     public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class);
+    }
+
+    public function comment(): BelongsTo
+    {
+        return $this->belongsTo(PostComment::class);
     }
 }

@@ -21,5 +21,6 @@ class PostCommentService
 
         NotificationService::createPostNotification($comment, $comment->post_id);
 
+        NotificationService::createCommentNotification($comment, $comment->id);
     }
 }

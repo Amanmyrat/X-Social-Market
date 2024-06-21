@@ -18,10 +18,14 @@ class NotificationController
         $userId = Auth::id();
 
         $notifications = PostNotification::whereHas('post', function ($query) use ($userId) {
-            $query->where('user_id', $userId);
-        })
+            $query->where('user_id', $userId)
+                ;
+            })
+            ->orWhereHas('comment', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
             ->where('created_at', '>=', Carbon::now()->subDays(7))
-            ->with(['post.user', 'post.media', 'notifiable'])
+            ->with(['post.user', 'post.media', 'notifiable', 'comment'])
             ->orderByDesc('created_at')
             ->get();
 

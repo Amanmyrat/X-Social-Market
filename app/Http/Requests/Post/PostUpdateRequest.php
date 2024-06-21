@@ -13,6 +13,7 @@ class PostUpdateRequest extends FormRequest
     {
         return [
             'is_active' => ['required', 'bool'],
+            'reason' => ['required_if:is_active,false', 'string', 'max:255'],
         ];
     }
 }

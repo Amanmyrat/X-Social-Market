@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Contracts\NotifiableModel;
 use Auth;
 use DB;
 use Eloquent;
@@ -13,7 +14,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
+use Mockery\Matcher\Not;
 use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia;
@@ -80,7 +83,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  *
  * @mixin Eloquent
  */
-class Post extends BaseModel implements HasMedia
+class Post extends BaseModel implements HasMedia, NotifiableModel
 {
     use HasFactory;
     use InteractsWithMedia;
@@ -177,6 +180,11 @@ class Post extends BaseModel implements HasMedia
     public function latestReport(): HasOne
     {
         return $this->hasOne(PostReport::class)->latestOfMany();
+    }
+
+    public function notifications(): MorphMany
+    {
+        return $this->morphMany(PostNotification::class, 'notifiable');
     }
 
     /**

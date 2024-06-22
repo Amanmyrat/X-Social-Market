@@ -21,6 +21,7 @@ use Auth;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Throwable;
 
 class PostController extends ApiBaseController
@@ -147,7 +148,6 @@ class PostController extends ApiBaseController
         return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }
 
-
     /**
      * Recommended posts
      */
@@ -160,6 +160,51 @@ class PostController extends ApiBaseController
         $posts = Post::withRecommendationScore2(Auth::id())->paginate(15);
 
         return $this->respondWithPaginator($posts, new PostTransformer2($userInteractionsDTO, $followings, $storyViewUsers));
+    }
+
+    /**
+     * Recommended posts 3
+     */
+    public function recommendedPosts3(): JsonResponse
+    {
+        $user = Auth::user();
+        $postsQuery = Post::withRecommendationScore2($user->id)->limit(1000)->get();
+
+        $postIds = $postsQuery->pluck('id');
+
+        // Use the postViews relationship to get all viewed post IDs for the user
+        $viewedPostIds = $user->postViews()
+            ->whereIn('post_views.post_id', $postIds)
+            ->pluck('post_views.post_id')
+            ->toArray();
+
+        // Use the followings relationship to get all following user IDs for the user
+        $followingUserIds = $user->followings()
+            ->pluck('users.id')
+            ->toArray();
+
+        foreach ($postsQuery as $post) {
+            $post->score = $post->common_score
+                + (in_array($post->user_id, $followingUserIds) ? 100 : 0)
+                + (!in_array($post->id, $viewedPostIds) ? 50 : 0);
+        }
+
+        // Sort posts by score in descending order
+        $sortedPosts = $postsQuery->sortByDesc('score')->values();
+
+        // Transform the sorted posts
+        $userInteractionsDTO = $this->getUserInteractionsDTO();
+        $followings = $this->getUserFollowingsIds();
+        $storyViewUsers = $this->getUserStoryViewUserIds();
+
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 15;
+        $currentItems = $sortedPosts->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        $paginatedPosts = new LengthAwarePaginator($currentItems, $sortedPosts->count(), $perPage, $currentPage, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+        ]);
+
+        return $this->respondWithPaginator($paginatedPosts, new PostTransformer2($userInteractionsDTO, $followings, $storyViewUsers));
     }
 
     /**

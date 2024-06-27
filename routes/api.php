@@ -49,6 +49,15 @@ Route::prefix('guest/posts')->group(function () {
     Route::post('/filter', [GuestPostController::class, 'filter']);
 });
 
+Route::prefix('options')->group(function () {
+    Route::post('/categories', [OptionsController::class, 'categories']);
+    Route::post('/locations', [OptionsController::class, 'locations']);
+    Route::post('/brands', [OptionsController::class, 'brands']);
+    Route::post('/colors', [OptionsController::class, 'colors']);
+    Route::post('/sizes', [OptionsController::class, 'sizes']);
+    Route::post('/report/types', [OptionsController::class, 'reportTypes']);
+});
+
 Route::prefix('users')->group(function () {
     Route::post('/otp/send', [OtpController::class, 'sendOTP']);
     Route::post('/otp/confirm', [OtpController::class, 'confirmOTP']);
@@ -170,15 +179,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/messages/{message}/read', [MessageController::class, 'readMessage']);
         Route::post('/messages/{message}/delete', [MessageController::class, 'delete']);
         Route::post('/messages/{message}/image/{media}/delete', [MessageController::class, 'deleteImage']);
-    });
-
-    Route::prefix('options')->group(function () {
-        Route::post('/categories', [OptionsController::class, 'categories']);
-        Route::post('/locations', [OptionsController::class, 'locations']);
-        Route::post('/brands', [OptionsController::class, 'brands']);
-        Route::post('/colors', [OptionsController::class, 'colors']);
-        Route::post('/sizes', [OptionsController::class, 'sizes']);
-        Route::post('/report/types', [OptionsController::class, 'reportTypes']);
     });
 
 });

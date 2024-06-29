@@ -44,8 +44,9 @@ class OptionsController extends ApiBaseController
      */
     public function brands(BrandListRequest $request): AnonymousResourceCollection
     {
+        $validated = $request->validated();
         $type = $validated['type'] ?? Brand::TYPE_SIMPLE;
-        $brands = Brand::where('type', $type)->where('is_active', true)->get();
+        $brands = Brand::where('type', $type)->get();
 
         return BrandResource::collection($brands);
     }

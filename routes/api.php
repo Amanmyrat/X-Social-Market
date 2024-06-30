@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\FollowerController;
 use App\Http\Controllers\Api\FollowerRequestController;
 use App\Http\Controllers\Api\GuestPostController;
+use App\Http\Controllers\Api\GuestUserController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OptionsController;
@@ -38,15 +39,21 @@ use Illuminate\Support\Facades\Route;
 */
 //Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
-Route::prefix('guest/posts')->group(function () {
-    Route::post('/recommended', [GuestPostController::class, 'allPosts']);
-    Route::post('/{post}/details', [GuestPostController::class, 'postDetails']);
-    Route::post('/{post}/comments', [GuestPostController::class, 'comments']);
-    Route::post('/{post}/related', [GuestPostController::class, 'relatedPosts']);
-    Route::post('/discovery', [GuestPostController::class, 'discoveryPosts']);
-    Route::post('/category/{category}', [GuestPostController::class, 'categoryPosts']);
-    Route::post('/search', [GuestPostController::class, 'search']);
-    Route::post('/filter', [GuestPostController::class, 'filter']);
+Route::prefix('guest')->group(function () {
+    Route::prefix('posts')->group(function () {
+        Route::post('/recommended', [GuestPostController::class, 'allPosts']);
+        Route::post('/{post}/details', [GuestPostController::class, 'postDetails']);
+        Route::post('/{post}/comments', [GuestPostController::class, 'comments']);
+        Route::post('/{post}/related', [GuestPostController::class, 'relatedPosts']);
+        Route::post('/discovery', [GuestPostController::class, 'discoveryPosts']);
+        Route::post('/category/{category}', [GuestPostController::class, 'categoryPosts']);
+        Route::post('/search', [GuestPostController::class, 'search']);
+        Route::post('/filter', [GuestPostController::class, 'filter']);
+    });
+
+    Route::prefix('users/profile')->group(function () {
+        Route::post('/get/{user}', [GuestUserController::class, 'get']);
+    });
 });
 
 Route::prefix('options')->group(function () {

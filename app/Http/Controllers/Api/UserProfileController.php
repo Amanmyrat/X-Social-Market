@@ -20,7 +20,7 @@ class UserProfileController extends ApiBaseController
     }
 
     /**
-     * Update the profile of user.
+     * Update user profile.
      *
      * @throws Throwable
      */
@@ -35,7 +35,7 @@ class UserProfileController extends ApiBaseController
     }
 
     /**
-     * Get the profile of user.
+     * Get user profile.
      */
     public function get(User $user): JsonResponse
     {

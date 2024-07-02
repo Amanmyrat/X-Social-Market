@@ -153,7 +153,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
 
         Route::prefix('favorites')->group(function () {
             Route::post('/', [PostFavoritesController::class, 'favorites']);
-            Route::post('/{post}/change', [PostFavoritesController::class, 'change']);
+            Route::post('/{post}/change', [PostFavoritesController::class, '']);
             Route::post('/{post}/users', [PostFavoritesController::class, 'favoriteUsers']);
         });
 

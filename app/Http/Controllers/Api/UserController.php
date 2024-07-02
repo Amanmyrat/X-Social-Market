@@ -99,6 +99,7 @@ class UserController extends ApiBaseController
             'type' => User::TYPE_SELLER,
         ]);
 
+        $validated['private'] = false;
         $request->user()->profile()->update($validated);
 
         return new JsonResponse([

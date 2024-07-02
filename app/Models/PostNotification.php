@@ -17,6 +17,7 @@ use Illuminate\Support\Carbon;
  * @property int $post_id
  * @property string $notifiable_type
  * @property int $notifiable_id
+ * @property int $comment_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Model|Eloquent $notifiable

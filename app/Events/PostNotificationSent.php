@@ -29,7 +29,7 @@ class PostNotificationSent implements ShouldBroadcast
      */
     public function broadcastOn(): PrivateChannel
     {
-        return new PrivateChannel('App.Models.User.'.$this->notification->notifiable->user->id);
+        return new PrivateChannel('App.Models.User.' . $this->notification->notifiable->user->id);
     }
 
     /**
@@ -44,26 +44,46 @@ class PostNotificationSent implements ShouldBroadcast
     {
         $className = (new ReflectionClass($this->notification->notifiable))->getShortName();
         $notificationType = strtolower($className);
+
         $prefix = 'post';
-        if (str_starts_with($notificationType, $prefix)) {
+        if ($notificationType == $prefix) {
+            $notificationType = 'post_blocked';
+        } else if (str_starts_with($notificationType, $prefix)) {
             $notificationType = substr($notificationType, strlen($prefix));
         }
 
-        return [
-            'data' => [
-                'notification_type' => $notificationType,
+        if ($notificationType == 'comment' && $this->notification->comment_id != null) {
+            $notificationType = 'comment_added';
+        }
+
+        $result = [
+            'notification_type' => $notificationType,
+            'user' => [
+                'id' => $this->notification->notifiable->user->id,
+                'username' => $this->notification->notifiable->user->username,
+                'full_name' => $this->notification->notifiable->user->profile?->full_name,
+                'image' => $this->notification->notifiable->user->profile?->image_urls,
+            ],
+            'reason' => $this->notification->reason,
+            'created_at' => $this->notification->created_at,
+        ];
+
+        if ($this->notification->post_id != null) {
+            $result += [
                 'post' => [
                     'id' => $this->notification->post->id,
                     'media' => $this->notification->post->first_image_urls,
+                ]
+            ];
+        } else if ($this->notification->comment_id != null) {
+            $result += [
+                'comment' => [
+                    'id' => $this->resource->comment->id ?? null,
+                    'content' => $this->resource->comment->comment ?? null,
                 ],
-                'user' => [
-                    'id' => $this->notification->notifiable->user->id,
-                    'username' => $this->notification->notifiable->user->username,
-                    'full_name' => $this->notification->notifiable->user->profile?->full_name,
-                    'image' => $this->notification->notifiable->user->profile?->image_urls,
-                ],
-                'created_at' => $this->notification->created_at,
-            ],
-        ];
+            ];
+        }
+
+        return ['data' => $result];
     }
 }

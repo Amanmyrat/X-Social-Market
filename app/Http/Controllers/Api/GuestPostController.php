@@ -85,7 +85,7 @@ class GuestPostController extends ApiBaseController
         $post = Post::where('posts.id', $post->id)
             ->with(['user.profile', 'media', 'product'])
             ->withAvg('ratings', 'rating')
-            ->withCount(['favorites', 'comments', 'views'])
+            ->withCount(['favorites', 'activeComments', 'views'])
             ->withIsFollowing()
             ->first();
 
@@ -97,7 +97,7 @@ class GuestPostController extends ApiBaseController
      */
     public function comments(Post $post): JsonResponse
     {
-        $comments = $post->comments()->whereNull('blocked_at')->get();
+        $comments = $post->activeComments()->whereNull('blocked_at')->get();
 
         return $this->respondWithCollection($comments, new CommentTransformer());
     }

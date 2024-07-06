@@ -21,7 +21,7 @@ class PostCommentController extends ApiBaseController
      */
     public function comments(Post $post): JsonResponse
     {
-        $comments = $post->comments()->whereNull('blocked_at')->get();
+        $comments = $post->activeComments()->whereNull('blocked_at')->get();
 
         return $this->respondWithCollection($comments, new CommentTransformer());
     }

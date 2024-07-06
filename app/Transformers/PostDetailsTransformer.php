@@ -35,7 +35,7 @@ class PostDetailsTransformer extends TransformerAbstract
             'isBookmark' => in_array($post->id, $this->userInteractions->bookmarkedPostIds),
             'isViewed' => in_array($post->id, $this->userInteractions->viewedPostIds),
             'favorites_count' => $post->favorites_count,
-            'comments_count' => $post->comments_count,
+            'comments_count' => $post->active_comments_count,
             'views_count' => $post->views_count,
             'is_following' => $post->is_following ?? false,
             'private' => $post->user->profile?->private ?? false,

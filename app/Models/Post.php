@@ -44,6 +44,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property-read int|null $chats_count
  * @property-read Collection<int, PostComment> $comments
  * @property-read int|null $comments_count
+ * @property-read Collection<int, PostComment> $activeComments
+ * @property-read int|null $active_comments_count
  * @property-read Collection<int, User> $favoriteByUsers
  * @property-read int|null $favorite_by_users_count
  * @property-read Collection<int, PostFavorite> $favorites
@@ -148,6 +150,14 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
     public function comments(): HasMany
     {
         return $this->hasMany(PostComment::class)->where('parent_id', 0)->orderByDesc('created_at');
+    }
+
+    public function activeComments(): HasMany
+    {
+        return $this->hasMany(PostComment::class)
+            ->where('parent_id', 0)
+            ->where('is_active', true)
+            ->orderByDesc('created_at');
     }
 
     public function ratings(): HasMany

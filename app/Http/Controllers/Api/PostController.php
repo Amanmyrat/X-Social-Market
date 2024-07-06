@@ -274,7 +274,7 @@ class PostController extends ApiBaseController
         $post = Post::where('posts.id', $post->id)
             ->with(['user.profile', 'media', 'product'])
             ->withAvg('ratings', 'rating')
-            ->withCount(['favorites', 'comments', 'views'])
+            ->withCount(['favorites', 'activeComments', 'views'])
             ->withIsFollowing()
             ->first();
 

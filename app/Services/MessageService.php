@@ -56,7 +56,7 @@ class MessageService
             $extras['story'] = $this->getStoryDetails($data['story_id']);
         }
 
-        if ($type === Message::TYPE_SHARE_POST) {
+        if ($type === Message::TYPE_SHARE_POST || $type === Message::TYPE_POST_DISCUSSION) {
             $extras['post'] = $this->getPostDetails($data['post_id']);
         }
 
@@ -134,7 +134,6 @@ class MessageService
     public function readMessage(Message $message): void
     {
         $message->update(['read_at' => now()]);
-
         ProcessMessageRead::dispatch($message);
     }
 

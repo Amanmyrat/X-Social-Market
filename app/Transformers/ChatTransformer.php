@@ -10,7 +10,7 @@ use League\Fractal\TransformerAbstract;
 class ChatTransformer extends TransformerAbstract
 {
     protected array $defaultIncludes = [
-        'receiver', 'last_message', 'product',
+        'receiver', 'last_message'
     ];
 
     public function transform(Chat $chat): array
@@ -34,15 +34,6 @@ class ChatTransformer extends TransformerAbstract
             : $chat->sender;
 
         return $this->item($receiver, new UserSimpleTransformer());
-    }
-
-    public function includeProduct(Chat $chat): ?Item
-    {
-        if ($chat->post->exists) {
-            return $this->item($chat->post, new PostSimpleTransformer());
-        }
-
-        return null;
     }
 
     public function includeLastMessage(Chat $chat): ?Item

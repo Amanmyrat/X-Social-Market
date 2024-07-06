@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Collection;
 
 class ChatService
 {
-    public function findOrCreateChat(int $receiverUserId, int $userId, ?int $postId = null): Chat
+    public function findOrCreateChat(int $receiverUserId, int $userId): Chat
     {
-        $existingChat = $this->findExistingChat($receiverUserId, $postId);
+        $existingChat = $this->findExistingChat($receiverUserId);
 
         if ($existingChat) {
             return $existingChat;
@@ -19,15 +19,12 @@ class ChatService
         return Chat::create([
             'sender_user_id' => $userId,
             'receiver_user_id' => $receiverUserId,
-            'post_id' => $postId,
         ]);
     }
 
-    private function findExistingChat($receiverUserId, $postId): ?Chat
+    private function findExistingChat($receiverUserId): ?Chat
     {
-        return Chat::when(isset($postId), function ($query) use ($postId) {
-            return $query->where('post_id', $postId);
-        })->where(function ($query) use ($receiverUserId) {
+        return Chat::where(function ($query) use ($receiverUserId) {
             $query->where('sender_user_id', auth()->id())
                 ->where('receiver_user_id', $receiverUserId);
         })->orWhere(function ($query) use ($receiverUserId) {
@@ -40,7 +37,7 @@ class ChatService
     {
         return $user
             ->chats()
-            ->with(['post.media', 'latestMessage',
+            ->with(['latestMessage',
                 'receiver.profile.media',
                 'sender.profile.media',
             ])

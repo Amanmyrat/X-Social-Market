@@ -35,7 +35,6 @@ class MessageController extends ApiBaseController
             $message = $this->messageService->sendMessage($request->validated());
 
             ProcessMessageSent::dispatch($message);
-
             return $this->respondWithItem($message, new MessageTransformer());
         } catch (Throwable $e) {
             return response()->json(['error' => $e->getMessage()], 400);

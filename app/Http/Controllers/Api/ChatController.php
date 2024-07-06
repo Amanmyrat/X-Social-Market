@@ -34,8 +34,7 @@ class ChatController extends ApiBaseController
             ErrorMessage::GENERAL_ERROR->value
         );
 
-        $postId = $validated['post_id'] ?? null;
-        $chat = $this->chatService->findOrCreateChat($receiverUserId, Auth::id(), $postId);
+        $chat = $this->chatService->findOrCreateChat($receiverUserId, Auth::id());
 
         return $this->respondWithItem($chat, new ChatTransformer());
     }

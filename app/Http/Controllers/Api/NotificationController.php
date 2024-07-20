@@ -18,8 +18,7 @@ class NotificationController
         $userId = Auth::id();
 
         $notifications = PostNotification::whereHas('post', function ($query) use ($userId) {
-            $query->where('user_id', $userId)
-                ;
+            $query->where('user_id', $userId);
             })
             ->orWhereHas('comment', function ($query) use ($userId) {
                 $query->where('user_id', $userId);

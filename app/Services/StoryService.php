@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App;
 use App\Models\Story;
 use App\Models\User;
 use Carbon\Carbon;
@@ -27,7 +28,7 @@ class StoryService
 
             $storyData = array_merge($validated, [
                 'user_id' => $user->id,
-                'valid_until' => Carbon::now()->addYear(),
+                'valid_until' => $this->getValidUntil(),
                 'is_active' => $isActive,
             ]);
 
@@ -37,5 +38,14 @@ class StoryService
                 $story->addMedia($validated['image'])->toMediaCollection('story_images');
             }
         });
+    }
+
+    private function getValidUntil(): Carbon
+    {
+        if (App::environment('production')) {
+            return Carbon::now()->addDay();
+        }
+
+        return Carbon::now()->addMonth();
     }
 }

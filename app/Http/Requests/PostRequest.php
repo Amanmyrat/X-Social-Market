@@ -20,7 +20,7 @@ class PostRequest extends FormRequest
             'location' => ['required', 'string', 'max:255'],
             'can_comment' => ['required', 'boolean'],
             'medias' => ['required', 'array', 'max:8'],
-            'medias.*' => ['required', 'file', 'mimes:jpg,jpeg,png,mp4'],
+            'medias.*' => ['required', 'file', 'mimes:jpg,jpeg,png,mp4,webp'],
 
             /**
              * Required if category has product true

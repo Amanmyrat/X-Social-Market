@@ -20,7 +20,7 @@ class PostUpdateRequest extends FormRequest
             'location' => ['sometimes', 'string', 'max:255'],
             'can_comment' => ['sometimes', 'boolean'],
             'medias' => ['sometimes', 'array', 'max:8'],
-            'medias.*' => ['sometimes', 'file', 'mimes:jpg,jpeg,png,mp4,webp'],
+            'medias.*' => ['sometimes', 'file', 'mimes:jpg,jpeg,png,mp4,webp,gif,mpeg4,mov'],
 
             /**
              * Required if category has product true

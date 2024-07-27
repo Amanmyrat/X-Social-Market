@@ -270,15 +270,15 @@ class PostController extends ApiBaseController
     public function postDetails(Post $post): JsonResponse
     {
         $userInteractionsDTO = $this->getUserInteractionsDTO();
+        $followings = $this->getUserFollowingsIds();
 
         $post = Post::where('posts.id', $post->id)
             ->with(['user.profile', 'media', 'product'])
             ->withAvg('ratings', 'rating')
             ->withCount(['favorites', 'activeComments', 'views'])
-            ->withIsFollowing()
             ->first();
 
-        return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO));
+        return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO, $followings));
     }
 
     /**

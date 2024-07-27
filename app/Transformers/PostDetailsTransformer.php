@@ -10,7 +10,9 @@ use League\Fractal\TransformerAbstract;
 
 class PostDetailsTransformer extends TransformerAbstract
 {
-    public function __construct(protected UserPostInteractionsDTO $userInteractions)
+    public function __construct(
+        protected UserPostInteractionsDTO $userInteractions,
+        protected array                   $followings)
     {
     }
 
@@ -37,7 +39,7 @@ class PostDetailsTransformer extends TransformerAbstract
             'favorites_count' => $post->favorites_count,
             'comments_count' => $post->active_comments_count,
             'views_count' => $post->views_count,
-            'is_following' => $post->is_following ?? false,
+            'is_following' => in_array($post->user->id, $this->followings),
             'private' => $post->user->profile?->private ?? false,
             'chat' => $post->chats()
                 ->where('sender_user_id', Auth::id())

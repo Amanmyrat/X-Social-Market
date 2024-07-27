@@ -86,10 +86,9 @@ class GuestPostController extends ApiBaseController
             ->with(['user.profile', 'media', 'product'])
             ->withAvg('ratings', 'rating')
             ->withCount(['favorites', 'activeComments', 'views'])
-            ->withIsFollowing()
             ->first();
 
-        return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO));
+        return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO, []));
     }
 
     /**

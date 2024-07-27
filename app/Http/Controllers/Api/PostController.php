@@ -58,7 +58,7 @@ class PostController extends ApiBaseController
                 ->loadAvg('ratings', 'rating')
                 ->loadCount(['favorites', 'comments', 'views']);
 
-            return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO));
+            return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO, []));
 
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
@@ -90,7 +90,7 @@ class PostController extends ApiBaseController
                 ->loadAvg('ratings', 'rating')
                 ->loadCount(['favorites', 'comments', 'views']);
 
-            return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO));
+            return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO, []));
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }

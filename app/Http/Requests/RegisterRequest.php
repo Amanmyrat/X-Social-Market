@@ -34,4 +34,15 @@ class RegisterRequest extends FormRequest
             'password' => ['required', 'confirmed', Password::defaults()],
         ];
     }
+
+    /**
+     * Get the custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'phone.exists' => 'Bu telefon belgisi ulanylýar.',
+        ];
+    }
+
 }

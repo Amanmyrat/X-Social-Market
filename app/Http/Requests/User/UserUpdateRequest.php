@@ -30,4 +30,15 @@ class UserUpdateRequest extends FormRequest
             'profile.profile_image' => ['filled', 'image'],
         ];
     }
+
+    /**
+     * Get the custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'phone.exists' => 'Bu telefon belgisi ulanylýar.',
+            'username.exists' => 'Ulanyjy ady eýelenen.',
+        ];
+    }
 }

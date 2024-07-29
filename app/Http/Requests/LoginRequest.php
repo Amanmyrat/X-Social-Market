@@ -109,4 +109,15 @@ class LoginRequest extends FormRequest
     {
         return Str::transliterate(Str::lower($this->input('login')).'|'.$this->ip());
     }
+
+    /**
+     * Get the custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'auth.failed' => 'Ulanyjy ady ýa-da açar sözi nädogry.',
+            'login.exists' => 'Bu telefon belgisi ulanylýar.',
+        ];
+    }
 }

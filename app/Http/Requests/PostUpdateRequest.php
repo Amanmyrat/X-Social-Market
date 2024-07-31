@@ -15,8 +15,8 @@ class PostUpdateRequest extends FormRequest
         return [
             'category_id' => ['required', 'int', 'exists:categories,id'],
             'caption' => ['sometimes', 'string', 'max:255'],
-            'price' => ['sometimes', 'int'],
-            'description' => ['sometimes', 'string', 'max:255'],
+            'price' => ['nullable', 'numeric'],
+            'description' => ['nullable', 'string', 'max:255'],
             'location' => ['sometimes', 'string', 'max:255'],
             'can_comment' => ['sometimes', 'boolean'],
             'medias' => ['sometimes', 'array', 'max:8'],

@@ -27,6 +27,7 @@ class StoryResource extends JsonResource
             'image' => $this->resource->image_urls,
             'isViewed' => $isViewed,
             'isFavorite' => $isFavorite,
+            'valid_until' => $this->resource->valid_until,
             'created_at' => $this->resource->created_at,
             'post' => new PostSimpleResource($this->whenLoaded('post')),
         ];

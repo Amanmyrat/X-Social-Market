@@ -105,16 +105,22 @@ class StoryController extends ApiBaseController
         $viewedStoryIds = $this->getUserViewedStoryIds();
         $favoriteStoryIds = $this->getUserFavoriteStoryIds();
 
+        $activeStoriesCondition = function ($query) {
+            $query->where('valid_until', '>', now())
+                ->where('is_active', true)
+                ->whereNull('blocked_at');
+        };
+
         $followings = $user->followings()
-            ->whereHas('stories', function ($query) {
-                $query->where('valid_until', '>', now())
-                    ->where('is_active', true)->whereNull('blocked_at');
-            })
-            ->with(['stories' => function ($query) {
-                $query->where('valid_until', '>', now())
-                    ->where('is_active', true)->whereNull('blocked_at')
-                    ->orderBy('created_at', 'desc');
-            }, 'stories.post.media', 'stories.post.user.profile.media'])
+            ->whereHas('stories', $activeStoriesCondition)
+            ->with([
+                'stories' => function ($query) use ($activeStoriesCondition) {
+                    $query->where($activeStoriesCondition)
+                        ->orderBy('created_at', 'desc');
+                },
+                'stories.post.media',
+                'stories.post.user.profile.media'
+            ])
             ->get();
 
         $followingsStories = $followings->sort(function (User $a, User $b) use ($viewedStoryIds) {

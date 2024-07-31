@@ -15,8 +15,8 @@ class PostRequest extends FormRequest
         return [
             'category_id' => ['required', 'int', 'exists:categories,id'],
             'caption' => ['required', 'string', 'max:255'],
-            'price' => ['required', 'int'],
-            'description' => ['required', 'string', 'max:255'],
+            'price' => ['nullable', 'numeric'],
+            'description' => ['nullable', 'string', 'max:255'],
             'location' => ['required', 'string', 'max:255'],
             'can_comment' => ['required', 'boolean'],
             'medias' => ['required', 'array', 'max:8'],

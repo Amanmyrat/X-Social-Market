@@ -117,6 +117,7 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
      * @var array<string, string>
      */
     protected $casts = [
+        'price' => 'float',
         'can_comment' => 'boolean',
         'is_active' => 'boolean',
         'ratings_avg_rating' => 'float',

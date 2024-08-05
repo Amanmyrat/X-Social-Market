@@ -303,7 +303,6 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
                 $join->on('users.id', '=', 'blocked_users.blocked_user_id')
                     ->where('blocked_users.user_id', '=', $userId); // Current user is blocking
             })
-            ->where('posts.is_active', true)
             ->whereNull('users.blocked_at') // Admin has not blocked the user
             ->where('users.is_active', true) // Admin has not disabled user
             ->whereNull('blocked_users.id') // Current user has not blocked the user
@@ -376,7 +375,6 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
                 $join->on('users.id', '=', 'blocked_users.blocked_user_id')
                     ->where('blocked_users.user_id', '=', $userId); // Current user is blocking
             })
-            ->where('posts.is_active', true)
             ->whereNull('users.blocked_at') // Admin has not blocked the user
             ->where('users.is_active', true) // Admin has not disabled user
             ->whereNull('blocked_users.id') // Current user has not blocked the user
@@ -401,7 +399,6 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
             })
             ->whereNull('users.blocked_at')
             ->where('users.is_active', true)
-            ->where('posts.is_active', true)
             ->whereNull('blocked_users.id')
             ->select('posts.*', 'common_post_scores.common_score')
             ->with(['user.profile.media', 'media'])
@@ -424,7 +421,7 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
      */
     public function scopeActiveAndNotBlocked2(Builder $query, ?int $userId): Builder
     {
-        return $query->select('posts.*')->where('posts.is_active', true)
+        return $query->select('posts.*')
             ->join('users', 'posts.user_id', '=', 'users.id')
             ->leftJoin('user_profiles', 'users.id', '=', 'user_profiles.user_id')
             ->leftJoin('followers', function ($join) use ($userId) {
@@ -459,7 +456,6 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
                 $join->on('users.id', '=', 'blocked_users.blocked_user_id')
                     ->where('blocked_users.user_id', $userId);
             })
-            ->where('posts.is_active', true)
             ->whereNull('users.blocked_at') // Admin has not blocked the user
             ->where('users.is_active', true) // Admin has not disabled the user
             ->whereNull('blocked_users.id'); // Current user has not blocked the user

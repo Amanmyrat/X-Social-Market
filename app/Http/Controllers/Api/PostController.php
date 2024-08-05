@@ -141,7 +141,6 @@ class PostController extends ApiBaseController
         $user = Auth::user();
 
         $posts = $user->posts()
-            ->where('is_active', true)
             ->latest()
             ->paginate(15);
 

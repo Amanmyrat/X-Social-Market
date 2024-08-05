@@ -77,7 +77,7 @@ class Category extends BaseModel implements HasMedia
 
     public function posts(): HasMany
     {
-        return $this->hasMany(Post::class)->where('is_active', true);
+        return $this->hasMany(Post::class);
     }
 
     public function userProfiles(): HasMany

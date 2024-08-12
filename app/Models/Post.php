@@ -157,7 +157,6 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
     {
         return $this->hasMany(PostComment::class)
             ->where('parent_id', 0)
-            ->where('is_active', true)
             ->orderByDesc('created_at');
     }
 
@@ -214,10 +213,6 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
         })->addSelect(['posts.*', DB::raw('CASE WHEN followers.follow_user_id IS NOT NULL THEN true ELSE false END AS is_following')]);
     }
 
-    public function scopeIsActive($query)
-    {
-        return $query->where('is_active', true);
-    }
 
     /**
      * Scope a query to enhance it with a complex scoring system for post recommendations.

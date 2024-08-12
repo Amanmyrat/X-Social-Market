@@ -22,7 +22,7 @@ class PostRatingService
             $rating->rating = $validated['rating'];
             $rating->save();
 
-            NotificationService::createPostNotification($rating, $rating->post_id);
+            NotificationService::createPostInteractionNotificationToPostAuthor($rating, $rating->post_id);
 
         }
     }

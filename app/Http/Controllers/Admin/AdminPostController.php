@@ -9,6 +9,7 @@ use App\Http\Requests\Post\PostUpdateRequest;
 use App\Http\Resources\Admin\Post\PostResource;
 use App\Http\Resources\Admin\Post\PostResourceCollection;
 use App\Models\Post;
+use App\Models\PostComment;
 use App\Services\Admin\PostService;
 use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
@@ -58,6 +59,14 @@ class AdminPostController extends Controller
 
         if ($post->is_active == false && !empty($reason)) {
             NotificationService::createPostStatusNotification($post, $post->id, $reason);
+
+            $post->update(
+                [
+                    'is_active' => false,
+                    'blocked_at' => now(),
+                    'block_reason' => $request->get('reason'),
+                ]
+            );
         }
 
         $post = $post->load(['user', 'media', 'product', 'category'])
@@ -88,6 +97,7 @@ class AdminPostController extends Controller
         $limit = $request->get('limit') ?? 10;
 
         $posts = Post::where('is_active', false)
+            ->whereNull('blocked_at')
             ->with(['user', 'category', 'media'])
             ->latest()
             ->paginate($limit);

@@ -22,6 +22,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Model|Eloquent $notifiable
  * @property-read Post $post
+ * @property-read PostComment $comment
  *
  * @method static Builder|PostNotification newModelQuery()
  * @method static Builder|PostNotification newQuery()

@@ -26,7 +26,7 @@ class PostFavoriteService
             $favorite->save();
             $message = 'Favorite success';
 
-            NotificationService::createPostNotification($favorite, $favorite->post_id);
+            NotificationService::createPostInteractionNotificationToPostAuthor($favorite, $favorite->post_id);
         }
 
         return $message;

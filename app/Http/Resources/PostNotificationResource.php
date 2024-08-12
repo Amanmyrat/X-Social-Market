@@ -25,10 +25,14 @@ class PostNotificationResource extends JsonResource
             $notificationType = 'post_blocked';
         } else if (str_starts_with($notificationType, $prefix)) {
             $notificationType = substr($notificationType, strlen($prefix));
+        }else if($notificationType == 'story'){
+            $notificationType = 'story_blocked';
         }
 
-        if($notificationType == 'comment' && $this->resource->comment_id != null){
+        if($notificationType == 'comment' && $this->resource->comment_id != null && $this->resource->reason == null){
             $notificationType = 'comment_added';
+        } else if($notificationType == 'comment' && $this->resource->comment_id != null && $this->resource->reason != null){
+            $notificationType = 'comment_blocked';
         }
 
         $result = [

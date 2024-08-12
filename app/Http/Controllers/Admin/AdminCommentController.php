@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Resources\Admin\PostComment\PostCommentResource;
 use App\Models\PostComment;
+use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -36,6 +37,8 @@ class AdminCommentController
     {
         $comment->update(['is_active' => true]);
 
+        NotificationService::createPostInteractionNotificationToPostAuthor($comment, $comment->post_id);
+
         return new JsonResponse([
             'success' => true,
             'message' => 'Successfully accepted comment',
@@ -60,6 +63,8 @@ class AdminCommentController
                 'block_reason' => $request->get('reason'),
             ]
         );
+
+        NotificationService::createCommentRejectNotificationToCommentCreator($comment, $comment->id, $request->get('reason'));
 
         return new JsonResponse([
             'success' => true,

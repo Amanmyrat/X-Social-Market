@@ -63,6 +63,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property-read ?array $image_urls
  * @property-read ?array $first_image_urls
  *
+ * @property Carbon|null $blocked_at
+ * @property string|null $block_reason
  * @method static Builder|Post newModelQuery()
  * @method static Builder|Post newQuery()
  * @method static Builder|Post query()
@@ -102,6 +104,8 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
         'location',
         'can_comment',
         'is_active',
+        'blocked_at',
+        'block_reason',
     ];
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Contracts\NotifiableModel;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\Image\Manipulations;
@@ -52,7 +54,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  *
  * @mixin Eloquent
  */
-class Story extends BaseModel implements HasMedia
+class Story extends BaseModel implements HasMedia, NotifiableModel
 {
     use HasFactory;
     use InteractsWithMedia;
@@ -154,5 +156,10 @@ class Story extends BaseModel implements HasMedia
             'medium_url' => $this->getFirstMedia('story_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
             'thumb_url' => $this->getFirstMedia('story_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
         ];
+    }
+
+    public function notifications(): MorphMany
+    {
+        return $this->morphMany(PostNotification::class, 'notifiable');
     }
 }

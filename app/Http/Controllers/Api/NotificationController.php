@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\PostNotificationResource;
+use App\Models\PostComment;
+use App\Models\PostFavorite;
 use App\Models\PostNotification;
+use App\Models\PostRating;
+use App\Models\Story;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -13,20 +17,40 @@ class NotificationController
     /**
      * User notifications list for 7 days
      */
-    public function list(): JsonResponse
+    public function  list(): JsonResponse
     {
         $userId = Auth::id();
 
-        $notifications = PostNotification::whereHas('post', function ($query) use ($userId) {
-            $query->where('user_id', $userId);
-            })
-            ->orWhereHas('comment', function ($query) use ($userId) {
+//        $notifications = PostNotification::whereHas('post', function ($query) use ($userId) {
+//            $query->where('user_id', $userId);
+//        })
+//            ->orWhereHas('comment', function ($query) use ($userId) {
+//                $query->where('user_id', $userId);
+//            })
+//            ->where('created_at', '>=', Carbon::now()->subDays(7))
+//            ->with(['post.user', 'post.media', 'notifiable', 'comment'])
+//            ->orderByDesc('created_at')
+//            ->get();
+
+        $notifications = PostNotification::where(function ($query) use ($userId) {
+            $query->whereHas('post', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })
+                ->orWhereHas('comment', function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                })
+                ->orWhereHasMorph('notifiable', [PostComment::class, PostFavorite::class, PostRating::class, Story::class], function ($query) use ($userId) {
+                    // Apply user_id filter based on the type of notifiable
+                    if ($query->getModel() instanceof Story) {
+                        $query->where('user_id', $userId);
+                    }
+                });
+        })
             ->where('created_at', '>=', Carbon::now()->subDays(7))
             ->with(['post.user', 'post.media', 'notifiable', 'comment'])
             ->orderByDesc('created_at')
             ->get();
+
 
         $notifications->each->update(['is_read' => true]);
 

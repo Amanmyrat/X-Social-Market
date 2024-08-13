@@ -25,4 +25,16 @@ class UserCheckContactsRequest extends FormRequest
             'contacts.*' => 'required|numeric',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'contacts.required' => 'Kontaktlary saýlamak hökmanydyr.',
+            'contacts.array' => 'Kontaktlar sanaw görnüşinde bolmalydyr.',
+            'contacts.min' => 'Azyndan bir kontakt saýlanmalydyr.',
+            'contacts.*.required' => 'Her bir kontakt hökmanydyr.',
+            'contacts.*.numeric' => 'Her bir kontakt diňe sanlardan durmalydyr.',
+        ];
+    }
+
 }

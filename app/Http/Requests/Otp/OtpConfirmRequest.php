@@ -16,4 +16,16 @@ class OtpConfirmRequest extends FormRequest
             'phone' => ['required', 'integer'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'code.required' => 'Kod hökmanydyr.',
+            'code.integer' => 'Kod diňe sanlardan durmalydyr.',
+            'code.between' => 'Kod 1000 bilen 9999 arasynda bolmalydyr.',
+            'phone.required' => 'Telefon belgi hökmanydyr.',
+            'phone.integer' => 'Telefon belgi diňe sanlardan durmalydyr.',
+        ];
+    }
+
 }

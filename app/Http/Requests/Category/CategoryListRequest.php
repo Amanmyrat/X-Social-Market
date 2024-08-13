@@ -28,4 +28,17 @@ class CategoryListRequest extends FormRequest
             ],
         ];
     }
+
+    /**
+     * Get the custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'limit.filled' => 'Çäk girizilen bolmalydyr.',
+            'limit.integer' => 'Çäk diňe sanlardan durmalydyr.',
+            'sort.filled' => 'Tertipleme saýlanan bolmalydyr.',
+            'sort.in' => 'Tertipleme üçin dogry birikdirilen opsiýalary saýlaň: default, name, -name, email, -email, is_active, -is_active, last_activity, -last_activity.',
+        ];
+    }
 }

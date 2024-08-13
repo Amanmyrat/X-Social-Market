@@ -16,4 +16,16 @@ class ColorDeleteRequest extends FormRequest
             'colors.*' => 'int|exists:colors,id',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'colors.required' => 'Reňkleri saýlamak hökmanydyr.',
+            'colors.array' => 'Reňkler sanaw görnüşinde bolmalydyr.',
+            'colors.min' => 'Azyndan bir reňk saýlanmalydyr.',
+            'colors.*.int' => 'Her reňk ID diňe sanlardan durmalydyr.',
+            'colors.*.exists' => 'Saýlanan reňk bar bolan ID-laryň biri däl.',
+        ];
+    }
+
 }

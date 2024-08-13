@@ -18,6 +18,16 @@ class PostCommentCreateRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'comment.required' => 'Teswir hökmanydyr.',
+            'comment.string' => 'Teswir dogry görnüşde giriziň.',
+            'comment.max' => 'Teswir iň köp 255 harpdan durmalydyr.',
+            'parent_id.int' => 'Ata teswiri ID-si diňe sanlardan durmalydyr.',
+        ];
+    }
+
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
@@ -28,11 +38,12 @@ class PostCommentCreateRequest extends FormRequest
                 $parentComment = PostComment::find($parentCommentId, ['post_id']);
 
                 if (! $parentComment) {
-                    $validator->errors()->add('parent_id', 'The selected parent_id is invalid.');
+                    $validator->errors()->add('parent_id', 'Saýlanan ata teswir ID-si nädogry.');
                 } elseif ($parentComment->post_id != $post->id) {
-                    $validator->errors()->add('parent_id', 'The parent_id does not belong to the provided post.');
+                    $validator->errors()->add('parent_id', 'Ata teswir ID-si berlen posta degişli däl.');
                 }
             }
         });
     }
+
 }

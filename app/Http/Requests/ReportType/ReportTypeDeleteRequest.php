@@ -16,4 +16,16 @@ class ReportTypeDeleteRequest extends FormRequest
             'types.*' => 'int|exists:report_types,id',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'types.required' => 'Týplary saýlamak hökmanydyr.',
+            'types.array' => 'Týplar sanaw görnüşinde bolmalydyr.',
+            'types.min' => 'Azyndan bir typ saýlanmalydyr.',
+            'types.*.int' => 'Her typ ID diňe sanlardan durmalydyr.',
+            'types.*.exists' => 'Saýlanan typ bar bolan ID-laryň biri däl.',
+        ];
+    }
+
 }

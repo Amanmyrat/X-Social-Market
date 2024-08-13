@@ -15,4 +15,13 @@ class OtpSendRequest extends FormRequest
             'phone' => ['required', 'integer'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'phone.required' => 'Telefon belgi hökmanydyr.',
+            'phone.integer' => 'Telefon belgi diňe sanlardan durmalydyr.',
+        ];
+    }
+
 }

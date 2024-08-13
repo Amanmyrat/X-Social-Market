@@ -27,4 +27,16 @@ class ReportRequest extends FormRequest
 
         return $rules;
     }
+
+    public function messages(): array
+    {
+        return [
+            'report_type_id.required' => 'Hasabat görnüşi ID-si hökmanydyr.',
+            'report_type_id.integer' => 'Hasabat görnüşi ID-si diňe sanlardan durmalydyr.',
+            'report_type_id.exists' => 'Girizilen hasabat görnüşi ID-si bar bolan ID-laryň biri däl.',
+            'message.required' => 'Habar hökmanydyr.',
+            'message.string' => 'Habar dogry görnüşde giriziň.',
+        ];
+    }
+
 }

@@ -19,4 +19,23 @@ class CategoryUpdateRequest extends FormRequest
             'has_product' => ['filled', 'bool'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'title.filled' => 'Ady girizilen bolmalydyr.',
+            'title.string' => 'Ady dogry görnüşde giriziň.',
+            'title.max' => 'Ady iň köp 255 harpdan durmalydyr.',
+            'description.filled' => 'Beýany girizilen bolmalydyr.',
+            'description.string' => 'Beýany dogry görnüşde giriziň.',
+            'description.max' => 'Beýany iň köp 255 harpdan durmalydyr.',
+            'icon.filled' => 'Ikon girizilen bolmalydyr.',
+            'icon.image' => 'Ikon surat görnüşinde bolmalydyr.',
+            'is_active.filled' => 'Aktiwlik ýagdaýy girizilen bolmalydyr.',
+            'is_active.bool' => 'Aktiwlik ýagdaýy dogry görnüşde bolmalydyr.',
+            'has_product.filled' => 'Önüm barlygy girizilen bolmalydyr.',
+            'has_product.bool' => 'Önüm barlygy dogry görnüşde bolmalydyr.',
+        ];
+    }
+
 }

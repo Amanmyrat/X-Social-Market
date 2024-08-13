@@ -42,6 +42,13 @@ class RegisterRequest extends FormRequest
     {
         return [
             'phone.exists' => 'Bu telefon belgisi ulanylýar.',
+            'phone.required' => 'Telefon belgi hökmanydyr.',
+            'phone.integer' => 'Telefon belgi diňe sanlardan durmalydyr.',
+            'phone.unique' => 'Bu telefon belgi eýýäm bar.',
+            'device_token.required' => 'Enjam tokeni hökmanydyr.',
+            'device_token.string' => 'Enjam tokeni dogry görnüşde giriziň.',
+            'password.required' => 'Parol hökmanydyr.',
+            'password.confirmed' => 'Parollar gabat gelmeli.',
         ];
     }
 

@@ -61,4 +61,26 @@ class PostUpdateRequest extends FormRequest
             }
         });
     }
+
+    public function messages(): array
+    {
+        return [
+            'category_id.required' => 'Kategoriýa ID-si hökmanydyr.',
+            'category_id.int' => 'Kategoriýa ID-si diňe sanlardan durmalydyr.',
+            'category_id.exists' => 'Saýlanan kategoriýa bar bolan ID-laryň biri däl.',
+            'caption.string' => 'Mazmun dogry görnüşde giriziň.',
+            'caption.max' => 'Mazmun iň köp 255 harpdan durmalydyr.',
+            'price.numeric' => 'Bahasy san görnüşinde bolmalydyr.',
+            'description.string' => 'Beýany dogry görnüşde giriziň.',
+            'description.max' => 'Beýan iň köp 255 harpdan durmalydyr.',
+            'location.string' => 'Ýerleşýän ýer dogry görnüşde giriziň.',
+            'location.max' => 'Ýerleşýän ýer iň köp 255 harpdan durmalydyr.',
+            'can_comment.boolean' => 'Teswir ýazylyp bilinýänligi dogry görnüşde bolmalydyr.',
+            'medias.array' => 'Media faýllary sanaw görnüşinde bolmalydyr.',
+            'medias.max' => 'Iň köp 8 media faýl goýulyp bilner.',
+            'medias.*.file' => 'Her bir media faýl faýl görnüşinde bolmalydyr.',
+            'medias.*.mimes' => 'Media faýllar şu formatlarda bolmalydyr: jpg, jpeg, png, mp4, webp, gif, mpeg4, mov.',
+        ];
+    }
+
 }

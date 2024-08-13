@@ -16,4 +16,16 @@ class SizeDeleteRequest extends FormRequest
             'sizes.*' => 'int|exists:sizes,id',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'sizes.required' => 'Ölçegleri saýlamak hökmanydyr.',
+            'sizes.array' => 'Ölçegler sanaw görnüşinde bolmalydyr.',
+            'sizes.min' => 'Azyndan bir ölçeg saýlanmalydyr.',
+            'sizes.*.int' => 'Her ölçeg ID-si diňe sanlardan durmalydyr.',
+            'sizes.*.exists' => 'Saýlanan ölçeg bar bolan ID-laryň biri däl.',
+        ];
+    }
+
 }

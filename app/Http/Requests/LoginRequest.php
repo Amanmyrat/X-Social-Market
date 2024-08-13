@@ -116,8 +116,13 @@ class LoginRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'login.required' => 'Giriş maglumatlary hökmanydyr.',
+            'password.required' => 'Parol hökmanydyr.',
+            'device_token.filled' => 'Enjam tokeni girizilen bolmalydyr.',
+            'device_token.string' => 'Enjam tokeni dogry görnüşde giriziň.',
             'auth.failed' => 'Ulanyjy ady ýa-da açar sözi nädogry.',
             'login.exists' => 'Bu telefon belgisi ulanylýar.',
         ];
     }
+
 }

@@ -28,59 +28,59 @@ class ProductDetailsValidation implements Rule
         }
 
         if (! isset($value) || ! is_array($value)) {
-            $this->errorMessage = 'Product is required and must be array';
+            $this->errorMessage = 'Önüm hökmanydyr we sanaw görnüşinde bolmalydyr.';
 
             return false;
         }
 
         if (! isset($value['brand_id']) || ! Brand::where('id', $value['brand_id'])->exists()) {
-            $this->errorMessage = 'The selected product brand is invalid.';
+            $this->errorMessage = 'Saýlanan önüm markasy nädogrydyr.';
 
             return false;
         }
 
         if (! isset($value['gender']) || ! in_array($value['gender'], ['male', 'female'])) {
-            $this->errorMessage = 'Product gender must be male or female.';
+            $this->errorMessage = 'Önüm jynsy diňe "erkek" ýa-da "aýal" bolup biler.';
 
             return false;
         }
 
         if (! isset($value['options']) || ! is_array($value['options'])) {
-            $this->errorMessage = 'Product options must be an array.';
+            $this->errorMessage = 'Önüm opsiýalary sanaw görnüşinde bolmalydyr.';
 
             return false;
         }
 
         $option = $value['options'];
         if (! isset($option['colors']) || ! is_array($option['colors'])) {
-            $this->errorMessage = 'Product colors must be an array.';
+            $this->errorMessage = 'Önüm reňkleri sanaw görnüşinde bolmalydyr.';
 
             return false;
         }
         foreach ($option['colors'] as $color) {
             if (! isset($color['color_id']) || ! Color::where('id', $color['color_id'])->exists()) {
-                $this->errorMessage = 'The selected product color is invalid.';
+                $this->errorMessage = 'Saýlanan önüm reňki nädogrydyr.';
 
                 return false;
             }
             if (! isset($color['sizes']) || ! is_array($color['sizes'])) {
-                $this->errorMessage = 'Product sizes must be an array.';
+                $this->errorMessage = 'Önüm ölçegleri sanaw görnüşinde bolmalydyr.';
 
                 return false;
             }
             foreach ($color['sizes'] as $size) {
                 if (! isset($size['size_id']) || ! Size::where('id', $size['size_id'])->exists()) {
-                    $this->errorMessage = 'The selected product size is invalid.';
+                    $this->errorMessage = 'Saýlanan önüm ölçegi nädogrydyr.';
 
                     return false;
                 }
                 if (! isset($size['price']) || ! is_numeric($size['price']) || $size['price'] < 0) {
-                    $this->errorMessage = 'Product price must be a non-negative number.';
+                    $this->errorMessage = 'Önüm bahasy 0-dan kiçi bolmadyk san bolmalydyr.';
 
                     return false;
                 }
                 if (! isset($size['stock']) || ! is_numeric($size['stock']) || $size['stock'] < 0) {
-                    $this->errorMessage = 'Product stock must be a non-negative integer.';
+                    $this->errorMessage = 'Önüm stogy 0-dan kiçi bolmadyk san bolmalydyr.';
 
                     return false;
                 }
@@ -92,6 +92,6 @@ class ProductDetailsValidation implements Rule
 
     public function message(): string
     {
-        return $this->errorMessage ?: 'The product information is invalid.';
+        return $this->errorMessage ?: 'Önüm maglumatlary nädogrydyr.';
     }
 }

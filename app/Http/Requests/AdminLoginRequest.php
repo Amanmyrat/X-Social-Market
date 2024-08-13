@@ -31,4 +31,14 @@ class AdminLoginRequest extends FormRequest
             'password' => 'required',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'Email adresi hökmanydyr.',
+            'email.email' => 'Dogry email adresini giriziň.',
+            'password.required' => 'Parol hökmanydyr.',
+        ];
+    }
+
 }

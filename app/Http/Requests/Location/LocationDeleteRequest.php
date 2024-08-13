@@ -16,4 +16,16 @@ class LocationDeleteRequest extends FormRequest
             'locations.*' => 'int|exists:locations,id',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'locations.required' => 'Ýerler saýlamak hökmanydyr.',
+            'locations.array' => 'Ýerler sanaw görnüşinde bolmalydyr.',
+            'locations.min' => 'Azyndan bir ýer saýlanmalydyr.',
+            'locations.*.int' => 'Her ýer ID diňe sanlardan durmalydyr.',
+            'locations.*.exists' => 'Saýlanan ýer bar bolan ID-laryň biri däl.',
+        ];
+    }
+
 }

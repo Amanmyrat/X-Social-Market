@@ -16,4 +16,16 @@ class PostDeleteRequest extends FormRequest
             'posts.*' => 'int|exists:posts,id',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'posts.required' => 'Postlary saýlamak hökmanydyr.',
+            'posts.array' => 'Postlar sanaw görnüşinde bolmalydyr.',
+            'posts.min' => 'Azyndan bir post saýlanmalydyr.',
+            'posts.*.int' => 'Her post ID diňe sanlardan durmalydyr.',
+            'posts.*.exists' => 'Saýlanan post bar bolan ID-laryň biri däl.',
+        ];
+    }
+
 }

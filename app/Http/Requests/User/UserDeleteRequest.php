@@ -16,4 +16,16 @@ class UserDeleteRequest extends FormRequest
             'users.*' => 'int|exists:users,id',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'users.required' => 'Ulanyjylary saýlamak hökmanydyr.',
+            'users.array' => 'Ulanyjylar sanaw görnüşinde bolmalydyr.',
+            'users.min' => 'Azyndan bir ulanyjy saýlanmalydyr.',
+            'users.*.int' => 'Her ulanyjy ID-si diňe sanlardan durmalydyr.',
+            'users.*.exists' => 'Saýlanan ulanyjy bar bolan ID-laryň biri däl.',
+        ];
+    }
+
 }

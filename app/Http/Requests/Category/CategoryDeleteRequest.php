@@ -16,4 +16,16 @@ class CategoryDeleteRequest extends FormRequest
             'categories.*' => 'int|exists:categories,id',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'categories.required' => 'Kategorileri saýlamak hökmanydyr.',
+            'categories.array' => 'Kategoriler sanaw görnüşinde bolmalydyr.',
+            'categories.min' => 'Azyndan bir kategoriýa saýlanmalydyr.',
+            'categories.*.int' => 'Her kategoriýa ID diňe sanlardan durmalydyr.',
+            'categories.*.exists' => 'Saýlanan kategoriýa bar bolan ID-laryň biri däl.',
+        ];
+    }
+
 }

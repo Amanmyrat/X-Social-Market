@@ -33,6 +33,7 @@ class PostDetailsTransformer extends TransformerAbstract
             'created_at' => $post->created_at,
             'rating' => $post->ratings_avg_rating,
             'media' => $post->image_urls,
+            'is_active' => $post->is_active,
             'isFavorite' => in_array($post->id, $this->userInteractions->favoritePostIds),
             'isBookmark' => in_array($post->id, $this->userInteractions->bookmarkedPostIds),
             'isViewed' => in_array($post->id, $this->userInteractions->viewedPostIds),

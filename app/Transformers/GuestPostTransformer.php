@@ -29,6 +29,7 @@ class GuestPostTransformer extends TransformerAbstract
             'isViewed' => false,
             'is_following' => null,
             'has_unviewed_story' => null,
+            'is_active' => $post->is_active,
         ];
     }
 

@@ -14,6 +14,7 @@ class PostSimpleTransformer extends TransformerAbstract
             'caption' => $post->caption,
             'price' => $post->price,
             'media' => $post->first_image_urls,
+            'is_active' => $post->is_active,
         ];
     }
 }

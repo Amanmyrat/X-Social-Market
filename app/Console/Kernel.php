@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
                 ->update(['is_online' => false]);
         })->everyMinute();
         $schedule->command(RefreshMaterializedView::class)->everyFiveMinutes();
+        $schedule->command('stories:delete-overdue')->everySixHours();
     }
 
     /**

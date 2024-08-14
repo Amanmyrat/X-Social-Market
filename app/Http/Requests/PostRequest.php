@@ -26,7 +26,7 @@ class PostRequest extends FormRequest
              * Required if category has product true
              *
              * @example {
-             *   "product": {
+             *   {
              *     "brand_id": 1,
              *     "gender": "male",
              *     "options": {
@@ -40,7 +40,6 @@ class PostRequest extends FormRequest
              *       }]
              *     }
              *   }
-             * }
              */
             'product' => [new ProductDetailsValidation((int) request('category_id'))],
         ];

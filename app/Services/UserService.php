@@ -36,19 +36,18 @@ class UserService
 
         $blockedUsersIds = Auth::user()->blockedUsers()->pluck('users.id')->toArray();
 
-        $users = User::with('profile')
+        return User::with('profile')
             ->whereNotIn('id', $blockedUsersIds)
             ->where('blocked_at', null)
             ->when(isset($validated['search_query']), function ($query) use ($validated) {
-                $search_query = '%'.strtolower($validated['search_query']).'%';
+                $search_query = '%' . strtolower($validated['search_query']) . '%';
 
                 return $query->whereRaw('LOWER(username) LIKE ?', [$search_query])
                     ->orWhereHas('profile', function ($query) use ($search_query) {
                         $query->whereRaw('LOWER(full_name) LIKE ?', [$search_query]);
                     });
-            });
+            })->paginate($limit);
 
-        return $users->paginate($limit);
     }
 
     public function setOnlineStatus(User $user, bool $isOnline)

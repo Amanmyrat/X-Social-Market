@@ -49,10 +49,13 @@ Route::prefix('guest')->group(function () {
         Route::post('/category/{category}', [GuestPostController::class, 'categoryPosts']);
         Route::post('/search', [GuestPostController::class, 'search']);
         Route::post('/filter', [GuestPostController::class, 'filter']);
+
+        Route::post('/user/{user}', [GuestPostController::class, 'userPosts']);
     });
 
-    Route::prefix('users/profile')->group(function () {
-        Route::post('/get/{user}', [GuestUserController::class, 'get']);
+    Route::prefix('users')->group(function (){
+        Route::post('/search', [GuestUserController::class, 'search']);
+        Route::post('/profile/get/{user}', [GuestUserController::class, 'get']);
     });
 });
 

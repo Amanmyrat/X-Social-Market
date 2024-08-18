@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\Post\PostFilterRequest;
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\User;
 use App\Services\PostService;
 use App\Traits\HandlesUserPostInteractions;
 use App\Traits\PreparesPostQuery;
@@ -124,4 +125,16 @@ class GuestPostController extends ApiBaseController
 
         return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }
+
+    /**
+     * User posts list
+     */
+    public function userPosts(User $user): JsonResponse
+    {
+        $postsQuery = $this->getUserPostsQuery($user);
+        $posts = $postsQuery->paginate(15);
+
+        return $this->respondWithCollection($posts, new PostSimpleTransformer());
+    }
+
 }

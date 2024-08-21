@@ -12,6 +12,7 @@ use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class UserController extends ApiBaseController
@@ -60,7 +61,11 @@ class UserController extends ApiBaseController
         $validated = $request->validate(
             [
                 'password' => ['required', 'confirmed', Password::defaults()],
-                'phone' => ['required', 'integer'],
+                'phone' => [
+                    'required',
+                    'integer',
+                    Rule::exists('users', 'phone'),
+                ],
             ]
         );
 

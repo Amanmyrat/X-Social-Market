@@ -121,7 +121,7 @@ class PostController extends ApiBaseController
             ->where('posts.category_id', $post->category_id)
             ->activeAndNotBlocked(Auth::id())
             ->inRandomOrder()
-            ->limit(15)
+            ->limit(4)
             ->get();
 
         return $this->respondWithCollection($posts, new PostSimpleTransformer());

@@ -146,6 +146,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
 
         Route::post('/{post}/comments', [PostCommentController::class, 'comments']);
         Route::post('/{post}/comment', [PostCommentController::class, 'addComment']);
+        Route::post('/{postComment}/comment/delete', [PostCommentController::class, 'deleteComment']);
 
         Route::post('/{post}/ratings', [PostRatingController::class, 'ratings']);
         Route::post('/{post}/rating', [PostRatingController::class, 'addRating']);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\PostComment\PostCommentCreateRequest;
 use App\Models\Post;
+use App\Models\PostComment;
 use App\Services\PostCommentService;
 use App\Transformers\CommentTransformer;
 use Auth;
@@ -36,5 +37,17 @@ class PostCommentController extends ApiBaseController
         $this->service->addComment($validated, $post, Auth::user());
 
         return $this->respondWithMessage(trans('notification.comment_success'));
+    }
+
+    /**
+     * Delete comment
+     */
+    public function deleteComment(PostComment $postComment): JsonResponse
+    {
+        abort_if($postComment->user_id != Auth::id(), 403, 'Only author can delete the comment');
+
+        $postComment->delete();
+
+        return $this->respondWithMessage('Comment deleted');
     }
 }

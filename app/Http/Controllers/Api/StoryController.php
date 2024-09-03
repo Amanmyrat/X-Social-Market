@@ -105,7 +105,8 @@ class StoryController extends ApiBaseController
 
         $activeStoriesCondition = function ($query) {
             $query->where('valid_until', '>', now())
-                ->whereNull('blocked_at');
+                ->whereNull('blocked_at')
+                ->where('is_active', true);
         };
 
         $followings = $user->followings()

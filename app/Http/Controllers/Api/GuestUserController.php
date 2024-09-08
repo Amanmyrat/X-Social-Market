@@ -8,7 +8,6 @@ use App\Transformers\UserSimpleTransformer;
 use App\Transformers\UserWithProfileTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class GuestUserController extends ApiBaseController
 {
@@ -50,7 +49,7 @@ class GuestUserController extends ApiBaseController
             })->paginate($limit);
 
 
-        return $this->respondWithCollection($users, new UserSimpleTransformer());
+        return $this->respondWithPaginator($users, new UserSimpleTransformer());
     }
 
 }

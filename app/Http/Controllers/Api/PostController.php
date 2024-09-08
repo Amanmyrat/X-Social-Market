@@ -237,7 +237,7 @@ class PostController extends ApiBaseController
         $postsQuery = $this->getUserPostsQuery($user);
         $posts = $postsQuery->paginate(15);
 
-        return $this->respondWithCollection($posts, new PostSimpleTransformer());
+        return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }
 
     /**

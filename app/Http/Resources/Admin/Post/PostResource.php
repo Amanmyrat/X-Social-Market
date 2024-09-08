@@ -24,6 +24,7 @@ class PostResource extends JsonResource
         if ($this->detailsEnabled) {
             return [
                 'id' => $this->resource->id,
+                'type' => $this->resource->type,
                 'caption' => $this->resource->caption,
                 'price' => $this->resource->price,
                 'description' => $this->resource->description,
@@ -44,6 +45,7 @@ class PostResource extends JsonResource
         } else {
             return [
                 'id' => $this->resource->id,
+                'type' => $this->resource->type,
                 'caption' => $this->resource->caption,
                 'user' => $this->resource->user->username,
                 'price' => $this->resource->price,

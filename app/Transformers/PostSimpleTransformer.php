@@ -11,6 +11,7 @@ class PostSimpleTransformer extends TransformerAbstract
     {
         return [
             'id' => $post->id,
+            'type' => $post->type,
             'caption' => $post->caption,
             'price' => $post->price,
             'media' => $post->first_image_urls,

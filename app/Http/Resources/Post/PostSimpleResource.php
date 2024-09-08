@@ -17,6 +17,7 @@ class PostSimpleResource extends JsonResource
     {
         return [
             'id' => $this->resource->id,
+            'type' => $this->resource->type,
             'caption' => $this->resource->caption,
             'price' => $this->resource->price,
             'media' => $this->resource->first_image_urls,

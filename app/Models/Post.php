@@ -34,6 +34,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property string $location
  * @property bool $can_comment
  * @property bool $is_active
+ * @property string $type
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property MediaCollection<int, Media> $media
@@ -106,6 +107,7 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
         'is_active',
         'blocked_at',
         'block_reason',
+        'type',
     ];
 
     /**

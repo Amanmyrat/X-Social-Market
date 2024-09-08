@@ -24,6 +24,7 @@ class PostDetailsTransformer extends TransformerAbstract
     {
         return [
             'id' => $post->id,
+            'type' => $post->type,
             'category_id' => $post->category_id,
             'caption' => $post->caption,
             'price' => $post->price,

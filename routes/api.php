@@ -134,8 +134,10 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/recommended2', [PostController::class, 'recommendedPosts2']);
         Route::post('/my', [PostController::class, 'myPosts']);
         Route::post('/user/{user}', [PostController::class, 'userPosts']);
-        Route::post('/create', [PostController::class, 'create']);
-        Route::post('/{post}/update', [PostController::class, 'update']);
+        Route::post('/post/create', [PostController::class, 'createPost']);
+        Route::post('/product/create', [PostController::class, 'createProduct']);
+        Route::post('/post/{post}/update', [PostController::class, 'updatePost']);
+        Route::post('/product/{post}/update', [PostController::class, 'updateProduct']);
         Route::post('/{post}/delete', [PostController::class, 'delete']);
         Route::post('/{post}/details', [PostController::class, 'postDetails']);
         Route::post('/{post}/related', [PostController::class, 'relatedPosts']);

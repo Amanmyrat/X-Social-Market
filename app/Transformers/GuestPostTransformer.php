@@ -16,6 +16,7 @@ class GuestPostTransformer extends TransformerAbstract
     {
         return [
             'id' => $post->id,
+            'type' => $post->type,
             'caption' => $post->caption,
             'price' => $post->price,
             'description' => $post->description,

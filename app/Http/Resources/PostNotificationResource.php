@@ -18,6 +18,7 @@ class PostNotificationResource extends JsonResource
     public function toArray($request): array
     {
         $className = (new ReflectionClass($this->resource->notifiable))->getShortName();
+//        $className = 'a';
         $notificationType = strtolower($className);
 
         $prefix = 'post';

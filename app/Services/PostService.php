@@ -9,6 +9,7 @@ use Auth;
 use DB;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Str;
 use Throwable;
@@ -18,24 +19,14 @@ class PostService
     /**
      * @throws Throwable
      */
-    public function create(array $validated, int $userId): Post
+    public function createProduct(array $validated, int $userId): Post
     {
         $postData = Arr::except($validated, 'product');
         $productData = Arr::only($validated, 'product')['product'] ?? [];
 
         return DB::transaction(function () use ($postData, $productData, $userId) {
-            $activePostsCount = Post::where('user_id', $userId)->where('is_active', true)->count();
-            $isActive = $activePostsCount >= 10;
 
-            $post = Post::create($postData + [
-                'user_id' => $userId,
-                'is_active' => $isActive,
-            ]);
-
-            $post->addMultipleMediaFromRequest(['medias'])
-                ->each(function ($fileAdder) {
-                    $fileAdder->toMediaCollection('post_medias');
-                });
+            $post = $this->create($postData, $userId);
 
             if ($post->category->has_product) {
                 $product = new Product($productData);
@@ -63,14 +54,42 @@ class PostService
     /**
      * @throws Throwable
      */
-    public function update(Post $post, array $validated): Post
+    public function createPost(array $postData, int $userId): Post
+    {
+        return DB::transaction(function () use ($postData, $userId) {
+            return $this->create($postData, $userId);
+        });
+    }
+
+    private function create(array $postData, int $userId): Model|Post
+    {
+        $activePostsCount = Post::where('user_id', $userId)->where('is_active', true)->count();
+        $isActive = $activePostsCount >= 10;
+
+        $post = Post::create($postData + [
+                'user_id' => $userId,
+                'is_active' => $isActive,
+            ]);
+
+        $post->addMultipleMediaFromRequest(['medias'])
+            ->each(function ($fileAdder) {
+                $fileAdder->toMediaCollection('post_medias');
+            });
+
+        return $post;
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function updateProduct(Post $post, array $validated): Post
     {
         $postData = Arr::except($validated, 'product');
         $productData = Arr::only($validated, 'product')['product'] ?? [];
 
         return DB::transaction(function () use ($postData, $productData, $post) {
 
-            if(isset($postData['medias'])){
+            if (isset($postData['medias'])) {
                 $post->clearMediaCollection();
 
                 $post->addMultipleMediaFromRequest(['medias'])
@@ -112,6 +131,27 @@ class PostService
         });
     }
 
+    /**
+     * @throws Throwable
+     */
+    public function updatePost(Post $post, array $postData): Post
+    {
+        return DB::transaction(function () use ($postData, $post) {
+
+            if (isset($postData['medias'])) {
+                $post->clearMediaCollection();
+
+                $post->addMultipleMediaFromRequest(['medias'])
+                    ->each(function ($fileAdder) {
+                        $fileAdder->toMediaCollection('post_medias');
+                    });
+            }
+            $post->update($postData);
+
+            return $post;
+        });
+    }
+
     public function searchPosts(Request $request): LengthAwarePaginator
     {
         $limit = $request->get('limit');
@@ -136,7 +176,7 @@ class PostService
             })
             ->where(function ($q) use ($request) {
                 if (isset($request->search_query)) {
-                    $search_query = '%'.strtolower($request->search_query).'%';
+                    $search_query = '%' . strtolower($request->search_query) . '%';
                     $q->where(function ($q) use ($search_query) {
                         $q->whereRaw('LOWER(posts.caption) LIKE ?', [$search_query])
                             ->orWhereRaw('LOWER(posts.description) LIKE ?', [$search_query]);
@@ -153,7 +193,7 @@ class PostService
                     break;
                 default:
                     $sort = $this->getSort($s);
-                    $posts = $posts->orderBy('posts.'.$sort[0], $sort[1]);
+                    $posts = $posts->orderBy('posts.' . $sort[0], $sort[1]);
             }
         } else {
             $posts = $posts->inRandomOrder();
@@ -174,20 +214,20 @@ class PostService
             $query->whereBetween('posts.price', [$filters['price_min'], $filters['price_max']]);
         }
 
-        if (! empty($filters['brands']) || ! empty($filters['colors']) || ! empty($filters['sizes'])) {
+        if (!empty($filters['brands']) || !empty($filters['colors']) || !empty($filters['sizes'])) {
 
             $query->whereHas('product', function ($query) use ($filters) {
-                if (! empty($filters['brands'])) {
+                if (!empty($filters['brands'])) {
                     $query->whereIn('brand_id', $filters['brands']);
                 }
 
-                if (! empty($filters['colors'])) {
+                if (!empty($filters['colors'])) {
                     $query->whereHas('colors', function ($query) use ($filters) {
                         $query->whereIn('colors.id', $filters['colors']);
                     });
                 }
 
-                if (! empty($filters['sizes'])) {
+                if (!empty($filters['sizes'])) {
                     $query->whereHas('sizes', function ($query) use ($filters) {
                         $query->whereIn('sizes.id', $filters['sizes']);
                     });
@@ -195,7 +235,7 @@ class PostService
             });
         }
 
-        if (! empty($filters['sort'])) {
+        if (!empty($filters['sort'])) {
             $direction = Str::startsWith($filters['sort'], '-') ? 'desc' : 'asc';
             $sortField = ltrim($filters['sort'], '-');
 

@@ -6,6 +6,8 @@ use App\Enum\ErrorMessage;
 use App\Http\Requests\Post\PostFilterRequest;
 use App\Http\Requests\PostRequest;
 use App\Http\Requests\PostUpdateRequest;
+use App\Http\Requests\ProductRequest;
+use App\Http\Requests\ProductUpdateRequest;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
@@ -35,11 +37,11 @@ class PostController extends ApiBaseController
     }
 
     /**
-     * Create post
+     * Create product
      *
      * @throws Throwable
      */
-    public function create(PostRequest $request): JsonResponse
+    public function createProduct(ProductRequest $request): JsonResponse
     {
         abort_if(
             Auth::user()->type != User::TYPE_SELLER,
@@ -50,7 +52,7 @@ class PostController extends ApiBaseController
         $validated = $request->validated();
 
         try {
-            $post = $this->service->create($validated, Auth::user()->id);
+            $post = $this->service->createProduct($validated, Auth::user()->id);
 
             $userInteractionsDTO = $this->getUserInteractionsDTO();
 
@@ -67,11 +69,43 @@ class PostController extends ApiBaseController
     }
 
     /**
-     * Update post
+     * Create post
      *
      * @throws Throwable
      */
-    public function update(Post $post, PostUpdateRequest $request): JsonResponse
+    public function createPost(PostRequest $request): JsonResponse
+    {
+        abort_if(
+            Auth::user()->type != User::TYPE_SELLER,
+            403,
+            ErrorMessage::UNAUTHORIZED_ACCESS_ERROR->value
+        );
+
+        $validated = $request->validated();
+
+        try {
+            $post = $this->service->createPost($validated, Auth::user()->id);
+
+            $userInteractionsDTO = $this->getUserInteractionsDTO();
+
+            $post->load(['user.profile', 'media', 'product'])
+                ->loadAvg('ratings', 'rating')
+                ->loadCount(['favorites', 'comments', 'views']);
+
+            return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO, []));
+
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
+
+    }
+
+    /**
+     * Update product
+     *
+     * @throws Throwable
+     */
+    public function updateProduct(Post $post, ProductUpdateRequest $request): JsonResponse
     {
         abort_if(
             Auth::id() != $post->user_id,
@@ -82,7 +116,37 @@ class PostController extends ApiBaseController
         $validated = $request->validated();
 
         try {
-            $post = $this->service->update($post, $validated);
+            $post = $this->service->updateProduct($post, $validated);
+
+            $userInteractionsDTO = $this->getUserInteractionsDTO();
+
+            $post->load(['user.profile', 'media', 'product'])
+                ->loadAvg('ratings', 'rating')
+                ->loadCount(['favorites', 'comments', 'views']);
+
+            return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO, []));
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
+    }
+
+    /**
+     * Update post
+     *
+     * @throws Throwable
+     */
+    public function updatePost(Post $post, PostUpdateRequest $request): JsonResponse
+    {
+        abort_if(
+            Auth::id() != $post->user_id,
+            403,
+            ErrorMessage::UNAUTHORIZED_ACCESS_ERROR->value
+        );
+
+        $validated = $request->validated();
+
+        try {
+            $post = $this->service->updatePost($post, $validated);
 
             $userInteractionsDTO = $this->getUserInteractionsDTO();
 

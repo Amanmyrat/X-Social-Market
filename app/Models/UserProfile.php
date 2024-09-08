@@ -152,17 +152,37 @@ class UserProfile extends BaseModel implements HasMedia
             ->performOnCollections('user_images');
     }
 
+//    public function getImageUrlsAttribute(): ?array
+//    {
+//        if (! $this->hasMedia('user_images')) {
+//            return null;
+//        }
+//
+//        return [
+//            'original_url' => $this->getFirstMedia('user_images')->getTemporaryUrl(Carbon::now()->addDays(3)),
+//            'large_url' => $this->getFirstMedia('user_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
+//            'medium_url' => $this->getFirstMedia('user_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
+//            'thumb_url' => $this->getFirstMedia('user_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
+//        ];
+//    }
+
     public function getImageUrlsAttribute(): ?array
     {
-        if (! $this->hasMedia('user_images')) {
+        // Check if media already loaded to avoid multiple queries
+        $mediaItem = $this->getFirstMedia('user_images');
+
+        if (!$mediaItem) {
             return null;
         }
 
+        // Generate URLs with caching to avoid repetitive method calls
+        $expiresAt = Carbon::now()->addDays(3);
         return [
-            'original_url' => $this->getFirstMedia('user_images')->getTemporaryUrl(Carbon::now()->addDays(3)),
-            'large_url' => $this->getFirstMedia('user_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
-            'medium_url' => $this->getFirstMedia('user_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
-            'thumb_url' => $this->getFirstMedia('user_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
+            'original_url' => $mediaItem->getTemporaryUrl($expiresAt),
+            'large_url' => $mediaItem->getTemporaryUrl($expiresAt, 'large'),
+            'medium_url' => $mediaItem->getTemporaryUrl($expiresAt, 'medium'),
+            'thumb_url' => $mediaItem->getTemporaryUrl($expiresAt, 'thumb'),
         ];
     }
+
 }

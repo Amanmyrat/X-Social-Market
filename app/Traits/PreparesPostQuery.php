@@ -18,7 +18,7 @@ trait PreparesPostQuery
     private function getUserPostsQuery($user)
     {
         return Post::with(['media'])
-            ->where('type','post')
+            ->where('posts.type','post')
             ->where('posts.user_id', $user->id)
             ->activeAndNotBlocked(Auth::id())
             ->latest();
@@ -27,7 +27,7 @@ trait PreparesPostQuery
     private function getUserProductsQuery($user)
     {
         return Post::with(['media'])
-            ->where('type','product')
+            ->where('posts.type','product')
             ->where('posts.user_id', $user->id)
             ->activeAndNotBlocked(Auth::id())
             ->latest();

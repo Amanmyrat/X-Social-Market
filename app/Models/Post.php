@@ -286,7 +286,7 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
                 $join->on('users.id', '=', 'blocked_users.blocked_user_id')
                     ->where('blocked_users.user_id', '=', $userId); // Current user is blocking
             })
-            ->where('is_active', true)
+            ->where('posts.is_active', true)
             ->whereNull('users.blocked_at') // Admin has not blocked the user
             ->where('users.is_active', true) // Admin has not disabled user
             ->whereNull('blocked_users.id') // Current user has not blocked the user
@@ -360,7 +360,7 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
                 $join->on('users.id', '=', 'blocked_users.blocked_user_id')
                     ->where('blocked_users.user_id', '=', $userId); // Current user is blocking
             })
-            ->where('is_active', true)
+            ->where('posts.is_active', true)
             ->whereNull('users.blocked_at') // Admin has not blocked the user
             ->where('users.is_active', true) // Admin has not disabled user
             ->whereNull('blocked_users.id') // Current user has not blocked the user
@@ -387,7 +387,7 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
                 $join->on('users.id', '=', 'blocked_users.blocked_user_id')
                     ->where('blocked_users.user_id', '=', $userId); // Current user is blocking
             })
-            ->where('is_active', true)
+            ->where('posts.is_active', true)
             ->whereNull('users.blocked_at') // Admin has not blocked the user
             ->where('users.is_active', true) // Admin has not disabled the user
             ->whereNull('blocked_users.id') // Current user has not blocked the user
@@ -418,7 +418,7 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
                 $join->on('users.id', '=', 'blocked_users.blocked_user_id')
                     ->where('blocked_users.user_id', $userId);
             })
-            ->where('is_active', true)
+            ->where('posts.is_active', true)
             ->whereNull('users.blocked_at') // Admin has not blocked the user
             ->where('users.is_active', true) // Admin has not disabled the user
             ->whereNull('blocked_users.id'); // Current user has not blocked the user

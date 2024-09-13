@@ -13,7 +13,8 @@ class ProductTransformer extends TransformerAbstract
             'id' => $product->id,
             'brand' => $product->brand,
             'gender' => $product->gender,
-            'options' => $product->options,
+            'colors' => $product->colors,
+            'sizes' => $product->sizes,
         ];
     }
 }

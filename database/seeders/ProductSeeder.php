@@ -29,38 +29,52 @@ class ProductSeeder extends Seeder
         DB::table('posts')->whereIn('category_id', $categoryIdsWithProducts)
             ->orderBy('id')->chunk(1000, function ($posts) use ($faker, $brandIds, $colorIds, $sizeIds) {
                 $products = [];
+                $productColorInserts = [];
+                $productSizeInserts = [];
                 $createdAt = now()->toDateTimeString();
+
                 foreach ($posts as $post) {
+                    // Prepare product data
                     $productData = [
                         'post_id' => $post->id,
                         'brand_id' => $faker->randomElement($brandIds),
                         'gender' => $faker->randomElement(['male', 'female']),
-                        'options' => [],
                         'created_at' => $createdAt,
                         'updated_at' => $createdAt,
                     ];
-                    $numColors = $faker->numberBetween(1, 3);
-                    for ($j = 0; $j < $numColors; $j++) {
-                        $color_id = $faker->randomElement($colorIds);
-                        $numSizes = $faker->numberBetween(1, 3);
-                        $sizes = [];
-                        for ($k = 0; $k < $numSizes; $k++) {
-                            $sizes[] = [
-                                'size_id' => $faker->randomElement($sizeIds),
-                                'price' => $faker->numberBetween(10, 500),
-                                'stock' => $faker->numberBetween(0, 100),
-                            ];
-                        }
-                        $productData['options']['colors'][] = [
-                            'color_id' => $color_id,
-                            'sizes' => $sizes,
-                        ];
-                    }
-                    $productData['options'] = json_encode($productData['options']);
                     $products[] = $productData;
                 }
+
+                // Bulk insert products
                 Product::insert($products);
 
+                // Fetch the last inserted products IDs to link colors and sizes
+                $lastInsertedProducts = Product::latest('id')->take(count($products))->get();
+
+                foreach ($lastInsertedProducts as $product) {
+                    // Randomly select and prepare color relationships
+                    $selectedColorIds = $faker->randomElements($colorIds, $faker->numberBetween(1, 3));
+                    foreach ($selectedColorIds as $colorId) {
+                        $productColorInserts[] = [
+                            'product_id' => $product->id,
+                            'color_id' => $colorId,
+                        ];
+                    }
+
+                    // Randomly select and prepare size relationships
+                    $selectedSizeIds = $faker->randomElements($sizeIds, $faker->numberBetween(1, 3));
+                    foreach ($selectedSizeIds as $sizeId) {
+                        $productSizeInserts[] = [
+                            'product_id' => $product->id,
+                            'size_id' => $sizeId,
+                        ];
+                    }
+                }
+
+                // Bulk insert color and size relationships
+                DB::table('product_color')->insert($productColorInserts);
+                DB::table('product_size')->insert($productSizeInserts);
             });
+
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Contracts\NotifiableModel;
-use Auth;
 use DB;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -81,6 +80,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @method static Builder|Post whereUserId($value)
  * @method static Builder|Post withIsFollowing()
  * @method static Builder|Post withRecommendationScore(int $userId)
+ * @method static Builder|Post latestActivePosts(int $userId)
  * @method static Builder|Post activeAndNotBlocked(?int $userId)
  * @method static Builder|Post activeNotBlockedAndWithFollowingStatus(?int $userId)
  *
@@ -163,6 +163,7 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
     {
         return $this->hasMany(PostComment::class)
             ->where('parent_id', 0)
+            ->where('is_active', true)
             ->orderByDesc('created_at');
     }
 
@@ -202,25 +203,6 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
     }
 
     /**
-     * Scope a query to add 'is_following' attribute indicating if the post's creator is followed by the given user.
-     */
-    public function scopeWithIsFollowing($query)
-    {
-        /** @var User $user */
-        $user = Auth::user();
-
-        if (! $user) {
-            return $query;
-        }
-
-        return $query->leftJoin('followers', function ($join) use ($user) {
-            $join->on('followers.user_id', '=', 'posts.user_id')
-                ->where('followers.follow_user_id', '=', $user->id);
-        })->addSelect(['posts.*', DB::raw('CASE WHEN followers.follow_user_id IS NOT NULL THEN true ELSE false END AS is_following')]);
-    }
-
-
-    /**
      * Scope a query to enhance it with a complex scoring system for post recommendations.
      * This includes user engagement metrics and preferences to calculate a dynamic score
      * for each post based on several criteria:
@@ -242,8 +224,8 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
      * - Calculates and includes the average rating of each post.
      * - Orders the posts by their calculated score in descending order.
      *
-     * @param  Builder  $query  The initial query builder instance.
-     * @param  int  $userId  The ID of the user for whom recommendations are being tailored.
+     * @param Builder $query The initial query builder instance.
+     * @param int $userId The ID of the user for whom recommendations are being tailored.
      * @return Builder The modified query builder instance with applied conditions for recommendations.
      */
     public function scopeWithRecommendationScore(Builder $query, int $userId): Builder
@@ -304,6 +286,7 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
                 $join->on('users.id', '=', 'blocked_users.blocked_user_id')
                     ->where('blocked_users.user_id', '=', $userId); // Current user is blocking
             })
+            ->where('is_active', true)
             ->whereNull('users.blocked_at') // Admin has not blocked the user
             ->where('users.is_active', true) // Admin has not disabled user
             ->whereNull('blocked_users.id') // Current user has not blocked the user
@@ -311,7 +294,7 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
                 $query->where(function ($q) {
                     // Include posts if the profile is not private or does not exist
                     $q->whereNull('user_profiles.private') // Profile is either not private
-                        ->orWhere('user_profiles.private', '=', false);
+                    ->orWhere('user_profiles.private', '=', false);
                 })->orWhereExists(function ($q) use ($userId) {
                     // Or the current user is following the post's user
                     $q->select(DB::raw(1))
@@ -333,6 +316,7 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
             ->select('posts.*', 'scored_posts.score', 'scored_posts.has_unviewed_story', DB::raw('CASE WHEN f2.follow_user_id IS NOT NULL THEN true ELSE false END AS is_following'))
             ->with(['user.profile', 'media'])
             ->withAvg('ratings', 'rating')
+            ->withCount(['favorites', 'comments'])
             ->orderBy('scored_posts.score', 'DESC');
     }
 
@@ -376,6 +360,7 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
                 $join->on('users.id', '=', 'blocked_users.blocked_user_id')
                     ->where('blocked_users.user_id', '=', $userId); // Current user is blocking
             })
+            ->where('is_active', true)
             ->whereNull('users.blocked_at') // Admin has not blocked the user
             ->where('users.is_active', true) // Admin has not disabled user
             ->whereNull('blocked_users.id') // Current user has not blocked the user
@@ -390,62 +375,38 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
             ->orderBy('scored_posts.score', 'DESC'); // Order by score
     }
 
-    public function scopeWithRecommendationScore3(Builder $query, int $userId): Builder
+    public function scopeLatestActivePosts(Builder $query, int $userId): Builder
     {
-        return $query->join('common_post_scores', 'posts.id', '=', 'common_post_scores.id')
-            ->join('users', 'posts.user_id', '=', 'users.id')
+        return $query->join('users', 'posts.user_id', '=', 'users.id') // Ensure the post belongs to an active user
+        ->leftJoin('user_profiles', 'users.id', '=', 'user_profiles.user_id') // Join user profiles to check privacy status
+        ->leftJoin('followers', function ($join) use ($userId) {
+            $join->on('followers.follow_user_id', '=', 'users.id')
+                ->where('followers.user_id', '=', $userId); // Check if the current user is following
+        })
             ->leftJoin('blocked_users', function ($join) use ($userId) {
                 $join->on('users.id', '=', 'blocked_users.blocked_user_id')
-                    ->where('blocked_users.user_id', '=', $userId);
+                    ->where('blocked_users.user_id', '=', $userId); // Current user is blocking
             })
-            ->whereNull('users.blocked_at')
-            ->where('users.is_active', true)
-            ->whereNull('blocked_users.id')
-            ->select('posts.*', 'common_post_scores.common_score')
-            ->with(['user.profile.media', 'media'])
-            ->withAvg('ratings', 'rating');
-    }
-
-    /**
-     * Scope a query to only include active posts from users who are not blocked by the current user, have not been blocked by admins,
-     * and do not have a private profile unless the current user is following them. This scope ensures that the posts returned
-     * are suitable for public viewing, adhering to user privacy settings, admin actions, and respecting user-follow relationships.
-     *
-     * - Filters posts to only include those that are marked as active.
-     * - Excludes posts from users who have been blocked by the current user, leveraging the 'blocked_users' table.
-     * - Excludes posts from users who have been blocked by admins, indicated by a non-null 'blocked_at' field in the 'users' table.
-     * - Excludes posts from users with a private profile, unless those users are followed by the current user.
-     *
-     * @param  Builder  $query  The initial query builder instance.
-     * @param  int|null  $userId  The ID of the current user, to filter out posts from users blocked by them and handle privacy checks. Null if the user is not logged in.
-     * @return Builder The modified query builder instance with applied filters.
-     */
-    public function scopeActiveAndNotBlocked2(Builder $query, ?int $userId): Builder
-    {
-        return $query->select('posts.*')
-            ->join('users', 'posts.user_id', '=', 'users.id')
-            ->leftJoin('user_profiles', 'users.id', '=', 'user_profiles.user_id')
-            ->leftJoin('followers', function ($join) use ($userId) {
-                $join->on('followers.follow_user_id', '=', 'users.id')
-                    ->where('followers.user_id', '=', $userId);
-            })
-            ->leftJoin('blocked_users', function ($join) use ($userId) {
-                $join->on('users.id', '=', 'blocked_users.blocked_user_id')
-                    ->where('blocked_users.user_id', '=', $userId);
-            })
+            ->where('is_active', true)
             ->whereNull('users.blocked_at') // Admin has not blocked the user
-            ->where('users.is_active', true) // Admin has not disabled user
+            ->where('users.is_active', true) // Admin has not disabled the user
             ->whereNull('blocked_users.id') // Current user has not blocked the user
-            ->where(function ($query) {
+            ->where(function ($query) use ($userId) {
                 $query->where(function ($q) {
-                    // Include posts if the profile is not private or does not exist
-                    $q->whereNull('user_profiles.private')
-                        ->orWhere('user_profiles.private', '=', false);
-                })->orWhere(function ($q) {
-                    // Or the current user is following the post's user
-                    $q->whereNotNull('followers.follow_user_id');
+                    $q->whereNull('user_profiles.private') // Profile is either not private
+                    ->orWhere('user_profiles.private', '=', false); // or explicitly set as not private
+                })->orWhereExists(function ($q) use ($userId) {
+                    $q->select(DB::raw(1))
+                        ->from('followers')
+                        ->whereRaw('followers.follow_user_id = users.id')
+                        ->where('followers.user_id', '=', $userId); // Current user is following the author
                 });
-            });
+            })
+            ->select('posts.*')
+            ->with(['user.profile.media', 'media'])
+            ->withAvg('ratings', 'rating')
+            ->withCount(['favorites', 'comments'])
+            ->orderBy('posts.created_at', 'DESC');
     }
 
     public function scopeActiveAndNotBlocked(Builder $query, ?int $userId): Builder
@@ -457,6 +418,7 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
                 $join->on('users.id', '=', 'blocked_users.blocked_user_id')
                     ->where('blocked_users.user_id', $userId);
             })
+            ->where('is_active', true)
             ->whereNull('users.blocked_at') // Admin has not blocked the user
             ->where('users.is_active', true) // Admin has not disabled the user
             ->whereNull('blocked_users.id'); // Current user has not blocked the user
@@ -503,13 +465,13 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
 
     public function getFirstImageUrlsAttribute(): ?array
     {
-        if (! $this->hasMedia('post_medias')) {
+        if (!$this->hasMedia('post_medias')) {
             return null;
         }
 
         $media = $this->getFirstMedia('post_medias');
 
-        if (str_starts_with( $media->mime_type, 'video')) {
+        if (str_starts_with($media->mime_type, 'video')) {
             return [
                 'original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3)),
                 'video_thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'video_thumb'),
@@ -526,7 +488,7 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
 
     public function getImageUrlsAttribute(): ?array
     {
-        if (! $this->hasMedia('post_medias')) {
+        if (!$this->hasMedia('post_medias')) {
             return null;
         }
 
@@ -535,13 +497,13 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
 
             $mediaUrls = ['original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3))];
 
-            if (str_starts_with( $media->mime_type, 'image')) {
+            if (str_starts_with($media->mime_type, 'image')) {
                 $mediaUrls += [
                     'large_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
                     'medium_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
                     'thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
                 ];
-            }else{
+            } else {
                 $mediaUrls += [
                     'video_thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'video_thumb'),
                 ];

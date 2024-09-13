@@ -50,7 +50,8 @@ Route::prefix('guest')->group(function () {
         Route::post('/search', [GuestPostController::class, 'search']);
         Route::post('/filter', [GuestPostController::class, 'filter']);
 
-        Route::post('/user/{user}', [GuestPostController::class, 'userPosts']);
+        Route::post('/user/posts/{user}', [GuestPostController::class, 'userPosts']);
+        Route::post('/user/products/{user}', [GuestPostController::class, 'userProducts']);
     });
 
     Route::prefix('users')->group(function (){
@@ -129,11 +130,14 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     Route::post('/users/{user}/followings', [FollowerController::class, 'userFollowings']);
 
     Route::prefix('posts')->group(function () {
+        Route::post('/latest', [PostController::class, 'latestPosts']);
         Route::post('/recommended', [PostController::class, 'recommendedPosts']);
-        Route::post('/recommended3', [PostController::class, 'recommendedPosts3']);
         Route::post('/recommended2', [PostController::class, 'recommendedPosts2']);
         Route::post('/my', [PostController::class, 'myPosts']);
-        Route::post('/user/{user}', [PostController::class, 'userPosts']);
+
+        Route::post('/user/posts/{user}', [PostController::class, 'userPosts']);
+        Route::post('/user/products/{user}', [PostController::class, 'userProducts']);
+
         Route::post('/post/create', [PostController::class, 'createPost']);
         Route::post('/product/create', [PostController::class, 'createProduct']);
         Route::post('/post/{post}/update', [PostController::class, 'updatePost']);

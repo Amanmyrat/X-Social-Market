@@ -29,16 +29,8 @@ class ProductRequest extends FormRequest
              *   {
              *     "brand_id": 1,
              *     "gender": "male",
-             *     "options": {
-             *       "colors": [{
-             *         "color_id": 1,
-             *         "sizes": [{
-             *           "size_id": 1,
-             *           "price": 100,
-             *           "stock": 101
-             *         }]
-             *       }]
-             *     }
+             *     "colors": [1, 2, 3],
+             *     "sizes": [1, 2]
              *   }
              */
             'product' => [new ProductDetailsValidation((int) request('category_id'))],

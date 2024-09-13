@@ -137,4 +137,15 @@ class GuestPostController extends ApiBaseController
         return $this->respondWithPaginator($posts, new PostSimpleTransformer());
     }
 
+    /**
+     * User products list
+     */
+    public function userProducts(User $user): JsonResponse
+    {
+        $postsQuery = $this->getUserProductsQuery($user);
+        $posts = $postsQuery->paginate(15);
+
+        return $this->respondWithPaginator($posts, new PostSimpleTransformer());
+    }
+
 }

@@ -14,7 +14,6 @@ use App\Models\User;
 use App\Services\PostService;
 use App\Traits\HandlesUserPostInteractions;
 use App\Traits\PreparesPostQuery;
-use App\Transformers\GuestPostTransformer;
 use App\Transformers\PostDetailsTransformer;
 use App\Transformers\PostSimpleTransformer;
 use App\Transformers\PostTransformer;
@@ -212,6 +211,20 @@ class PostController extends ApiBaseController
     }
 
     /**
+     * Latest posts
+     */
+    public function latestPosts(): JsonResponse
+    {
+        $userInteractionsDTO = $this->getUserInteractionsDTO();
+        $followings = $this->getUserFollowingsIds();
+        $storyViewUsers = $this->getUserStoryViewUserIds();
+
+        $posts = Post::latestActivePosts(Auth::id())->paginate(15);
+
+        return $this->respondWithPaginator($posts, new PostTransformer2($userInteractionsDTO, $followings, $storyViewUsers));
+    }
+
+    /**
      * Recommended posts
      */
     public function recommendedPosts(): JsonResponse
@@ -283,22 +296,22 @@ class PostController extends ApiBaseController
     }
 
     /**
-     * Guest All posts list
-     */
-    public function guestAllPosts(): JsonResponse
-    {
-        $postsQuery = $this->getPostsQuery();
-        $posts = $postsQuery->inRandomOrder()->paginate(15);
-
-        return $this->respondWithPaginator($posts, new GuestPostTransformer());
-    }
-
-    /**
      * User posts list
      */
     public function userPosts(User $user): JsonResponse
     {
         $postsQuery = $this->getUserPostsQuery($user);
+        $posts = $postsQuery->paginate(15);
+
+        return $this->respondWithPaginator($posts, new PostSimpleTransformer());
+    }
+
+    /**
+     * User products list
+     */
+    public function userProducts(User $user): JsonResponse
+    {
+        $postsQuery = $this->getUserProductsQuery($user);
         $posts = $postsQuery->paginate(15);
 
         return $this->respondWithPaginator($posts, new PostSimpleTransformer());

@@ -32,6 +32,7 @@ class UserWithProfileTransformer extends TransformerAbstract
             'created_at' => $user->created_at,
             'updated_at' => $user->updated_at,
             'posts_count' => $user->posts_count,
+            'active_posts_count' => $user->active_posts_count,
             'followers_count' => $user->followers_count,
             'followings_count' => $user->followings_count,
         ];

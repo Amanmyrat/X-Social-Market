@@ -45,42 +45,34 @@ class ProductDetailsValidation implements Rule
             return false;
         }
 
-        if (! isset($value['options']) || ! is_array($value['options'])) {
-            $this->errorMessage = 'Önüm opsiýalary sanaw görnüşinde bolmalydyr.';
-
-            return false;
-        }
-
-        $option = $value['options'];
-        if (! isset($option['colors']) || ! is_array($option['colors'])) {
-            $this->errorMessage = 'Önüm reňkleri sanaw görnüşinde bolmalydyr.';
-
-            return false;
-        }
-        foreach ($option['colors'] as $color) {
-            if (! isset($color['color_id']) || ! Color::where('id', $color['color_id'])->exists()) {
-                $this->errorMessage = 'Saýlanan önüm reňki nädogrydyr.';
+        // Validate colors array if present and not empty
+        if (isset($value['colors']) && !empty($value['colors'])) {
+            if (!is_array($value['colors'])) {
+                $this->errorMessage = 'Önüm reňkleri sanaw görnüşinde bolmalydyr.';
 
                 return false;
             }
-            if (! isset($color['sizes']) || ! is_array($color['sizes'])) {
+
+            foreach ($value['colors'] as $colorId) {
+                if (!Color::where('id', $colorId)->exists()) {
+                    $this->errorMessage = 'Saýlanan önüm reňki nädogrydyr.';
+
+                    return false;
+                }
+            }
+        }
+
+        // Validate sizes array if present and not empty
+        if (isset($value['sizes']) && !empty($value['sizes'])) {
+            if (!is_array($value['sizes'])) {
                 $this->errorMessage = 'Önüm ölçegleri sanaw görnüşinde bolmalydyr.';
 
                 return false;
             }
-            foreach ($color['sizes'] as $size) {
-                if (! isset($size['size_id']) || ! Size::where('id', $size['size_id'])->exists()) {
+
+            foreach ($value['sizes'] as $sizeId) {
+                if (!Size::where('id', $sizeId)->exists()) {
                     $this->errorMessage = 'Saýlanan önüm ölçegi nädogrydyr.';
-
-                    return false;
-                }
-                if (! isset($size['price']) || ! is_numeric($size['price']) || $size['price'] < 0) {
-                    $this->errorMessage = 'Önüm bahasy 0-dan kiçi bolmadyk san bolmalydyr.';
-
-                    return false;
-                }
-                if (! isset($size['stock']) || ! is_numeric($size['stock']) || $size['stock'] < 0) {
-                    $this->errorMessage = 'Önüm stogy 0-dan kiçi bolmadyk san bolmalydyr.';
 
                     return false;
                 }

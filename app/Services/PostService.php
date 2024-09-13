@@ -31,19 +31,25 @@ class PostService
             if ($post->category->has_product) {
                 $product = new Product($productData);
 
-                $uniqueColorIds = collect($productData['options']['colors'] ?? [])
-                    ->pluck('color_id')->unique()->values()->all();
+                // Extract unique color IDs directly from the product data
+                $uniqueColorIds = collect($productData['colors'] ?? [])
+                    ->unique()->values()->all();
 
-                $uniqueSizeIds = collect($productData['options']['colors'] ?? [])
-                    ->flatMap(function ($color) {
-                        return collect($color['sizes'])->pluck('size_id');
-                    })->unique()->values()->all();
+                // Extract unique size IDs directly from the product data
+                $uniqueSizeIds = collect($productData['sizes'] ?? [])
+                    ->unique()->values()->all();
 
                 $product->post()->associate($post);
                 $product->save();
 
-                $product->colors()->attach($uniqueColorIds);
-                $product->sizes()->attach($uniqueSizeIds);
+                if (!empty($uniqueColorIds)) {
+                    $product->colors()->attach($uniqueColorIds);
+                }
+
+                if (!empty($uniqueSizeIds)) {
+                    $product->sizes()->attach($uniqueSizeIds);
+                }
+
             }
 
             return $post;
@@ -100,13 +106,13 @@ class PostService
             if ($post->category->has_product) {
                 $product = $post->product;
 
-                $uniqueColorIds = collect($productData['options']['colors'] ?? [])
-                    ->pluck('color_id')->unique()->values()->all();
+                // Extract unique color IDs directly from the product data
+                $uniqueColorIds = collect($productData['colors'] ?? [])
+                    ->unique()->values()->all();
 
-                $uniqueSizeIds = collect($productData['options']['colors'] ?? [])
-                    ->flatMap(function ($color) {
-                        return collect($color['sizes'])->pluck('size_id');
-                    })->unique()->values()->all();
+                // Extract unique size IDs directly from the product data
+                $uniqueSizeIds = collect($productData['sizes'] ?? [])
+                    ->unique()->values()->all();
 
                 if ($product) {
                     $product->colors()->sync($uniqueColorIds);
@@ -118,8 +124,13 @@ class PostService
                     $product->post()->associate($post);
                     $product->save();
 
-                    $product->colors()->attach($uniqueColorIds);
-                    $product->sizes()->attach($uniqueSizeIds);
+                    if (!empty($uniqueColorIds)) {
+                        $product->colors()->attach($uniqueColorIds);
+                    }
+
+                    if (!empty($uniqueSizeIds)) {
+                        $product->sizes()->attach($uniqueSizeIds);
+                    }
                 }
 
             } elseif ($post->product()->exists()) {

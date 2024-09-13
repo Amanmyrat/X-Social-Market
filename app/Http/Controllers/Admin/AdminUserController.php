@@ -43,7 +43,7 @@ class AdminUserController extends ApiBaseController
     public function userDetails(User $user): JsonResponse
     {
         return $this->respondWithItem(
-            $user->loadCount(['posts', 'followers', 'followings']),
+            $user->loadCount(['posts', 'followers', 'followings', 'activePosts']),
             new UserWithProfileTransformer()
         );
     }
@@ -58,7 +58,7 @@ class AdminUserController extends ApiBaseController
         $user = $this->service->updateWithProfile($user, $request->validated());
 
         return $this->respondWithItem(
-            $user->loadCount(['posts', 'followers', 'followings']),
+            $user->loadCount(['posts', 'followers', 'followings', 'activePosts']),
             new UserWithProfileTransformer(),
             'Successfully updated user'
         );

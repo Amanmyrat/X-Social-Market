@@ -58,6 +58,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property-read int|null $post_views_count
  * @property-read Collection<int, Post> $posts
  * @property-read int|null $posts_count
+ * @property-read int|null $active_posts_count
  * @property-read UserProfile|null $profile
  * @property-read Collection<int, PostRating> $ratings
  * @property-read int|null $ratings_count
@@ -194,6 +195,11 @@ class User extends Authenticatable
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function activePosts(): HasMany
+    {
+        return $this->hasMany(Post::class)->where('is_active', true);
     }
 
     public function favorites(): HasMany

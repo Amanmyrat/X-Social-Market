@@ -11,12 +11,23 @@ trait PreparesPostQuery
     {
         return Post::with(['user.profile', 'media'])
             ->withAvg('ratings', 'rating')
+            ->withCount(['favorites', 'comments'])
             ->activeAndNotBlocked(Auth::id());
     }
 
     private function getUserPostsQuery($user)
     {
         return Post::with(['media'])
+            ->where('type','post')
+            ->where('posts.user_id', $user->id)
+            ->activeAndNotBlocked(Auth::id())
+            ->latest();
+    }
+
+    private function getUserProductsQuery($user)
+    {
+        return Post::with(['media'])
+            ->where('type','product')
             ->where('posts.user_id', $user->id)
             ->activeAndNotBlocked(Auth::id())
             ->latest();

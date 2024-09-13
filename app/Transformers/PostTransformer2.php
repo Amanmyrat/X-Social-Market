@@ -40,7 +40,8 @@ class PostTransformer2 extends TransformerAbstract
             'is_following' => in_array($post->user->id, $this->followings),
             'private' => $post->user->profile?->private ?? false,
             'has_unviewed_story' => in_array($post->user->id, $this->storyViewUsers),
-            'score' => $post->score ?? '',
+            'favorites_count' => $post->favorites_count,
+            'comments_count' => $post->comments_count,
         ];
     }
 

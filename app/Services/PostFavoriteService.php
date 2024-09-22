@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enum\NotificationType;
 use App\Models\Post;
 use App\Models\PostFavorite;
 use App\Models\User;
@@ -26,7 +27,7 @@ class PostFavoriteService
             $favorite->save();
             $message = 'Favorite success';
 
-            NotificationService::createPostInteractionNotificationToPostAuthor($favorite, $favorite->post_id);
+            NotificationService::createPostNotification($favorite->post->user, $favorite->user_id, $favorite->post_id, NotificationType::POST_FAVORITE, null);
         }
 
         return $message;

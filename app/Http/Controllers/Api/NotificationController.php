@@ -2,12 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Resources\PostNotificationResource;
-use App\Models\PostComment;
-use App\Models\PostFavorite;
-use App\Models\PostNotification;
-use App\Models\PostRating;
-use App\Models\Story;
+use App\Http\Resources\NotificationResource;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -19,35 +14,10 @@ class NotificationController
      */
     public function  list(): JsonResponse
     {
-        $userId = Auth::id();
+        $user = Auth::user();
 
-//        $notifications = PostNotification::whereHas('post', function ($query) use ($userId) {
-//            $query->where('user_id', $userId);
-//        })
-//            ->orWhereHas('comment', function ($query) use ($userId) {
-//                $query->where('user_id', $userId);
-//            })
-//            ->where('created_at', '>=', Carbon::now()->subDays(7))
-//            ->with(['post.user', 'post.media', 'notifiable', 'comment'])
-//            ->orderByDesc('created_at')
-//            ->get();
-
-        $notifications = PostNotification::where(function ($query) use ($userId) {
-            $query->whereHas('post', function ($query) use ($userId) {
-                $query->where('user_id', $userId);
-            })
-                ->orWhereHas('comment', function ($query) use ($userId) {
-                    $query->where('user_id', $userId);
-                })
-                ->orWhereHasMorph('notifiable', [PostComment::class, PostFavorite::class, PostRating::class, Story::class], function ($query) use ($userId) {
-                    // Apply user_id filter based on the type of notifiable
-                    if ($query->getModel() instanceof Story) {
-                        $query->where('user_id', $userId);
-                    }
-                });
-        })
-            ->where('created_at', '>=', Carbon::now()->subDays(7))
-            ->with(['post.user', 'post.media', 'notifiable', 'comment'])
+        $notifications = $user->notifications()->where('created_at', '>=', Carbon::now()->subDays(7))
+            ->with(['initiator.profile.media', 'post.media', 'story.media'])
             ->orderByDesc('created_at')
             ->get();
 
@@ -74,7 +44,7 @@ class NotificationController
 
         return new JsonResponse([
             'data' => $groupedNotifications->map(function ($dayNotifications) {
-                return PostNotificationResource::collection($dayNotifications);
+                return NotificationResource::collection($dayNotifications);
             }),
         ]);
     }
@@ -84,11 +54,9 @@ class NotificationController
      */
     public function unreadCount(): JsonResponse
     {
-        $userId = Auth::id();
+        $user = Auth::user();
 
-        $count = PostNotification::whereHas('post', function ($query) use ($userId) {
-            $query->where('user_id', $userId);
-        })
+        $count = $user->notifications()
             ->where('is_read', false)
             ->where('created_at', '>=', Carbon::now()->subDays(7))
             ->count();

@@ -2,26 +2,26 @@
 
 namespace App\Jobs;
 
-use App\Events\PostNotificationSent;
-use App\Models\PostNotification;
+use App\Events\NotificationSent;
+use App\Models\Notification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class ProcessPostNotification implements ShouldQueue
+class ProcessNotification implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected PostNotification $notification;
+    protected Notification $notification;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(PostNotification $notification)
+    public function __construct(Notification $notification)
     {
         $this->notification = $notification;
     }
@@ -32,6 +32,6 @@ class ProcessPostNotification implements ShouldQueue
     public function handle(): void
     {
         // Broadcast the message
-        broadcast(new PostNotificationSent($this->notification))->toOthers();
+        broadcast(new NotificationSent($this->notification))->toOthers();
     }
 }

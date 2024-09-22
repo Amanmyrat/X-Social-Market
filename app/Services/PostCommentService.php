@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enum\NotificationType;
 use App\Models\Post;
 use App\Models\PostComment;
 use App\Models\User;
@@ -19,6 +20,6 @@ class PostCommentService
         $comment->post()->associate($post);
         $comment->save();
 
-        NotificationService::createCommentNotificationToCommentCreator($comment, $comment->id);
+        NotificationService::createPostNotification($comment->user, null, $comment->post_id, NotificationType::POST_COMMENT_ADDED, null);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enum\NotificationType;
 use App\Models\Post;
 use App\Models\PostRating;
 use App\Models\User;
@@ -22,7 +23,7 @@ class PostRatingService
             $rating->rating = $validated['rating'];
             $rating->save();
 
-            NotificationService::createPostInteractionNotificationToPostAuthor($rating, $rating->post_id);
+            NotificationService::createPostNotification($rating->post->user, $rating->user_id, $rating->post_id, NotificationType::POST_RATING, null);
 
         }
     }

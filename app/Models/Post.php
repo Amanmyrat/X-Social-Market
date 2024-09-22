@@ -86,7 +86,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  *
  * @mixin Eloquent
  */
-class Post extends BaseModel implements HasMedia, NotifiableModel
+class Post extends BaseModel implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
@@ -199,7 +199,7 @@ class Post extends BaseModel implements HasMedia, NotifiableModel
 
     public function notifications(): MorphMany
     {
-        return $this->morphMany(PostNotification::class, 'notifiable');
+        return $this->morphMany(Notification::class, 'notifiable');
     }
 
     /**

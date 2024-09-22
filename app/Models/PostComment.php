@@ -2,15 +2,12 @@
 
 namespace App\Models;
 
-use App\Contracts\NotifiableModel;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -28,7 +25,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, PostComment> $children
  * @property-read int|null $children_count
- * @property-read Collection<int, PostNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read PostComment|null $parent
  * @property-read Post $post
@@ -47,7 +43,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class PostComment extends BaseModel implements NotifiableModel
+class PostComment extends BaseModel
 {
     use HasFactory;
 
@@ -103,10 +99,5 @@ class PostComment extends BaseModel implements NotifiableModel
     public function children(): HasMany
     {
         return $this->hasMany(PostComment::class, 'parent_id');
-    }
-
-    public function notifications(): MorphMany
-    {
-        return $this->morphMany(PostNotification::class, 'notifiable');
     }
 }

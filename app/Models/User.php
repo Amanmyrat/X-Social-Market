@@ -261,4 +261,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserReport::class, 'reported_user_id')->latestOfMany();
     }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class, 'recipient_id');
+    }
 }

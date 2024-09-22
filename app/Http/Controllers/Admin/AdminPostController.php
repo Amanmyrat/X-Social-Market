@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enum\NotificationType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\PostDeleteRequest;
 use App\Http\Requests\Post\PostListRequest;
@@ -9,7 +10,6 @@ use App\Http\Requests\Post\PostUpdateRequest;
 use App\Http\Resources\Admin\Post\PostResource;
 use App\Http\Resources\Admin\Post\PostResourceCollection;
 use App\Models\Post;
-use App\Models\PostComment;
 use App\Services\Admin\PostService;
 use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
@@ -58,7 +58,7 @@ class AdminPostController extends Controller
         $reason = $request->input('reason');
 
         if ($post->is_active == false && !empty($reason)) {
-            NotificationService::createPostStatusNotification($post, $post->id, $reason);
+            NotificationService::createPostNotification($post->user, null, $post->id, NotificationType::POST_REJECTED, $reason);
 
             $post->update(
                 [

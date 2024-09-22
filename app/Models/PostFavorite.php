@@ -2,14 +2,10 @@
 
 namespace App\Models;
 
-use App\Contracts\NotifiableModel;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -20,7 +16,6 @@ use Illuminate\Support\Carbon;
  * @property int $post_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Collection<int, PostNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read Post $post
  * @property-read User $user
@@ -36,7 +31,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-class PostFavorite extends BaseModel implements NotifiableModel
+class PostFavorite extends BaseModel
 {
     use HasFactory;
 
@@ -77,8 +72,4 @@ class PostFavorite extends BaseModel implements NotifiableModel
         return $this->belongsTo(Post::class);
     }
 
-    public function notifications(): MorphMany
-    {
-        return $this->morphMany(PostNotification::class, 'notifiable');
-    }
 }

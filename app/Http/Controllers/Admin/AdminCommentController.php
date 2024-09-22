@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enum\NotificationType;
 use App\Http\Resources\Admin\PostComment\PostCommentResource;
 use App\Models\PostComment;
 use App\Services\NotificationService;
@@ -37,7 +38,7 @@ class AdminCommentController
     {
         $comment->update(['is_active' => true]);
 
-        NotificationService::createPostInteractionNotificationToPostAuthor($comment, $comment->post_id);
+        NotificationService::createPostNotification($comment->post->user, $comment->user_id, $comment->post_id, NotificationType::POST_COMMENT, null);
 
         return new JsonResponse([
             'success' => true,
@@ -64,7 +65,7 @@ class AdminCommentController
             ]
         );
 
-        NotificationService::createCommentRejectNotificationToCommentCreator($comment, $comment->id, $request->get('reason'));
+        NotificationService::createPostNotification($comment->user, null, $comment->post_id, NotificationType::POST_COMMENT_REJECTED, $request->get('reason'));
 
         return new JsonResponse([
             'success' => true,

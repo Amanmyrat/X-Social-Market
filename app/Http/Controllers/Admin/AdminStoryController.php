@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enum\NotificationType;
 use App\Http\Resources\Admin\Story\StoryResource;
 use App\Models\Story;
 use App\Services\NotificationService;
@@ -62,7 +63,8 @@ class AdminStoryController
             ]
         );
 
-        NotificationService::createStoryRejectNotification($story, $request->get('reason'));
+        NotificationService::createStoryNotification($story->user, $story->id, NotificationType::STORY_REJECTED, $request->get('reason'));
+
         return new JsonResponse([
             'success' => true,
             'message' => 'Successfully declined story',

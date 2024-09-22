@@ -50,7 +50,7 @@ class PostResource extends JsonResource
                 'user' => $this->resource->user->username,
                 'price' => $this->resource->price,
                 'is_active' => $this->resource->is_active,
-                'category' => $this->resource->category->title,
+                'category' => $this->resource->category?->title,
                 'media' => $this->resource->first_image_urls,
             ];
         }

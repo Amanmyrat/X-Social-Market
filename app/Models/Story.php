@@ -158,8 +158,14 @@ class Story extends BaseModel implements HasMedia
         ];
     }
 
-    public function notifications(): MorphMany
+    public function notifications(): HasMany
     {
-        return $this->morphMany(Notification::class, 'notifiable');
+        return $this->hasMany(Notification::class)->whereNotNull('story_id');
     }
+
+    public function tags(): HasMany
+    {
+        return $this->hasMany(StoryTag::class);
+    }
+
 }

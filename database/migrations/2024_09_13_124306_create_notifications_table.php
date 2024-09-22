@@ -28,10 +28,6 @@ return new class extends Migration
                 ->nullable()
                 ->constrained()
                 ->onDelete('cascade');
-            $table->foreignId('post_id')
-                ->nullable()
-                ->constrained()
-                ->onDelete('cascade');
             $table->string('type');
             $table->string('reason')->nullable();
             $table->boolean('is_read')->default(false);

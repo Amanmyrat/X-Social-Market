@@ -26,7 +26,7 @@ class PostService
 
         return DB::transaction(function () use ($postData, $productData, $userId) {
 
-            $post = $this->create($postData, $userId);
+            $post = $this->create($postData, $userId, 'product');
 
             if ($post->category->has_product) {
                 $product = new Product($productData);
@@ -63,11 +63,11 @@ class PostService
     public function createPost(array $postData, int $userId): Post
     {
         return DB::transaction(function () use ($postData, $userId) {
-            return $this->create($postData, $userId);
+            return $this->create($postData, $userId, 'post');
         });
     }
 
-    private function create(array $postData, int $userId): Model|Post
+    private function create(array $postData, int $userId, string $type): Model|Post
     {
         $activePostsCount = Post::where('user_id', $userId)->where('is_active', true)->count();
         $isActive = $activePostsCount >= 10;
@@ -75,6 +75,7 @@ class PostService
         $post = Post::create($postData + [
                 'user_id' => $userId,
                 'is_active' => $isActive,
+                'type' => $type
             ]);
 
         $post->addMultipleMediaFromRequest(['medias'])

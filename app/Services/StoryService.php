@@ -37,6 +37,12 @@ class StoryService
             if ($validated['type'] == 'basic') {
                 $story->addMedia($validated['image'])->toMediaCollection('story_images');
             }
+
+            if (isset($validated['tags'])) {
+                foreach ($validated['tags'] as $tagData) {
+                    $story->tags()->create($tagData);
+                }
+            }
         });
     }
 

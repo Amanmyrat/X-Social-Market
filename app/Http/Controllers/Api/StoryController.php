@@ -63,7 +63,12 @@ class StoryController extends ApiBaseController
         /** @var User $user */
         $user = Auth::user();
         $stories = $user->stories()
-            ->with(['post.media', 'post.user.profile.media'])
+            ->with(['post' => function ($query) {
+                $query->with([
+                    'media',
+                    'user.profile.media'
+                ]);
+            }, 'tags.user.profile.media'])
             ->where('valid_until', '>', now())
             ->whereNull('blocked_at')
             ->orderBy('created_at', 'desc')
@@ -81,7 +86,13 @@ class StoryController extends ApiBaseController
         $favoriteStoryIds = $this->getUserFavoriteStoryIds();
 
         $stories = $user->stories()
-            ->with(['post.media', 'post.user.profile.media'])
+            ->with(['post' => function ($query) {
+                $query->with([
+                    'media',
+                    'user.profile.media'
+                ]);
+            }, 'tags.user.profile.media'])
+            ->where('is_active', true)
             ->where('valid_until', '>', now())
             ->whereNull('blocked_at')
             ->orderBy('created_at', 'desc')
@@ -117,7 +128,8 @@ class StoryController extends ApiBaseController
                         ->orderBy('created_at', 'desc');
                 },
                 'stories.post.media',
-                'stories.post.user.profile.media'
+                'stories.post.user.profile.media',
+                'stories.tags.user.profile.media',
             ])
             ->get();
 

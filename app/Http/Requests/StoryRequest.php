@@ -15,6 +15,12 @@ class StoryRequest extends FormRequest
             'type' => ['required', 'in:basic,post'],
             'image' => ['required_if:type,basic', 'image'],
             'post_id' => ['required_if:type,post', 'int', 'exists:posts,id'],
+            'tags' => ['array'],
+            'tags.*.dx' => ['required', 'numeric'],
+            'tags.*.dy' => ['required', 'numeric'],
+            'tags.*.user_id' => ['nullable', 'exists:users,id'],
+            'tags.*.name' => ['nullable', 'string'],
+            'tags.*.text_options' => ['nullable', 'json'],
         ];
     }
 
@@ -28,6 +34,11 @@ class StoryRequest extends FormRequest
             'post_id.required_if' => 'Görnüşi "post" bolanda post ID-si hökmanydyr.',
             'post_id.int' => 'Post ID-si diňe sanlardan durmalydyr.',
             'post_id.exists' => 'Girizilen post ID-si bar bolan ID-laryň biri däl.',
+            'tags.array' => 'Tags should be an array.',
+            'tags.*.dx.required' => 'The X position of the tag is required.',
+            'tags.*.dy.required' => 'The Y position of the tag is required.',
+            'tags.*.user_id.exists' => 'The tagged user does not exist.',
+            'tags.*.text_options.json' => 'The text options must be a valid JSON format.',
         ];
     }
 

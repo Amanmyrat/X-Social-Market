@@ -16,19 +16,35 @@ class NotificationController
     {
         $user = Auth::user();
 
-        $notifications = $user->notifications()->where('created_at', '>=', Carbon::now()->subDays(7))
-            ->with(['initiator.profile.media', 'post.media', 'story.media'])
+        $notifications = $user->notifications()
+            ->where('created_at', '>=', Carbon::now()->subDays(7))
+            ->with([
+                'initiator.profile.media',
+                'post.media',
+                'story.media'
+            ])
             ->orderByDesc('created_at')
             ->get();
 
+//        $notifications = $user->notifications()
+//            ->where('created_at', '>=', Carbon::now()->subDays(7))
+//            ->orderByDesc('created_at')
+//            ->get();
+//
+//        $notifications->load(['initiator.profile.media', 'post.media', 'story.media']);
 
-        $notifications->each->update(['is_read' => true]);
+
+        $user->notifications()
+            ->whereIn('id', $notifications->pluck('id'))
+            ->update(['is_read' => true]);
 
         if ($notifications->isEmpty()) {
             return new JsonResponse([
                 'data' => null,
             ]);
         }
+
+//        return new JsonResponse($notifications);
 
         // Group by date
         $groupedNotifications = $notifications->groupBy(function ($date) {

@@ -197,9 +197,9 @@ class Post extends BaseModel implements HasMedia
         return $this->hasOne(PostReport::class)->latestOfMany();
     }
 
-    public function notifications(): MorphMany
+    public function notifications(): HasMany
     {
-        return $this->morphMany(Notification::class, 'notifiable');
+        return $this->hasMany(Notification::class)->whereNotNull('post_id');
     }
 
     /**

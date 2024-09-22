@@ -31,6 +31,7 @@ class StoryResource extends JsonResource
             'created_at' => $this->resource->created_at,
             'is_active' => $this->resource->is_active,
             'post' => new PostSimpleResource($this->whenLoaded('post')),
+            'tags' => StoryTagResource::collection($this->whenLoaded('tags')),
         ];
     }
 

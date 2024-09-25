@@ -5,6 +5,7 @@ namespace App\Transformers;
 use App\DTOs\UserPostInteractionsDTO;
 use App\Models\Post;
 use Auth;
+use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
 
@@ -17,7 +18,7 @@ class PostDetailsTransformer extends TransformerAbstract
     }
 
     protected array $defaultIncludes = [
-        'user', 'product',
+        'user', 'product', 'tags'
     ];
 
     public function transform(Post $post): array
@@ -62,4 +63,10 @@ class PostDetailsTransformer extends TransformerAbstract
 
         return null;
     }
+
+    public function includeTags(Post $post): Collection
+    {
+        return $this->collection($post->tags, new PostTagTransformer());
+    }
+
 }

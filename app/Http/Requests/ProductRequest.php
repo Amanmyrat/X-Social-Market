@@ -21,12 +21,16 @@ class ProductRequest extends FormRequest
             'can_comment' => ['required', 'boolean'],
             'medias' => ['required', 'array', 'max:8'],
             'medias.*' => ['sometimes', 'file', 'mimes:jpg,jpeg,png,mp4,webp,gif,mpeg4,mov'],
-
+            'tags.*.tag_post_id' => ['nullable', 'exists:posts,id'],
+            'tags.*.dx' => ['required', 'numeric'],
+            'tags.*.dy' => ['required', 'numeric'],
+            'tags.*.text_options' => ['nullable', 'json'],
+            
             /**
              * Required if category has product true
              *
              * @example {
-             *   {
+             *  "product": {
              *     "brand_id": 1,
              *     "gender": "male",
              *     "colors": [1, 2, 3],

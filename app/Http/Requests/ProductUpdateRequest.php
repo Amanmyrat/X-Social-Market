@@ -26,7 +26,7 @@ class ProductUpdateRequest extends FormRequest
              * Required if category has product true
              *
              * @example {
-             *   {
+             *  "product": {
              *     "brand_id": 1,
              *     "gender": "male",
              *     "colors": [1, 2, 3],

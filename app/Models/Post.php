@@ -37,6 +37,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property MediaCollection<int, Media> $media
+ * @property-read Collection<int, PostTag> $tags
  * @property-read Collection<int, PostBookmark> $bookmarks
  * @property-read int|null $bookmarks_count
  * @property-read Category $category
@@ -200,6 +201,11 @@ class Post extends BaseModel implements HasMedia
     public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class)->whereNotNull('post_id');
+    }
+
+    public function tags(): HasMany
+    {
+        return $this->hasMany(PostTag::class);
     }
 
     /**

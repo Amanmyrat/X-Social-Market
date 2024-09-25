@@ -84,7 +84,7 @@ class GuestPostController extends ApiBaseController
         $userInteractionsDTO = $this->getUserInteractionsDTO();
 
         $post = Post::where('posts.id', $post->id)
-            ->with(['user.profile', 'media', 'product'])
+            ->with(['user.profile', 'media', 'product', 'tags.tagPost'])
             ->withAvg('ratings', 'rating')
             ->withCount(['favorites', 'activeComments', 'views'])
             ->first();

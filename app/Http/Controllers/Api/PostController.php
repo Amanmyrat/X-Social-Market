@@ -55,7 +55,7 @@ class PostController extends ApiBaseController
 
             $userInteractionsDTO = $this->getUserInteractionsDTO();
 
-            $post->load(['user.profile', 'media', 'product'])
+            $post->load(['user.profile', 'media', 'product', 'tags.tagPost'])
                 ->loadAvg('ratings', 'rating')
                 ->loadCount(['favorites', 'comments', 'views']);
 
@@ -87,7 +87,7 @@ class PostController extends ApiBaseController
 
             $userInteractionsDTO = $this->getUserInteractionsDTO();
 
-            $post->load(['user.profile', 'media', 'product'])
+            $post->load(['user.profile', 'media', 'product', 'tags.tagPost'])
                 ->loadAvg('ratings', 'rating')
                 ->loadCount(['favorites', 'comments', 'views']);
 
@@ -119,7 +119,7 @@ class PostController extends ApiBaseController
 
             $userInteractionsDTO = $this->getUserInteractionsDTO();
 
-            $post->load(['user.profile', 'media', 'product'])
+            $post->load(['user.profile', 'media', 'product', 'tags.tagPost'])
                 ->loadAvg('ratings', 'rating')
                 ->loadCount(['favorites', 'comments', 'views']);
 
@@ -149,7 +149,7 @@ class PostController extends ApiBaseController
 
             $userInteractionsDTO = $this->getUserInteractionsDTO();
 
-            $post->load(['user.profile', 'media', 'product'])
+            $post->load(['user.profile', 'media', 'product', 'tags.tagPost'])
                 ->loadAvg('ratings', 'rating')
                 ->loadCount(['favorites', 'comments', 'views']);
 
@@ -349,7 +349,7 @@ class PostController extends ApiBaseController
         $followings = $this->getUserFollowingsIds();
 
         $post = Post::where('posts.id', $post->id)
-            ->with(['user.profile', 'media', 'product'])
+            ->with(['user.profile', 'media', 'product', 'tags.tagPost'])
             ->withAvg('ratings', 'rating')
             ->withCount(['favorites', 'activeComments', 'views'])
             ->first();

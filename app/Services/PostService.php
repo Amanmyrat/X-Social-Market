@@ -83,6 +83,12 @@ class PostService
                 $fileAdder->toMediaCollection('post_medias');
             });
 
+        if (isset($postData['tags'])) {
+            foreach ($postData['tags'] as $tagData) {
+                $post->tags()->create($tagData);
+            }
+        }
+
         return $post;
     }
 
@@ -139,6 +145,13 @@ class PostService
             }
             $post->update($postData);
 
+            if (isset($postData['tags'])) {
+                $post->tags()->delete();
+                foreach ($postData['tags'] as $tagData) {
+                    $post->tags()->create($tagData);
+                }
+            }
+
             return $post;
         });
     }
@@ -159,6 +172,13 @@ class PostService
                     });
             }
             $post->update($postData);
+
+            if (isset($postData['tags'])) {
+                $post->tags()->delete();
+                foreach ($postData['tags'] as $tagData) {
+                    $post->tags()->create($tagData);
+                }
+            }
 
             return $post;
         });

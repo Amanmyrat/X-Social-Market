@@ -16,10 +16,10 @@ class StoryRequest extends FormRequest
             'image' => ['required_if:type,basic', 'image'],
             'post_id' => ['required_if:type,post', 'int', 'exists:posts,id'],
             'tags' => ['array'],
-            'tags.*.dx' => ['required', 'numeric'],
-            'tags.*.dy' => ['required', 'numeric'],
             'tags.*.user_id' => ['nullable', 'exists:users,id'],
             'tags.*.name' => ['nullable', 'string'],
+            'tags.*.dx' => ['required', 'numeric'],
+            'tags.*.dy' => ['required', 'numeric'],
             'tags.*.text_options' => ['nullable', 'json'],
         ];
     }

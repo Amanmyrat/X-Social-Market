@@ -17,6 +17,11 @@ class PostRequest extends FormRequest
             'can_comment' => ['required', 'boolean'],
             'medias' => ['required', 'array', 'max:8'],
             'medias.*' => ['sometimes', 'file', 'mimes:jpg,jpeg,png,mp4,webp,gif,mpeg4,mov'],
+            'tags' => ['array'],
+            'tags.*.tag_post_id' => ['nullable', 'exists:posts,id'],
+            'tags.*.dx' => ['required', 'numeric'],
+            'tags.*.dy' => ['required', 'numeric'],
+            'tags.*.text_options' => ['nullable', 'json'],
         ];
     }
 

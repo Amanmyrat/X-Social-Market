@@ -8,6 +8,7 @@ use App\Models\User;
 
 class NotificationService
 {
+
     /**
      * Create a post notification.
      *
@@ -21,6 +22,7 @@ class NotificationService
     {
         $notification = $recipient->notifications()->create(['post_id' => $postId,'initiator_id' => $initiatorId, 'type' => $notificationType, 'reason' => $reason]);
         ProcessNotification::dispatch($notification);
+        FirebaseNotificationService::sendFirebaseNotification($notification, $recipient->device_token);
     }
 
     /**
@@ -35,6 +37,7 @@ class NotificationService
     {
         $notification = $recipient->notifications()->create(['story_id' => $storyId, 'type' => $notificationType, 'reason' => $reason]);
         ProcessNotification::dispatch($notification);
+        FirebaseNotificationService::sendFirebaseNotification($notification, $recipient->device_token);
     }
 
 }

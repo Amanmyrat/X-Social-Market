@@ -9,12 +9,13 @@ use Google\Client;
 
 class FirebaseNotificationService
 {
-    public static function sendFirebaseNotification(Notification $notification, string $deviceToken)
+    public static function sendFirebaseNotification(int $notificationId, string $deviceToken)
     {
+        $notification = Notification::find($notificationId);
         $serviceAccountPath = base_path('tanat-firebase-adminsdk.json');
         if (file_exists($serviceAccountPath)) {
 
-            $projectId = 'tanat - d9979';
+            $projectId = 'tanat-d9979';
 
             $message = [
                 'token' => $deviceToken,

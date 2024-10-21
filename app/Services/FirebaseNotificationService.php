@@ -9,7 +9,7 @@ use Google\Client;
 
 class FirebaseNotificationService
 {
-    public static function sendFirebaseNotification(int $notificationId, string $deviceToken)
+    public function sendFirebaseNotification(int $notificationId, string $deviceToken)
     {
         $notification = Notification::find($notificationId);
         $serviceAccountPath = base_path('tanat-firebase-adminsdk.json');
@@ -20,15 +20,15 @@ class FirebaseNotificationService
             $message = [
                 'token' => $deviceToken,
                 'notification' => [
-                    'title' => 'Tanat',
-                    'body' => 'Test',
+                    'title' => $notification->initiator->username,
+                    'body' => $notification->type,
                 ],
-                'data' => self::generateNotificationContent($notification)
+                'data' => $this->generateNotificationContent($notification)
             ];
 
             try {
-                $accessToken = self::getAccessToken($serviceAccountPath);
-                $response = self::sendMessage($accessToken, $projectId, $message);
+                $accessToken = $this->getAccessToken($serviceAccountPath);
+                $response = $this->sendMessage($accessToken, $projectId, $message);
                 echo 'Message sent successfully: ' . print_r($response, true);
             } catch (Exception $e) {
                 echo 'Error: ' . $e->getMessage();
@@ -39,7 +39,7 @@ class FirebaseNotificationService
         }
     }
 
-    private static function generateNotificationContent(Notification $notification): array
+    private function generateNotificationContent(Notification $notification): array
     {
         $result = [
             'notification_type' => $notification->type,
@@ -75,7 +75,7 @@ class FirebaseNotificationService
     /**
      * @throws \Google\Exception
      */
-    private static function getAccessToken($serviceAccountPath)
+    private function getAccessToken($serviceAccountPath)
     {
         $client = new Client();
         $client->setAuthConfig($serviceAccountPath);
@@ -88,7 +88,7 @@ class FirebaseNotificationService
     /**
      * @throws Exception
      */
-    private static function sendMessage($accessToken, $projectId, $message)
+    private function sendMessage($accessToken, $projectId, $message)
     {
         $url = 'https://fcm.googleapis.com/v1/projects/' . $projectId . '/messages:send';
 

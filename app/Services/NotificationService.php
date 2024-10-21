@@ -22,7 +22,11 @@ class NotificationService
     {
         $notification = $recipient->notifications()->create(['post_id' => $postId,'initiator_id' => $initiatorId, 'type' => $notificationType, 'reason' => $reason]);
         ProcessNotification::dispatch($notification);
-        FirebaseNotificationService::sendFirebaseNotification($notification->id, $recipient->device_token);
+
+        if ($recipient->device_token) {
+            $firebaseService = new FirebaseNotificationService();
+            $firebaseService->sendFirebaseNotification($notification->id, $recipient->device_token);
+        }
     }
 
     /**
@@ -37,7 +41,11 @@ class NotificationService
     {
         $notification = $recipient->notifications()->create(['story_id' => $storyId, 'type' => $notificationType, 'reason' => $reason]);
         ProcessNotification::dispatch($notification);
-        FirebaseNotificationService::sendFirebaseNotification($notification->id, $recipient->device_token);
+
+        if ($recipient->device_token) {
+            $firebaseService = new FirebaseNotificationService();
+            $firebaseService->sendFirebaseNotification($notification->id, $recipient->device_token);
+        }
     }
 
 }

@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             ReportTypeSeeder::class,
             UserSeeder::class,
             UserProfileSeeder::class,
-            FollowerSeeder::class,
+//            FollowerSeeder::class,
 //            PostSeeder::class,
 //            ProductSeeder::class,
 //            PostEngagementSeeder::class,

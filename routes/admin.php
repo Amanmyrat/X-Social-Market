@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\AdminPostReportController;
 use App\Http\Controllers\Admin\AdminPrivacyPolicyController;
 use App\Http\Controllers\Admin\AdminReportTypeController;
 use App\Http\Controllers\Admin\AdminSizeController;
+use App\Http\Controllers\Admin\AdminStatisticsController;
 use App\Http\Controllers\Admin\AdminStoryController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminUserReportController;
@@ -30,6 +31,10 @@ Route::post('/admin/login', [AdminAuthController::class, 'login']);
 Route::get('/privacy', [AdminPrivacyPolicyController::class, 'getPrivacy']);
 Route::group(['prefix' => 'admin', 'middleware' => ['role:super-admin|admin']], function () {
     Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
+
+
+        Route::get('/statistics', [AdminStatisticsController::class, 'get']);
+
         Route::prefix('categories')->middleware('permission:manage-categories')
             ->group(function () {
                 Route::post('/', [AdminCategoryController::class, 'list']);

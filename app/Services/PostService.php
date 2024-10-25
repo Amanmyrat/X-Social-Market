@@ -7,10 +7,16 @@ use App\Models\Product;
 use Arr;
 use Auth;
 use DB;
+use FFMpeg\FFMpeg;
+use FFMpeg\Format\Video\X264;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 use Str;
 use Throwable;
 
@@ -67,6 +73,10 @@ class PostService
         });
     }
 
+    /**
+     * @throws FileDoesNotExist
+     * @throws FileIsTooBig
+     */
     private function create(array $postData, int $userId, string $type): Model|Post
     {
         $activePostsCount = Post::where('user_id', $userId)->where('is_active', true)->count();
@@ -78,10 +88,14 @@ class PostService
                 'type' => $type
             ]);
 
-        $post->addMultipleMediaFromRequest(['medias'])
-            ->each(function ($fileAdder) {
-                $fileAdder->toMediaCollection('post_medias');
-            });
+        foreach (request()->file('medias') as $mediaFile) {
+            if (in_array($mediaFile->getClientOriginalExtension(), ['mp4', 'mov', 'mpeg4'])) {
+                $compressedFile = $this->compressVideo($mediaFile);
+                $post->addMedia($compressedFile)->toMediaCollection('post_medias');
+            } else {
+                $post->addMedia($mediaFile)->toMediaCollection('post_medias');
+            }
+        }
 
         if (isset($postData['tags'])) {
             foreach ($postData['tags'] as $tagData) {
@@ -90,6 +104,35 @@ class PostService
         }
 
         return $post;
+    }
+
+    private function compressVideo(UploadedFile $mediaFile): UploadedFile
+    {
+        $inputPath = $mediaFile->getRealPath();
+        $outputPath = storage_path('app/temp/' . uniqid() . '.mp4');
+
+        if (!Storage::exists('temp')) {
+            Storage::makeDirectory('temp');
+        }
+
+        $ffmpeg = FFMpeg::create([
+            'ffmpeg.binaries'  => '/usr/bin/ffmpeg',
+            'ffprobe.binaries' => '/usr/bin/ffprobe',
+            'timeout'          => 3600,
+            'ffmpeg.threads'   => 12,
+        ]);
+
+        $video = $ffmpeg->open($inputPath);
+        $format = new X264('libmp3lame', 'libx264');
+        $format->setKiloBitrate(1000);
+
+        $video->save($format, $outputPath);
+
+        if (file_exists($inputPath)) {
+            unlink($inputPath);
+        }
+
+        return new UploadedFile($outputPath, $mediaFile->getClientOriginalName(), null, null, true);
     }
 
     /**
@@ -105,10 +148,15 @@ class PostService
             if (isset($postData['medias'])) {
                 $post->clearMediaCollection();
 
-                $post->addMultipleMediaFromRequest(['medias'])
-                    ->each(function ($fileAdder) {
-                        $fileAdder->toMediaCollection('post_medias');
-                    });
+                foreach (request()->file('medias') as $mediaFile) {
+                    if (in_array($mediaFile->getClientOriginalExtension(), ['mp4', 'mov', 'mpeg4'])) {
+                        $compressedFile = $this->compressVideo($mediaFile);
+                        $post->addMedia($compressedFile)->toMediaCollection('post_medias');
+                    } else {
+                        $post->addMedia($mediaFile)->toMediaCollection('post_medias');
+                    }
+                }
+
             }
             if ($post->category->has_product) {
                 $product = $post->product;
@@ -166,10 +214,14 @@ class PostService
             if (isset($postData['medias'])) {
                 $post->clearMediaCollection();
 
-                $post->addMultipleMediaFromRequest(['medias'])
-                    ->each(function ($fileAdder) {
-                        $fileAdder->toMediaCollection('post_medias');
-                    });
+                foreach (request()->file('medias') as $mediaFile) {
+                    if (in_array($mediaFile->getClientOriginalExtension(), ['mp4', 'mov', 'mpeg4'])) {
+                        $compressedFile = $this->compressVideo($mediaFile);
+                        $post->addMedia($compressedFile)->toMediaCollection('post_medias');
+                    } else {
+                        $post->addMedia($mediaFile)->toMediaCollection('post_medias');
+                    }
+                }
             }
             $post->update($postData);
 

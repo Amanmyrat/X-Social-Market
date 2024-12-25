@@ -41,36 +41,30 @@ class FirebaseNotificationService
 
     private function generateNotificationContent(Notification $notification): array
     {
-        $result = [
-            'notification_type' => $notification->type,
-            'user' => $notification->initiator != null ? [
-                'id' => $notification->initiator->id,
-                'username' => $notification->initiator->username,
-                'full_name' => $notification->initiator->profile?->full_name,
-                'image' => $notification->initiator->profile?->image_urls,
-            ] : null,
+        $data = [
+            'notification_type' => $notification->type->value,
             'reason' => $notification->reason,
-            'created_at' => $notification->created_at,
+            'created_at' => $notification->created_at->toDateTimeString(),
         ];
 
-        if ($notification->post_id != null) {
-            $result += [
-                'post' => [
-                    'id' => $notification->post->id,
-                    'media' => $notification->post->first_image_urls,
-                ]
-            ];
-        } else if ($notification->story_id != null) {
-            $result += [
-                'story' => [
-                    'id' => $notification->story->id,
-                    'content' => $notification->story->image_urls,
-                ],
-            ];
+        if ($notification->initiator) {
+            $data['user_id'] = (string)$notification->initiator->id;
+            $data['user_username'] = $notification->initiator->username;
+            $data['user_full_name'] = $notification->initiator->profile?->full_name ?? '';
+            $data['user_image'] = $notification->initiator->profile?->image_urls ?? '';
         }
 
-        return $result;
+        if ($notification->post_id) {
+            $data['post_id'] = (string)$notification->post->id;
+            $data['post_media'] = $notification->post->first_image_urls['original_url'] ?? '';
+        } elseif ($notification->story_id) {
+            $data['story_id'] = (string)$notification->story->id;
+            $data['story_content'] = $notification->story->image_urls['original_url'] ?? '';
+        }
+
+        return array_map('strval', $data);
     }
+
 
     /**
      * @throws \Google\Exception

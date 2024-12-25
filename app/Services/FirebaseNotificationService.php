@@ -20,7 +20,7 @@ class FirebaseNotificationService
             $message = [
                 'token' => $deviceToken,
                 'notification' => [
-                    'title' => $notification->initiator->username,
+                    'title' => $notification->initiator->username ?? '',
                     'body' => $notification->type,
                 ],
                 'data' => $this->generateNotificationContent($notification)

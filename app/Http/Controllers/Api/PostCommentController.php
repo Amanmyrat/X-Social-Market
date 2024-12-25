@@ -36,7 +36,7 @@ class PostCommentController extends ApiBaseController
 
         $this->service->addComment($validated, $post, Auth::user());
 
-        return $this->respondWithMessage(trans('notification.comment_success'));
+        return $this->respondWithMessage('Comment added');
     }
 
     /**

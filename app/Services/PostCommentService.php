@@ -20,6 +20,6 @@ class PostCommentService
         $comment->post()->associate($post);
         $comment->save();
 
-        NotificationService::createPostNotification($comment->user, null, $comment->post_id, NotificationType::POST_COMMENT_ADDED, null);
+        NotificationService::createPostNotification($comment->user, $comment->user_id, $comment->post_id, NotificationType::POST_COMMENT_ADDED, null);
     }
 }

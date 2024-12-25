@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enum\NotificationType;
 use App\Jobs\ProcessNotification;
+use App\Jobs\SendFirebaseNotificationJob;
 use App\Models\User;
 
 class NotificationService
@@ -24,8 +25,7 @@ class NotificationService
         ProcessNotification::dispatch($notification);
 
         if ($recipient->device_token) {
-            $firebaseService = new FirebaseNotificationService();
-            $firebaseService->sendFirebaseNotification($notification->id, $recipient->device_token);
+            SendFirebaseNotificationJob::dispatch($notification->id, $recipient->device_token);
         }
     }
 
@@ -43,8 +43,7 @@ class NotificationService
         ProcessNotification::dispatch($notification);
 
         if ($recipient->device_token) {
-            $firebaseService = new FirebaseNotificationService();
-            $firebaseService->sendFirebaseNotification($notification->id, $recipient->device_token);
+            SendFirebaseNotificationJob::dispatch($notification->id, $recipient->device_token);
         }
     }
 

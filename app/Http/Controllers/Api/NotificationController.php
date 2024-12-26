@@ -44,8 +44,6 @@ class NotificationController
             ]);
         }
 
-//        return new JsonResponse($notifications);
-
         // Group by date
         $groupedNotifications = $notifications->groupBy(function ($date) {
             $createdAt = Carbon::parse($date->created_at);

@@ -19,7 +19,5 @@ class PostCommentService
         $comment->user()->associate($user);
         $comment->post()->associate($post);
         $comment->save();
-
-        NotificationService::createPostNotification($comment->user, $comment->user_id, $comment->post_id, NotificationType::POST_COMMENT_ADDED, null);
     }
 }

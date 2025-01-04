@@ -51,15 +51,15 @@ class FirebaseNotificationService
             $data['user_id'] = (string)$notification->initiator->id;
             $data['user_username'] = $notification->initiator->username;
             $data['user_full_name'] = $notification->initiator->profile?->full_name ?? '';
-            $data['user_image'] = $notification->initiator->profile?->image_urls ?? '';
+            $data['user_image'] = $notification->initiator->profile?->image_urls['medium_url'] ?? '';
         }
 
         if ($notification->post_id) {
             $data['post_id'] = (string)$notification->post->id;
-            $data['post_media'] = $notification->post->first_image_urls['original_url'] ?? '';
+            $data['post_media'] = $notification->post->first_image_urls['medium_url'] ?? '';
         } elseif ($notification->story_id) {
             $data['story_id'] = (string)$notification->story->id;
-            $data['story_content'] = $notification->story->image_urls['original_url'] ?? '';
+            $data['story_content'] = $notification->story->image_urls['medium_url'] ?? '';
         }
 
         return array_map('strval', $data);

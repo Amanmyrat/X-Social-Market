@@ -38,7 +38,7 @@ class PostResource extends JsonResource
                 'views_count' => $this->resource->views_count,
                 'bookmarks_count' => $this->resource->bookmarks_count,
                 'user' => $this->resource->user->username,
-                'category' => $this->resource->category->title,
+                'category' => $this->resource->category?->title,
                 'product' => new ProductResource($this->resource->product),
                 'media' => $this->resource->image_urls,
             ];

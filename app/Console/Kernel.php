@@ -2,7 +2,6 @@
 
 namespace App\Console;
 
-use App\Console\Commands\RefreshMaterializedView;
 use App\Models\User;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -20,7 +19,6 @@ class Kernel extends ConsoleKernel
                 ->where('last_activity', '<', now()->subMinutes())
                 ->update(['is_online' => false]);
         })->everyMinute();
-        $schedule->command(RefreshMaterializedView::class)->everyFiveMinutes();
         $schedule->command('stories:delete-overdue')->everySixHours();
     }
 

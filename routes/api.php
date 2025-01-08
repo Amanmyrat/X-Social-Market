@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserProfileController;
 use App\Http\Controllers\Api\UserReportController;
 use App\Http\Controllers\Api\UserStatisticsController;
+use App\Http\Controllers\BookmarkCollectionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -167,9 +168,12 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
             Route::post('/{post}/users', [PostFavoritesController::class, 'favoriteUsers']);
         });
 
-        Route::prefix('bookmarks')->group(function () {
-            Route::post('/', [PostBookmarkController::class, 'bookmarks']);
-            Route::post('/{post}/change', [PostBookmarkController::class, 'change']);
+        Route::post('/bookmarks/{post}/change', [PostBookmarkController::class, 'change']);
+        Route::prefix('collections')->group(function () {
+            Route::get('/', [BookmarkCollectionController::class, 'index']);
+            Route::post('/', [BookmarkCollectionController::class, 'store']);
+            Route::delete('/{collection}', [BookmarkCollectionController::class, 'destroy']);
+            Route::get('/{collection}/bookmarks', [BookmarkCollectionController::class, 'bookmarks']);
         });
     });
 

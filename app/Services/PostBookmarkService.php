@@ -6,36 +6,38 @@ use App\Models\Post;
 use App\Models\PostBookmark;
 use App\Models\User;
 use App\Traits\PreparesPostQuery;
-use Illuminate\Support\Collection;
 
 class PostBookmarkService
 {
     use PreparesPostQuery;
 
-    public function add(Post $post, User $user): string
+    public function add(Post $post, User $user, $collectionId = null): string
     {
-        $bookmark = $post->bookmarks()->where('user_id', $user->id)->first();
+        $query = $post->bookmarks()->where('user_id', $user->id);
+
+        if ($collectionId) {
+            $query->where('collection_id', $collectionId);
+        }
+
+        $bookmark = $query->first();
 
         if ($bookmark) {
             $bookmark->delete();
-            $message = 'Bookmark remove success';
+            $message = 'Bookmark removed';
         } else {
             $bookmark = new PostBookmark();
             $bookmark->user()->associate($user);
             $bookmark->post()->associate($post);
+
+            if ($collectionId) {
+                $bookmark->collection_id = $collectionId;
+            }
+
             $bookmark->save();
-            $message = 'Bookmark success';
+            $message = 'Bookmark added';
         }
 
         return $message;
     }
 
-    public function getUserBookmarkPosts(User $user): Collection
-    {
-        $bookmarkPostIds = $user->bookmarks()->pluck('post_id')->toArray();
-
-        $postsQuery = $this->getPostsByIdsQuery($bookmarkPostIds);
-
-        return $postsQuery->get();
-    }
 }

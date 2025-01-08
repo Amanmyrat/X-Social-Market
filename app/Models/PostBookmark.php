@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $user_id
  * @property int $post_id
+ * @property int $collection_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Post $post
@@ -40,7 +41,7 @@ class PostBookmark extends BaseModel
      *
      * @var array<int, string>
      */
-    protected $fillable = ['user_id', 'post_id'];
+    protected $fillable = ['user_id', 'post_id', 'collection_id'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -61,4 +62,10 @@ class PostBookmark extends BaseModel
     {
         return $this->belongsTo(Post::class);
     }
+
+    public function collection(): BelongsTo
+    {
+        return $this->belongsTo(BookmarkCollection::class, 'collection_id');
+    }
+
 }

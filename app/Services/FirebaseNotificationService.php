@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Message;
 use App\Models\Notification;
 use Exception;
 use Illuminate\Support\Facades\Http;
@@ -39,6 +40,35 @@ class FirebaseNotificationService
         }
     }
 
+    public function sendFirebaseMessageNotification(Message $message, string $deviceToken)
+    {
+        $serviceAccountPath = base_path('tanat-firebase-adminsdk.json');
+        if (file_exists($serviceAccountPath)) {
+
+            $projectId = 'tanat-d9979';
+
+            $message = [
+                'token' => $deviceToken,
+                'notification' => [
+                    'title' => $message->sender->username ?? '',
+                    'body' => $message->body ?? '',
+                ],
+                'data' => $this->generateMessageNotificationContent($message)
+            ];
+
+            try {
+                $accessToken = $this->getAccessToken($serviceAccountPath);
+                $response = $this->sendMessage($accessToken, $projectId, $message);
+                echo 'Message sent successfully: ' . print_r($response, true);
+            } catch (Exception $e) {
+                echo 'Error: ' . $e->getMessage();
+            }
+
+        } else {
+            abort(404, 'File not found');
+        }
+    }
+
     private function generateNotificationContent(Notification $notification): array
     {
         $data = [
@@ -61,6 +91,18 @@ class FirebaseNotificationService
             $data['story_id'] = (string)$notification->story->id;
             $data['story_content'] = $notification->story->image_urls['medium_url'] ?? '';
         }
+
+        return array_map('strval', $data);
+    }
+
+    private function generateMessageNotificationContent(Message $message): array
+    {
+        $data = [
+            'type' => $message->type,
+            'body' => $message->body,
+            'image' => $message->sender->profile->image_urls['medium_url'] ?? '',
+            'created_at' => $message->created_at->toDateTimeString(),
+        ];
 
         return array_map('strval', $data);
     }

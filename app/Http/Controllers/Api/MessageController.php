@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Enum\ErrorMessage;
 use App\Http\Requests\MessageSendRequest;
 use App\Jobs\ProcessMessageSent;
+use App\Jobs\SendFirebaseMessageNotificationJob;
 use App\Models\Chat;
 use App\Models\Message;
 use App\Services\MessageService;
@@ -35,6 +36,11 @@ class MessageController extends ApiBaseController
             $message = $this->messageService->sendMessage($request->validated());
 
             ProcessMessageSent::dispatch($message);
+
+            if ($message->receiver->device_token) {
+                SendFirebaseMessageNotificationJob::dispatch($message, $message->receiver->device_token);
+            }
+
             return $this->respondWithItem($message, new MessageTransformer());
         } catch (Throwable $e) {
             return response()->json(['error' => $e->getMessage()], 400);

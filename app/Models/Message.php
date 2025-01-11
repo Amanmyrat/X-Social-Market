@@ -36,7 +36,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property-read MediaCollection<int, Media> $media
  * @property-read int|null $media_count
  * @property-read ?array $image_urls
- *
+ * @property-read User $sender
+ * @property-read User $receiver
  * @method static Builder|Message newModelQuery()
  * @method static Builder|Message newQuery()
  * @method static Builder|Message query()
@@ -90,6 +91,16 @@ class Message extends BaseModel implements HasMedia
     public function chat(): BelongsTo
     {
         return $this->belongsTo(Chat::class);
+    }
+
+    public function sender(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'sender_user_id');
+    }
+
+    public function receiver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'receiver_user_id');
     }
 
     public function registerMediaCollections(): void

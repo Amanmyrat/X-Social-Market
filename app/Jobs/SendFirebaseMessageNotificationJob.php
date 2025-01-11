@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Message;
 use App\Services\FirebaseNotificationService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -9,22 +10,22 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class SendFirebaseNotificationJob implements ShouldQueue
+class SendFirebaseMessageNotificationJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $notificationId;
+    public Message $message;
     public string $deviceToken;
 
     /**
      * Create a new job instance.
      *
-     * @param int $notificationId
+     * @param Message $message
      * @param string $deviceToken
      */
-    public function __construct(int $notificationId, string $deviceToken)
+    public function __construct(Message $message, string $deviceToken)
     {
-        $this->notificationId = $notificationId;
+        $this->message = $message;
         $this->deviceToken = $deviceToken;
     }
 
@@ -38,7 +39,7 @@ class SendFirebaseNotificationJob implements ShouldQueue
         $firebaseService = new FirebaseNotificationService();
 
         if ($this->deviceToken) {
-            $firebaseService->sendFirebaseNotification($this->notificationId, $this->deviceToken);
+            $firebaseService->sendFirebaseMessageNotification($this->message, $this->deviceToken);
         }
     }
 }

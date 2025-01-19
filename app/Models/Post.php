@@ -411,7 +411,7 @@ class Post extends BaseModel implements HasMedia
             ->select('posts.*')
             ->with(['user.profile.media', 'media'])
             ->withAvg('ratings', 'rating')
-            ->withCount(['favorites', 'comments'])
+            ->withCount(['favorites', 'comments', 'activeComments'])
             ->orderBy('posts.created_at', 'DESC');
     }
 

@@ -26,6 +26,7 @@ class PostListRequest extends FormRequest
 
         return [
             'limit' => ['filled', 'integer'],
+            'type' => ['filled', 'in:post,product'],
             'sort' => ['filled', 'in:'.$allowedSortOptionsString,
             ],
         ];

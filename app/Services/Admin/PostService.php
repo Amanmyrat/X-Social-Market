@@ -10,7 +10,7 @@ class PostService
 {
     use SortableTrait;
 
-    public function list(int $limit, ?string $search_query = null, ?string $sort = null): LengthAwarePaginator
+    public function list(int $limit, array $conditions = [], ?string $search_query = null, ?string $sort = null): LengthAwarePaginator
     {
         $query = Post::with(['user', 'category', 'media'])->when(isset($search_query), function ($query) use ($search_query) {
             $search_query = '%'.$search_query.'%';
@@ -20,6 +20,10 @@ class PostService
             })->orWhere('caption', 'LIKE', $search_query)
                 ->orWhere('description', 'LIKE', $search_query);
         });
+
+        foreach ($conditions as $field => $value) {
+            $query->where($field, $value);
+        }
 
         $this->applySorting($query, $sort, ['caption', 'is_active', 'created_at', 'price']);
 

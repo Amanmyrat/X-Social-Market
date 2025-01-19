@@ -30,8 +30,11 @@ class AdminPostController extends Controller
         $limit = $validated['limit'] ?? 10;
         $query = $request->get('search_query') ?? null;
         $sort = $validated['sort'] ?? null;
+        $type = $validated['type'] ?? 'post';
 
-        $posts = $this->service->list($limit, $query, $sort);
+        $conditions['type'] = $type;
+
+        $posts = $this->service->list($limit, $conditions, $query, $sort);
 
         return new PostResourceCollection($posts);
     }

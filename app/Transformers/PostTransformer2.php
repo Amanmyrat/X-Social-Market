@@ -42,6 +42,7 @@ class PostTransformer2 extends TransformerAbstract
             'has_unviewed_story' => in_array($post->user->id, $this->storyViewUsers),
             'favorites_count' => $post->favorites_count,
             'comments_count' => $post->comments_count,
+            'active_comments_count' => $post->active_comments_count,
         ];
     }
 

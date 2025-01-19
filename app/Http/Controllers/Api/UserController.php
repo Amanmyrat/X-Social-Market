@@ -28,7 +28,7 @@ class UserController extends ApiBaseController
      */
     public function updatePassword(Request $request): JsonResponse
     {
-        $validated = $request->validateWithBag('updatePassword', [
+        $validated = $request->validate([
             'current_password' => ['required', 'current_password'],
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);

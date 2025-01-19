@@ -32,7 +32,6 @@ Route::get('/privacy', [AdminPrivacyPolicyController::class, 'getPrivacy']);
 Route::group(['prefix' => 'admin', 'middleware' => ['role:super-admin|admin']], function () {
     Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
 
-
         Route::get('/statistics', [AdminStatisticsController::class, 'get']);
 
         Route::prefix('categories')->middleware('permission:manage-categories')

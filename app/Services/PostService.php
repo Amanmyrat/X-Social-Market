@@ -7,6 +7,7 @@ use App\Models\Product;
 use Arr;
 use Auth;
 use DB;
+use Exception;
 use FFMpeg\FFMpeg;
 use FFMpeg\Format\Video\X264;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
@@ -146,18 +148,27 @@ class PostService
         return DB::transaction(function () use ($postData, $productData, $post) {
 
             if (isset($postData['medias'])) {
-                $post->clearMediaCollection();
+                $existingMedia = $post->getMedia('post_medias');
 
-                foreach (request()->file('medias') as $mediaFile) {
-                    if (in_array($mediaFile->getClientOriginalExtension(), ['mp4', 'mov', 'mpeg4'])) {
-                        $compressedFile = $this->compressVideo($mediaFile);
-                        $post->addMedia($compressedFile)->toMediaCollection('post_medias');
-                    } else {
-                        $post->addMedia($mediaFile)->toMediaCollection('post_medias');
-                    }
+                foreach ($existingMedia as $media) {
+                    $media->delete();
                 }
 
+                foreach (request()->file('medias') as $mediaFile) {
+                    try {
+                        if (in_array($mediaFile->getClientOriginalExtension(), ['mp4', 'mov', 'mpeg4'])) {
+                            $compressedFile = $this->compressVideo($mediaFile);
+                            $post->addMedia($compressedFile)->toMediaCollection('post_medias');
+                        } else {
+                            $post->addMedia($mediaFile)->toMediaCollection('post_medias');
+                        }
+                    } catch (Exception $e) {
+                        Log::error('Error adding media to post: ' . $e->getMessage());
+                        throw new Exception('Failed to upload media files.');
+                    }
+                }
             }
+
             if ($post->category->has_product) {
                 $product = $post->product;
 
@@ -212,17 +223,27 @@ class PostService
         return DB::transaction(function () use ($postData, $post) {
 
             if (isset($postData['medias'])) {
-                $post->clearMediaCollection();
+                $existingMedia = $post->getMedia('post_medias');
+
+                foreach ($existingMedia as $media) {
+                    $media->delete();
+                }
 
                 foreach (request()->file('medias') as $mediaFile) {
-                    if (in_array($mediaFile->getClientOriginalExtension(), ['mp4', 'mov', 'mpeg4'])) {
-                        $compressedFile = $this->compressVideo($mediaFile);
-                        $post->addMedia($compressedFile)->toMediaCollection('post_medias');
-                    } else {
-                        $post->addMedia($mediaFile)->toMediaCollection('post_medias');
+                    try {
+                        if (in_array($mediaFile->getClientOriginalExtension(), ['mp4', 'mov', 'mpeg4'])) {
+                            $compressedFile = $this->compressVideo($mediaFile);
+                            $post->addMedia($compressedFile)->toMediaCollection('post_medias');
+                        } else {
+                            $post->addMedia($mediaFile)->toMediaCollection('post_medias');
+                        }
+                    } catch (Exception $e) {
+                        Log::error('Error adding media to post: ' . $e->getMessage());
+                        throw new Exception('Failed to upload media files.');
                     }
                 }
             }
+
             $post->update($postData);
 
             if (isset($postData['tags'])) {

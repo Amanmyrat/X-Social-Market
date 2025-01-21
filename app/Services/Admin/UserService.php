@@ -7,6 +7,7 @@ use App\Models\UserProfile;
 use App\Traits\SortableTrait;
 use DB;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class UserService
@@ -55,11 +56,18 @@ class UserService
                 $user->load('profile');
 
                 if (isset($profileImage)) {
-                    if ($user->profile->hasMedia()) {
-                        $user->profile->clearMediaCollection('user_images');
+                    try {
+                        $existingMedia = $user->profile->getFirstMedia('user_images');
+
+                        $existingMedia?->delete();
+
+                        $user->profile->addMedia($profileImage)->toMediaCollection('user_images');
+                    } catch (\Exception $exception) {
+                        Log::error('Error updating profile image: ' . $exception->getMessage());
+                        throw $exception;
                     }
-                    $user->profile->addMedia($profileImage)->toMediaCollection('user_images');
                 }
+
             });
         }
 

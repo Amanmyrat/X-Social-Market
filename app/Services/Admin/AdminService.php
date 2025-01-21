@@ -6,6 +6,7 @@ use App\Enum\AdminRole;
 use App\Models\Admin;
 use App\Traits\SortableTrait;
 use DB;
+use Exception;
 use Hash;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Throwable;
@@ -36,7 +37,6 @@ class AdminService
     public function create(array $data): void
     {
         DB::transaction(function () use ($data) {
-
             $data['password'] = Hash::make($data['password']);
 
             $admin = Admin::create($data);
@@ -45,39 +45,49 @@ class AdminService
             if ($data['role'] != AdminRole::SUPER_ADMIN->value) {
                 $admin->givePermissionTo($data['permissions']);
             }
+
             if (isset($data['profile_image'])) {
-                $admin->clearMediaCollection('admin_images');
-                $admin->addMedia($data['profile_image'])->toMediaCollection('admin_images');
+                try {
+                    $admin->addMedia($data['profile_image'])->toMediaCollection('admin_images');
+                } catch (Exception $exception) {
+                    throw new Exception("Error adding profile image: " . $exception->getMessage());
+                }
             }
         });
     }
 
+
     /**
-     * @throws \Exception
+     * @throws Throwable
      */
     public function update(Admin $admin, array $data): Admin
     {
-        $admin->update($data);
+        DB::transaction(function () use ($admin, $data) {
+            $admin->update($data);
 
-        if (isset($data['role'])) {
-            $admin->roles()->detach();
-            $admin->assignRole($data['role']);
-        }
-
-        if (isset($data['permissions'])) {
-            $admin->permissions()->detach();
-            $admin->givePermissionTo($data['permissions']);
-        }
-
-        try {
-            if (isset($data['profile_image'])) {
-                $admin->clearMediaCollection('admin_images');
-                $admin->addMedia($data['profile_image'])->toMediaCollection('admin_images');
+            if (isset($data['role'])) {
+                $admin->roles()->detach();
+                $admin->assignRole($data['role']);
             }
-        } catch (\Exception $exception) {
-            throw new \Exception($exception->getMessage());
-        }
+
+            if (isset($data['permissions'])) {
+                $admin->permissions()->detach();
+                $admin->givePermissionTo($data['permissions']);
+            }
+
+            if (isset($data['profile_image'])) {
+                try {
+                    $existingMedia = $admin->getFirstMedia('admin_images');
+                    $existingMedia?->delete();
+
+                    $admin->addMedia($data['profile_image'])->toMediaCollection('admin_images');
+                } catch (Exception $exception) {
+                    throw new Exception("Error updating profile image: " . $exception->getMessage());
+                }
+            }
+        });
 
         return $admin;
     }
+
 }

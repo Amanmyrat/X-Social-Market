@@ -27,15 +27,19 @@ class CategoryService
     {
         $category->update($data);
 
-        try {
-            if (isset($data['icon'])) {
-                $category->clearMediaCollection('category_images');
+        if (isset($data['icon'])) {
+            try {
+                $existingMedia = $category->getFirstMedia('category_images');
+
+                $existingMedia?->delete();
+
                 $category->addMedia($data['icon'])->toMediaCollection('category_images');
+            } catch (Exception $exception) {
+                throw new Exception("Error updating category media: " . $exception->getMessage());
             }
-        } catch (Exception $exception) {
-            throw new Exception($exception->getMessage());
         }
 
         return $category;
     }
+
 }

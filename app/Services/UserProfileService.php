@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use App\Models\UserProfile;
 use DB;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class UserProfileService
@@ -21,6 +22,7 @@ class UserProfileService
                 if (isset($validated['profile']['profile_image'])) {
                     $profileImage = $validated['profile']['profile_image'];
                 }
+
                 unset($validated['profile']['profile_image']);
 
                 if ($user->profile) {
@@ -34,13 +36,14 @@ class UserProfileService
                 $user->load('profile');
 
                 if (isset($profileImage)) {
-                    if ($user->profile->hasMedia()) {
-                        $user->profile->clearMediaCollection('user_images');
-                    }
+                    $media = $user->profile->getFirstMedia('user_images');
+                    $media?->delete();
+
                     $user->profile->addMedia($profileImage)->toMediaCollection('user_images');
                 }
+
+
             });
         }
-
     }
 }

@@ -42,7 +42,6 @@ class UserProfileService
                     $user->profile->addMedia($profileImage)->toMediaCollection('user_images');
                 }
 
-
             });
         }
     }

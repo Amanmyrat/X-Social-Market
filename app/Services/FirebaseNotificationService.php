@@ -74,7 +74,7 @@ class FirebaseNotificationService
         $data = [
             'notification_type' => $notification->type->value,
             'reason' => $notification->reason,
-            'created_at' => $notification->created_at->toDateTimeString(),
+            'created_at' => $notification->created_at,
         ];
 
         if ($notification->initiator) {
@@ -101,7 +101,7 @@ class FirebaseNotificationService
             'type' => $message->type,
             'body' => $message->body,
             'image' => $message->sender->profile->image_urls['medium_url'] ?? '',
-            'created_at' => $message->created_at->toDateTimeString(),
+            'created_at' => $message->created_at,
         ];
 
         return array_map('strval', $data);

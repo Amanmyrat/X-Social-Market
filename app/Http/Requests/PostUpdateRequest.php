@@ -13,8 +13,8 @@ class PostUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'caption' => ['sometimes', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:255'],
+            'caption' => ['sometimes', 'string'],
+            'description' => ['nullable', 'string'],
             'can_comment' => ['sometimes', 'boolean'],
             'medias' => ['sometimes', 'array', 'max:8'],
             'medias.*' => ['sometimes', 'file', 'mimes:jpg,jpeg,png,mp4,webp,gif,mpeg4,mov'],

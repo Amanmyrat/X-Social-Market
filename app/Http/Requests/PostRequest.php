@@ -12,8 +12,8 @@ class PostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'caption' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:255'],
+            'caption' => ['required', 'string'],
+            'description' => ['nullable', 'string'],
             'can_comment' => ['required', 'boolean'],
             'medias' => ['required', 'array', 'max:8'],
             'medias.*' => ['sometimes', 'file', 'mimes:jpg,jpeg,png,mp4,webp,gif,mpeg4,mov'],

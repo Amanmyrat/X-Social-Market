@@ -38,7 +38,9 @@ class AdminCommentController
     {
         $comment->update(['is_active' => true]);
 
-        NotificationService::createPostNotification($comment->post->user, $comment->user_id, $comment->post_id, NotificationType::POST_COMMENT, null);
+        if($comment->post->user_id != $comment->user_id){
+            NotificationService::createPostNotification($comment->post->user, $comment->user_id, $comment->post_id, NotificationType::POST_COMMENT, null);
+        }
 
         return new JsonResponse([
             'success' => true,

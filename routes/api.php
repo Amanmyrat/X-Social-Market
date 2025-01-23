@@ -151,6 +151,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/filter', [PostController::class, 'filter']);
 
         Route::post('/{post}/comments', [PostCommentController::class, 'comments']);
+        Route::post('/{post}/active/comments', [PostCommentController::class, 'activeComments']);
         Route::post('/{post}/comment', [PostCommentController::class, 'addComment']);
         Route::post('/{postComment}/comment/delete', [PostCommentController::class, 'deleteComment']);
 

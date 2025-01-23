@@ -57,7 +57,7 @@ class PostController extends ApiBaseController
 
             $post->load(['user.profile', 'media', 'product', 'tags.tagPost'])
                 ->loadAvg('ratings', 'rating')
-                ->loadCount(['favorites', 'comments', 'views']);
+                ->loadCount(['favorites', 'comments', 'activeComments', 'views']);
 
             return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO, []));
 
@@ -89,7 +89,7 @@ class PostController extends ApiBaseController
 
             $post->load(['user.profile', 'media', 'product', 'tags.tagPost'])
                 ->loadAvg('ratings', 'rating')
-                ->loadCount(['favorites', 'comments', 'views']);
+                ->loadCount(['favorites', 'comments', 'activeComments', 'views']);
 
             return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO, []));
 
@@ -121,7 +121,7 @@ class PostController extends ApiBaseController
 
             $post->load(['user.profile', 'media', 'product', 'tags.tagPost'])
                 ->loadAvg('ratings', 'rating')
-                ->loadCount(['favorites', 'comments', 'views']);
+                ->loadCount(['favorites', 'comments', 'activeComments', 'views']);
 
             return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO, []));
         } catch (Exception $e) {
@@ -151,7 +151,7 @@ class PostController extends ApiBaseController
 
             $post->load(['user.profile', 'media', 'product', 'tags.tagPost'])
                 ->loadAvg('ratings', 'rating')
-                ->loadCount(['favorites', 'comments', 'views']);
+                ->loadCount(['favorites', 'comments', 'activeComments', 'views']);
 
             return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO, []));
         } catch (Exception $e) {
@@ -351,7 +351,7 @@ class PostController extends ApiBaseController
         $post = Post::where('posts.id', $post->id)
             ->with(['user.profile', 'media', 'product', 'tags.tagPost'])
             ->withAvg('ratings', 'rating')
-            ->withCount(['favorites', 'activeComments', 'views'])
+            ->withCount(['favorites', 'comments', 'activeComments', 'views'])
             ->first();
 
         return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO, $followings));

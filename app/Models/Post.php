@@ -157,13 +157,12 @@ class Post extends BaseModel implements HasMedia
 
     public function comments(): HasMany
     {
-        return $this->hasMany(PostComment::class)->where('parent_id', 0)->orderByDesc('created_at');
+        return $this->hasMany(PostComment::class)->orderByDesc('created_at');
     }
 
     public function activeComments(): HasMany
     {
         return $this->hasMany(PostComment::class)
-            ->where('parent_id', 0)
             ->where('is_active', true)
             ->orderByDesc('created_at');
     }

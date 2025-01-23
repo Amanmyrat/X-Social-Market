@@ -86,7 +86,7 @@ class GuestPostController extends ApiBaseController
         $post = Post::where('posts.id', $post->id)
             ->with(['user.profile', 'media', 'product', 'tags.tagPost'])
             ->withAvg('ratings', 'rating')
-            ->withCount(['favorites', 'activeComments', 'views'])
+            ->withCount(['favorites', 'comments', 'activeComments', 'views'])
             ->first();
 
         return $this->respondWithItem($post, new PostDetailsTransformer($userInteractionsDTO, []));

@@ -39,7 +39,7 @@ class PostRequest extends FormRequest
             'medias.array' => 'Media faýllary sanaw görnüşinde bolmalydyr.',
             'medias.max' => 'Iň köp 8 media faýl goýulyp bilner.',
             'medias.*.file' => 'Her bir media faýl faýl görnüşinde bolmalydyr.',
-            'medias.*.mimes' => 'Media faýllar şu formatlarda bolmalydyr: jpg, jpeg, png, mp4, webp, gif, mpeg4, mov.',
+            'medias.*.mimes' => 'Media faýllar şu formatlarda bolmalydyr: jpg, jpeg, png, mp4, webp, gif, mpeg4, mov, heic, heif.',
         ];
     }
 

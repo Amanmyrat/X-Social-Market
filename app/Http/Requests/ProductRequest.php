@@ -20,12 +20,12 @@ class ProductRequest extends FormRequest
             'location' => ['required', 'string', 'max:255'],
             'can_comment' => ['required', 'boolean'],
             'medias' => ['required', 'array', 'max:8'],
-            'medias.*' => ['sometimes', 'file', 'mimes:jpg,jpeg,png,mp4,webp,gif,mpeg4,mov'],
+            'medias.*' => ['sometimes', 'file', 'mimes:jpg,jpeg,png,mp4,webp,gif,mpeg4,mov,heic,heif'],
             'tags.*.tag_post_id' => ['nullable', 'exists:posts,id'],
             'tags.*.dx' => ['required', 'numeric'],
             'tags.*.dy' => ['required', 'numeric'],
             'tags.*.text_options' => ['nullable', 'json'],
-            
+
             /**
              * Required if category has product true
              *
@@ -37,7 +37,7 @@ class ProductRequest extends FormRequest
              *     "sizes": [1, 2]
              *   }
              */
-            'product' => [new ProductDetailsValidation((int) request('category_id'))],
+            'product' => [new ProductDetailsValidation((int)request('category_id'))],
         ];
     }
 
@@ -51,7 +51,7 @@ class ProductRequest extends FormRequest
             $rule = new ProductDetailsValidation($category_id);
 
             // Manually call the passes method
-            if (! $rule->passes('product', $product)) {
+            if (!$rule->passes('product', $product)) {
                 $validator->errors()->add('product', $rule->message());
             }
         });
@@ -78,7 +78,7 @@ class ProductRequest extends FormRequest
             'medias.array' => 'Media faýllary sanaw görnüşinde bolmalydyr.',
             'medias.max' => 'Iň köp 8 media faýl goýulyp bilner.',
             'medias.*.file' => 'Her bir media faýl faýl görnüşinde bolmalydyr.',
-            'medias.*.mimes' => 'Media faýllar şu formatlarda bolmalydyr: jpg, jpeg, png, mp4, webp, gif, mpeg4, mov.',
+            'medias.*.mimes' => 'Media faýllar şu formatlarda bolmalydyr: jpg, jpeg, png, mp4, webp, gif, mpeg4, mov,heic,heif',
             'product.required_if' => 'Kategoriýa boýunça önümler üçin önümiň jikme-jiklikleri hökmanydyr.',
         ];
     }

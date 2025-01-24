@@ -20,7 +20,7 @@ class ProductUpdateRequest extends FormRequest
             'location' => ['sometimes', 'string', 'max:255'],
             'can_comment' => ['sometimes', 'boolean'],
             'medias' => ['sometimes', 'array', 'max:8'],
-            'medias.*' => ['sometimes', 'file', 'mimes:jpg,jpeg,png,mp4,webp,gif,mpeg4,mov'],
+            'medias.*' => ['sometimes', 'file', 'mimes:jpg,jpeg,png,mp4,webp,gif,mpeg4,mov,heic,heif'],
 
             /**
              * Required if category has product true
@@ -70,7 +70,7 @@ class ProductUpdateRequest extends FormRequest
             'medias.array' => 'Media faýllary sanaw görnüşinde bolmalydyr.',
             'medias.max' => 'Iň köp 8 media faýl goýulyp bilner.',
             'medias.*.file' => 'Her bir media faýl faýl görnüşinde bolmalydyr.',
-            'medias.*.mimes' => 'Media faýllar şu formatlarda bolmalydyr: jpg, jpeg, png, mp4, webp, gif, mpeg4, mov.',
+            'medias.*.mimes' => 'Media faýllar şu formatlarda bolmalydyr: jpg, jpeg, png, mp4, webp, gif, mpeg4, mov, heic,heif',
         ];
     }
 

@@ -16,7 +16,7 @@ class PostRequest extends FormRequest
             'description' => ['nullable', 'string'],
             'can_comment' => ['required', 'boolean'],
             'medias' => ['required', 'array', 'max:8'],
-            'medias.*' => ['sometimes', 'file', 'mimes:jpg,jpeg,png,mp4,webp,gif,mpeg4,mov'],
+            'medias.*' => ['sometimes', 'file', 'mimes:jpg,jpeg,png,mp4,webp,gif,mpeg4,mov,heic,heif'],
             'tags' => ['array'],
             'tags.*.tag_post_id' => ['nullable', 'exists:posts,id'],
             'tags.*.dx' => ['required', 'numeric'],

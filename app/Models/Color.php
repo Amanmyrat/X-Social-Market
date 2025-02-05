@@ -5,9 +5,9 @@ namespace App\Models;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
+use Spatie\Translatable\HasTranslations;
 
 /**
  * App\Models\Color
@@ -34,6 +34,7 @@ use Illuminate\Support\Carbon;
 class Color extends BaseModel
 {
     use HasFactory;
+    use HasTranslations;
 
     /**
      * The attributes that are mass assignable.
@@ -45,6 +46,8 @@ class Color extends BaseModel
         'code',
         'is_active',
     ];
+
+    public $translatable = ['title'];
 
     /**
      * The attributes that should be cast.

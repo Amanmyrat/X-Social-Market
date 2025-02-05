@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Spatie\Translatable\HasTranslations;
 
 /**
  * App\Models\ReportType
@@ -32,6 +33,7 @@ use Illuminate\Support\Carbon;
 class ReportType extends BaseModel
 {
     use HasFactory;
+    use HasTranslations;
 
     /**
      * The attributes that are mass assignable.
@@ -43,6 +45,8 @@ class ReportType extends BaseModel
         'is_active',
         'message_required',
     ];
+
+    public $translatable = ['title'];
 
     /**
      * The attributes that should be hidden for serialization.

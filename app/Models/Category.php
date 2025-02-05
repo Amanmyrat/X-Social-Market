@@ -15,6 +15,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\Translatable\HasTranslations;
 
 /**
  * App\Models\Category
@@ -51,7 +52,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 class Category extends BaseModel implements HasMedia
 {
     use HasFactory;
-    use InteractsWithMedia;
+    use InteractsWithMedia, HasTranslations;
 
     /**
      * The attributes that are mass assignable.
@@ -64,6 +65,8 @@ class Category extends BaseModel implements HasMedia
         'is_active',
         'has_product',
     ];
+
+    public $translatable = ['title', 'description'];
 
     /**
      * The attributes that should be cast.

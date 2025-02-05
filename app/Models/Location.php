@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Spatie\Translatable\HasTranslations;
 
 /**
  * App\Models\Location
@@ -34,7 +35,7 @@ use Illuminate\Support\Carbon;
  */
 class Location extends BaseModel
 {
-    use HasFactory;
+    use HasFactory, HasTranslations;
 
     /**
      * The attributes that are mass assignable.
@@ -45,6 +46,8 @@ class Location extends BaseModel
         'title',
         'is_active',
     ];
+
+    public $translatable = ['title'];
 
     /**
      * The attributes that should be cast.

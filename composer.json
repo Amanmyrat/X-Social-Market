@@ -19,7 +19,8 @@
         "php-ffmpeg/php-ffmpeg": "^1.2",
         "spatie/laravel-fractal": "^6.0",
         "spatie/laravel-medialibrary": "*",
-        "spatie/laravel-permission": "^6.4"
+        "spatie/laravel-permission": "^6.4",
+        "spatie/laravel-translatable": "^6.10"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.13",

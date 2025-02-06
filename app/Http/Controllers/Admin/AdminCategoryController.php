@@ -71,7 +71,7 @@ class AdminCategoryController extends Controller
     /**
      * Update category
      *
-     * @throws Exception
+     * @throws Exception|Throwable
      */
     public function update(Category $category, CategoryUpdateRequest $request): CategoryResource
     {

@@ -22,7 +22,7 @@ class ColorResource extends JsonResource
     {
         return $this->detailsEnabled ? [
             'id' => $this->resource->id,
-            'title' => $this->resource->title,
+            'title' => json_decode($this->resource->getRawOriginal('title')),
             'code' => $this->resource->code,
             'is_active' => $this->resource->is_active,
             'products_count' => $this->resource->products_count,

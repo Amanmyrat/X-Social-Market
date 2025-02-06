@@ -83,7 +83,7 @@ class UniversalService
             }
         } else {
             // Default sorting (latest first)
-            $query->latest();
+            $query->orderBy('id');
         }
 
         return $query->paginate($limit);

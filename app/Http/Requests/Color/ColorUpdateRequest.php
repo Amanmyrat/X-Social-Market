@@ -12,7 +12,11 @@ class ColorUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['filled', 'string', 'max:255'],
+            'title' => ['filled', 'array'],
+            'title.tk' => ['required', 'string', 'max:255'],
+            'title.ru' => ['nullable', 'string', 'max:255'],
+            'title.en' => ['nullable', 'string', 'max:255'],
+
             'code' => ['filled', 'string', 'max:255'],
             'is_active' => ['filled', 'bool'],
         ];
@@ -21,9 +25,6 @@ class ColorUpdateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'title.filled' => 'Ady girizilen bolmalydyr.',
-            'title.string' => 'Ady dogry görnüşde giriziň.',
-            'title.max' => 'Ady iň köp 255 harpdan durmalydyr.',
             'code.filled' => 'Kody girizilen bolmalydyr.',
             'code.string' => 'Kody dogry görnüşde giriziň.',
             'code.max' => 'Kody iň köp 255 harpdan durmalydyr.',

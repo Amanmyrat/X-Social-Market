@@ -22,7 +22,7 @@ class ReportTypeResource extends JsonResource
     {
         return $this->detailsEnabled ? [
             'id' => $this->resource->id,
-            'title' => $this->resource->title,
+            'title' => json_decode($this->resource->getRawOriginal('title')),
             'is_active' => $this->resource->is_active,
             'message_required' => $this->resource->message_required,
             'post_reports_count' => $this->resource->post_reports_count,

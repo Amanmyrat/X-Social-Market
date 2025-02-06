@@ -12,6 +12,7 @@ use App\Http\Resources\Admin\Color\ColorResourceCollection;
 use App\Models\Color;
 use App\Services\Admin\UniversalService;
 use Illuminate\Http\JsonResponse;
+use Throwable;
 
 class AdminColorController extends Controller
 {
@@ -45,6 +46,7 @@ class AdminColorController extends Controller
 
     /**
      * Create color
+     * @throws Throwable
      */
     public function create(ColorCreateRequest $request): JsonResponse
     {

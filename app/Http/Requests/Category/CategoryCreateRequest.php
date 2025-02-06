@@ -12,23 +12,26 @@ class CategoryCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['filled', 'string', 'max:255'],
+            'title' => ['required', 'array'],
+            'title.tk' => ['required', 'string', 'max:255'],
+            'title.ru' => ['nullable', 'string', 'max:255'],
+            'title.en' => ['nullable', 'string', 'max:255'],
+
+            'description' => ['nullable', 'array'],
+            'description.tk' => ['nullable', 'string', 'max:255'],
+            'description.ru' => ['nullable', 'string', 'max:255'],
+            'description.en' => ['nullable', 'string', 'max:255'],
+
             'icon' => ['required', 'image'],
-            'is_active' => ['filled', 'bool'],
-            'has_product' => ['required', 'bool'],
+            'is_active' => ['filled', 'boolean'],
+            'has_product' => ['required', 'boolean'],
         ];
+
     }
 
     public function messages(): array
     {
         return [
-            'title.required' => 'Ady ýazmak hökmanydyr.',
-            'title.string' => 'Ady dogry görnüşde giriziň.',
-            'title.max' => 'Ady iň köp 255 harpdan durmalydyr.',
-            'description.filled' => 'Beýany girizilen bolmalydyr.',
-            'description.string' => 'Beýany dogry görnüşde giriziň.',
-            'description.max' => 'Beýany iň köp 255 harpdan durmalydyr.',
             'icon.required' => 'Ikon ýazmak hökmanydyr.',
             'icon.image' => 'Ikon surat görnüşinde bolmalydyr.',
             'is_active.filled' => 'Aktiwlik ýagdaýy girizilen bolmalydyr.',

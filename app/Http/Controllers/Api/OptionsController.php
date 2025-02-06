@@ -24,7 +24,7 @@ class OptionsController extends ApiBaseController
      */
     public function categories(): AnonymousResourceCollection
     {
-        $categories = Category::where('is_active', true)->get();
+        $categories = Category::where('is_active', true)->orderBy('id')->get();
 
         return CategoryResource::collection($categories);
     }
@@ -34,7 +34,7 @@ class OptionsController extends ApiBaseController
      */
     public function locations(): AnonymousResourceCollection
     {
-        $locations = Location::where('is_active', true)->get();
+        $locations = Location::where('is_active', true)->orderBy('id')->get();
 
         return LocationResource::collection($locations);
     }
@@ -46,7 +46,7 @@ class OptionsController extends ApiBaseController
     {
         $validated = $request->validated();
         $type = $validated['type'] ?? Brand::TYPE_SIMPLE;
-        $brands = Brand::where('type', $type)->get();
+        $brands = Brand::where('type', $type)->orderBy('id')->get();
 
         return BrandResource::collection($brands);
     }
@@ -56,7 +56,7 @@ class OptionsController extends ApiBaseController
      */
     public function colors(): AnonymousResourceCollection
     {
-        $colors = Color::where('is_active', true)->get();
+        $colors = Color::where('is_active', true)->orderBy('id')->get();
 
         return ColorResource::collection($colors);
     }
@@ -66,7 +66,7 @@ class OptionsController extends ApiBaseController
      */
     public function sizes(): AnonymousResourceCollection
     {
-        $sizes = Size::where('is_active', true)->get();
+        $sizes = Size::where('is_active', true)->orderBy('id')->get();
 
         return SizeResource::collection($sizes);
     }
@@ -76,7 +76,7 @@ class OptionsController extends ApiBaseController
      */
     public function reportTypes(): AnonymousResourceCollection
     {
-        $types = ReportType::where('is_active', true)->get();
+        $types = ReportType::where('is_active', true)->orderBy('id')->get();
 
         return ReportTypeResource::collection($types);
     }

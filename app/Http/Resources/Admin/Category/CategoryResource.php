@@ -22,8 +22,8 @@ class CategoryResource extends JsonResource
     {
         return $this->detailsEnabled ? [
             'id' => $this->resource->id,
-            'title' => $this->resource->title,
-            'description' => $this->resource->description,
+            'title' => json_decode($this->resource->getRawOriginal('title')),
+            'description' => json_decode($this->resource->getRawOriginal('description')),
             'icon' => $this->resource->image_urls,
             'is_active' => $this->resource->is_active,
             'has_product' => $this->resource->has_product,

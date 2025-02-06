@@ -8,10 +8,11 @@ use App\Http\Requests\Location\LocationDeleteRequest;
 use App\Http\Requests\Location\LocationListRequest;
 use App\Http\Requests\Location\LocationUpdateRequest;
 use App\Http\Resources\Admin\Location\LocationResource;
+use App\Http\Resources\Admin\Location\LocationResourceCollection;
 use App\Models\Location;
 use App\Services\Admin\UniversalService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Throwable;
 
 class AdminLocationController extends Controller
 {
@@ -23,7 +24,7 @@ class AdminLocationController extends Controller
     /**
      * Locations list
      */
-    public function list(LocationListRequest $request): AnonymousResourceCollection
+    public function list(LocationListRequest $request): LocationResourceCollection
     {
         $validated = $request->validated();
         $limit = $validated['limit'] ?? 10;
@@ -32,7 +33,7 @@ class AdminLocationController extends Controller
 
         $locations = $this->service->list(limit: $limit, search_query: $query, sort: $sort);
 
-        return LocationResource::collection($locations);
+        return new LocationResourceCollection($locations);
     }
 
     /**
@@ -40,11 +41,12 @@ class AdminLocationController extends Controller
      */
     public function locationDetails(Location $location): LocationResource
     {
-        return new LocationResource($location);
+        return new LocationResource($location, true);
     }
 
     /**
      * Create location
+     * @throws Throwable
      */
     public function create(LocationCreateRequest $request): JsonResponse
     {
@@ -58,13 +60,14 @@ class AdminLocationController extends Controller
 
     /**
      * Update location
+     * @throws Throwable
      */
     public function update(Location $location, LocationUpdateRequest $request): LocationResource
     {
         /** @var Location $location */
         $location = $this->service->update($location, $request->validated());
 
-        return new LocationResource($location);
+        return new LocationResource($location, true);
 
     }
 

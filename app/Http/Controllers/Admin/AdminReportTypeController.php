@@ -12,6 +12,7 @@ use App\Http\Resources\Admin\ReportType\ReportTypeResourceCollection;
 use App\Models\ReportType;
 use App\Services\Admin\UniversalService;
 use Illuminate\Http\JsonResponse;
+use Throwable;
 
 class AdminReportTypeController extends Controller
 {
@@ -53,6 +54,7 @@ class AdminReportTypeController extends Controller
 
     /**
      * Create report type
+     * @throws Throwable
      */
     public function create(ReportTypeCreateRequest $request): JsonResponse
     {

@@ -34,6 +34,13 @@ class ChatController extends ApiBaseController
             ErrorMessage::GENERAL_ERROR->value
         );
 
+        // Check if receiver user has blocked current user
+        abort_if(
+            $receiverUser->blockedUsers->contains(Auth::user()),
+            403,
+            ErrorMessage::USER_BLOCKED_ERROR->value
+        );
+
         $chat = $this->chatService->findOrCreateChat($receiverUserId, Auth::id());
 
         return $this->respondWithItem($chat, new ChatTransformer());

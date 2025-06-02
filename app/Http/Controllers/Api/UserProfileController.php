@@ -39,8 +39,9 @@ class UserProfileController extends ApiBaseController
      */
     public function get(User $user): JsonResponse
     {
+        // Check if target user has blocked current user (reverse blocking)
         abort_if(
-            Auth::user()->blockedUsers->contains($user) || $user->blocked_at != null,
+            $user->blockedUsers->contains(Auth::user()),
             403,
             ErrorMessage::USER_BLOCKED_ERROR->value
         );

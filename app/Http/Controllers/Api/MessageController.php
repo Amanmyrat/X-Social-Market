@@ -8,6 +8,7 @@ use App\Jobs\ProcessMessageSent;
 use App\Jobs\SendFirebaseMessageNotificationJob;
 use App\Models\Chat;
 use App\Models\Message;
+use App\Models\User;
 use App\Services\MessageService;
 use App\Transformers\MessageTransformer;
 use Illuminate\Http\JsonResponse;
@@ -33,7 +34,17 @@ class MessageController extends ApiBaseController
     public function sendMessage(MessageSendRequest $request): JsonResponse
     {
         try {
-            $message = $this->messageService->sendMessage($request->validated());
+            $validated = $request->validated();
+            $receiverUser = User::find($validated['receiver_user_id']);
+
+            // Check if receiver user has blocked current user
+            abort_if(
+                $receiverUser->blockedUsers->contains(Auth::user()),
+                403,
+                ErrorMessage::USER_BLOCKED_ERROR->value
+            );
+
+            $message = $this->messageService->sendMessage($validated);
 
             ProcessMessageSent::dispatch($message);
 
@@ -52,6 +63,20 @@ class MessageController extends ApiBaseController
      */
     public function listMessages(Chat $chat): JsonResponse
     {
+        // Determine the other user in the chat
+        $currentUserId = Auth::id();
+        $otherUserId = $chat->sender_user_id == $currentUserId 
+            ? $chat->receiver_user_id 
+            : $chat->sender_user_id;
+        $otherUser = User::find($otherUserId);
+
+        // Check if other user has blocked current user
+        abort_if(
+            $otherUser->blockedUsers->contains(Auth::user()),
+            403,
+            ErrorMessage::USER_BLOCKED_ERROR->value
+        );
+
         $messages = $this->messageService->listMessages($chat);
 
         return $this->respondWithPaginator($messages, new MessageTransformer());
@@ -84,6 +109,21 @@ class MessageController extends ApiBaseController
             403,
             ErrorMessage::UNAUTHORIZED_ACCESS_ERROR->value
         );
+
+        // Determine the other user in the chat
+        $currentUserId = Auth::id();
+        $otherUserId = $chat->sender_user_id == $currentUserId 
+            ? $chat->receiver_user_id 
+            : $chat->sender_user_id;
+        $otherUser = User::find($otherUserId);
+
+        // Check if other user has blocked current user
+        abort_if(
+            $otherUser->blockedUsers->contains(Auth::user()),
+            403,
+            ErrorMessage::USER_BLOCKED_ERROR->value
+        );
+
         $this->messageService->readAllMessages($chat);
 
         return response()->json([

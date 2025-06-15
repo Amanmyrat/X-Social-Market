@@ -28,16 +28,18 @@ class MobileVersionService
         $prefix = strtoupper($platform);
         $updates = [
             "{$prefix}_LATEST_VERSION" => $data['latest_version'],
-            "{$prefix}_MIN_REQUIRED_VERSION" => $data['min_required_version'],
-            "{$prefix}_UPDATE_URL" => $data['update_url']
+            "{$prefix}_MIN_REQUIRED_VERSION" => $data['min_required_version']
         ];
 
         $this->updateEnvFile($updates);
 
+        // Get the current update URL from config
+        $updateUrl = Config::get("mobile_versions.{$platform}.update_url");
+
         return [
             'latest_version' => $data['latest_version'],
             'min_required_version' => $data['min_required_version'],
-            'update_url' => $data['update_url']
+            'update_url' => $updateUrl
         ];
     }
 

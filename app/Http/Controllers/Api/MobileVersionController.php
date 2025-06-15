@@ -57,14 +57,13 @@ class MobileVersionController extends Controller
         $request->validate([
             'platform' => 'required|in:ios,android',
             'latest_version' => 'required|string',
-            'min_required_version' => 'required|string',
-            'update_url' => 'required|url'
+            'min_required_version' => 'required|string'
         ]);
 
         try {
             $updatedVersion = $this->versionService->updateVersion(
                 $request->platform,
-                $request->only(['latest_version', 'min_required_version', 'update_url'])
+                $request->only(['latest_version', 'min_required_version'])
             );
 
             return response()->json([

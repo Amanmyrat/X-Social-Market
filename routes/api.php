@@ -199,6 +199,9 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/messages/{message}/image/{media}/delete', [MessageController::class, 'deleteImage']);
     });
 
+    Route::post('/mobile/check-version', [App\Http\Controllers\Api\MobileVersionController::class, 'checkVersion']);
+    Route::post('/mobile/update-version', [App\Http\Controllers\Api\MobileVersionController::class, 'updateVersion'])->middleware(['auth:sanctum', 'admin']);
+
 });
 
 require __DIR__.'/admin.php';

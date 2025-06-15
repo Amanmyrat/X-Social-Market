@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\AdminStoryController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminUserReportController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\MobileVersionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -149,5 +150,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['role:super-admin|admin']], 
 
         Route::post('/privacy', [AdminPrivacyPolicyController::class, 'storeOrUpdate']);
         Route::delete('/privacy', [AdminPrivacyPolicyController::class, 'deletePrivacy']);
+
+        Route::prefix('mobile')->middleware('role:super-admin')->group(function () {
+            Route::post('/update-version', [MobileVersionController::class, 'updateVersion']);
+        });
     });
 });

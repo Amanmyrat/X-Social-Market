@@ -200,7 +200,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     });
 
     Route::post('/mobile/check-version', [App\Http\Controllers\Api\MobileVersionController::class, 'checkVersion']);
-    Route::post('/mobile/update-version', [App\Http\Controllers\Api\MobileVersionController::class, 'updateVersion'])->middleware(['auth:sanctum', 'admin']);
 
 });
 

@@ -39,6 +39,8 @@ use Illuminate\Support\Facades\Route;
 */
 //Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
+Route::post('/mobile/check-version', [App\Http\Controllers\Api\MobileVersionController::class, 'checkVersion']);
+
 Route::prefix('guest')->group(function () {
     Route::prefix('posts')->group(function () {
         Route::post('/recommended', [GuestPostController::class, 'allPosts']);
@@ -198,8 +200,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/messages/{message}/delete', [MessageController::class, 'delete']);
         Route::post('/messages/{message}/image/{media}/delete', [MessageController::class, 'deleteImage']);
     });
-
-    Route::post('/mobile/check-version', [App\Http\Controllers\Api\MobileVersionController::class, 'checkVersion']);
 
 });
 

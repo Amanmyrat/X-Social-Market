@@ -3,8 +3,17 @@
         "apps": [],
         "details": [
             {
-                "appID": "6504905083.com.sanlymerkez.tanat",
-                "paths": ["/profile/*", "/post/*"]
+                "appIDs": ["TEAM_ID.com.sanlymerkez.tanat"],
+                "components": [
+                    {
+                        "/": "/profile/*",
+                        "comment": "Profile deep links"
+                    },
+                    {
+                        "/": "/post/*",
+                        "comment": "Post deep links"
+                    }
+                ]
             }
         ]
     }

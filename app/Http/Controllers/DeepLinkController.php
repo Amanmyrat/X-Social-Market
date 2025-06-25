@@ -8,43 +8,51 @@ class DeepLinkController extends Controller
 {
     private $androidUrl = 'https://play.google.com/store/apps/details?id=com.sanlymerkez.tanat&pcampaignid=web_share';
     private $iosUrl = 'https://apps.apple.com/tm/app/tanat/id6504905083';
+    private $androidPackage = 'com.sanlymerkez.tanat';
+    private $iosAppId = '6504905083';
 
     public function profile($profileId)
     {
-        $userAgent = request()->header('User-Agent', '');
-        $deepLinkUrl = 'tanat://profile/' . $profileId;
-
-        if ($this->isIos($userAgent)) {
-            return redirect()->away($deepLinkUrl);
-        } elseif ($this->isAndroid($userAgent)) {
-            return redirect()->away($deepLinkUrl);
-        }
-
-        // If not mobile or deep link fails, redirect to appropriate store
-        if ($this->isIos($userAgent)) {
-            return redirect()->away($this->iosUrl);
-        }
-        
-        return redirect()->away($this->androidUrl);
+        return $this->handleDeepLink('profile', $profileId);
     }
 
     public function post($postId)
     {
+        return $this->handleDeepLink('post', $postId);
+    }
+
+    private function handleDeepLink($type, $id)
+    {
         $userAgent = request()->header('User-Agent', '');
-        $deepLinkUrl = 'tanat://post/' . $postId;
+        $isIOS = $this->isIos($userAgent);
+        $isAndroid = $this->isAndroid($userAgent);
+        $isMobile = $isIOS || $isAndroid;
 
-        if ($this->isIos($userAgent)) {
-            return redirect()->away($deepLinkUrl);
-        } elseif ($this->isAndroid($userAgent)) {
-            return redirect()->away($deepLinkUrl);
-        }
+        // Build deep link URLs
+        $customScheme = "tanat://{$type}/{$id}";
+        $intentUrl = $isAndroid ? $this->buildAndroidIntent($type, $id) : null;
+        $storeUrl = $isIOS ? $this->iosUrl : $this->androidUrl;
 
-        // If not mobile or deep link fails, redirect to appropriate store
-        if ($this->isIos($userAgent)) {
-            return redirect()->away($this->iosUrl);
-        }
-        
-        return redirect()->away($this->androidUrl);
+        return response()->view('deeplink', compact(
+            'customScheme', 
+            'intentUrl', 
+            'storeUrl', 
+            'isIOS', 
+            'isAndroid', 
+            'isMobile',
+            'type',
+            'id'
+        ));
+    }
+
+    private function buildAndroidIntent($type, $id)
+    {
+        // Android Intent URL - most reliable for Android
+        return "intent://{$type}/{$id}#Intent;" .
+               "scheme=tanat;" .
+               "package={$this->androidPackage};" .
+               "S.browser_fallback_url=" . urlencode($this->androidUrl) . ";" .
+               "end";
     }
 
     /**

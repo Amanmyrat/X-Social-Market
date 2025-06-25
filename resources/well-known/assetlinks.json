@@ -4,7 +4,7 @@
         "namespace": "android_app",
         "package_name": "com.sanlymerkez.tanat",
         "sha256_cert_fingerprints": [
-            "SHA256_FINGERPRINT_HERE"
+            "REPLACE_WITH_YOUR_RELEASE_SHA256_FINGERPRINT"
         ]
     }
 }] 

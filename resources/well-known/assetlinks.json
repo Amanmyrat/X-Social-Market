@@ -4,7 +4,9 @@
         "namespace": "android_app",
         "package_name": "com.sanlymerkez.tanat",
         "sha256_cert_fingerprints": [
-            "B5:56:4E:31:23:07:1E:2B:73:35:25:C8:9D:43:87:BB:EB:F7:5C:CE:7A:F4:B3:CC:39:41:4A:44:66:ED:51:3A"
+            "B5:56:4E:31:23:07:1E:2B:73:35:25:C8:9D:43:87:BB:EB:F7:5C:CE:7A:F4:B3:CC:39:41:4A:44:66:ED:51:3A",
+            "EB:39:94:25:0D:1F:9B:4E:B8:5D:1F:63:1F:A7:48:52:C9:5C:06:BC:78:0C:BD:D8:D7:70:C1:31:0A:CE:55:57",
+            "F3:1B:5E:2C:3F:D3:3E:10:7E:33:27:47:95:93:81:0C:AB:33:AB:FA:E1:59:39:79:BF:15:98:89:44:F5:48:1C"
         ]
     }
-}] 
+}]

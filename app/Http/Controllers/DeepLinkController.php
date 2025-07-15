@@ -2,26 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class DeepLinkController extends Controller
 {
-    private $androidUrl = 'https://play.google.com/store/apps/details?id=com.sanlymerkez.tanat&pcampaignid=web_share';
-    private $iosUrl = 'https://apps.apple.com/tm/app/tanat/id6504905083';
-    private $androidPackage = 'com.sanlymerkez.tanat';
-    private $iosAppId = '6504905083';
+    private string $androidUrl = 'https://play.google.com/store/apps/details?id=com.sanlymerkez.tanat&pcampaignid=web_share';
+    private string $iosUrl = 'https://apps.apple.com/tm/app/tanat/id6504905083';
+    private string $androidPackage = 'com.sanlymerkez.tanat';
 
-    public function profile($profileId)
+    public function profile($profileId): Response
     {
         return $this->handleDeepLink('profile', $profileId);
     }
 
-    public function post($postId)
+    public function post($postId): Response
     {
         return $this->handleDeepLink('post', $postId);
     }
 
-    private function handleDeepLink($type, $id)
+    private function handleDeepLink($type, $id): Response
     {
         $userAgent = request()->header('User-Agent', '');
         $isIOS = $this->isIos($userAgent);
@@ -33,19 +32,22 @@ class DeepLinkController extends Controller
         $intentUrl = $isAndroid ? $this->buildAndroidIntent($type, $id) : null;
         $storeUrl = $isIOS ? $this->iosUrl : $this->androidUrl;
 
+        $iosAppId = '6504905083';
+
         return response()->view('deeplink', compact(
-            'customScheme', 
-            'intentUrl', 
-            'storeUrl', 
-            'isIOS', 
-            'isAndroid', 
+            'customScheme',
+            'intentUrl',
+            'storeUrl',
+            'isIOS',
+            'isAndroid',
             'isMobile',
             'type',
-            'id'
+            'id',
+            'iosAppId',
         ));
     }
 
-    private function buildAndroidIntent($type, $id)
+    private function buildAndroidIntent($type, $id): string
     {
         // Android Intent URL - most reliable for Android
         return "intent://{$type}/{$id}#Intent;" .
@@ -70,4 +72,4 @@ class DeepLinkController extends Controller
     {
         return (bool) preg_match('/Android/i', $userAgent);
     }
-} 
+}

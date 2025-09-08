@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Contracts\NotifiableModel;
+use App\Models\Concerns\HasMediaUrls;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -58,6 +59,7 @@ class Story extends BaseModel implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
+    use HasMediaUrls;
 
     /**
      * The attributes that are mass assignable.
@@ -114,9 +116,7 @@ class Story extends BaseModel implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('story_images')
-            ->useDisk('stories')
-            ->singleFile();
+        $this->addMediaCollection('story_images')->useDisk('stories')->singleFile();
     }
 
     /**
@@ -124,38 +124,14 @@ class Story extends BaseModel implements HasMedia
      */
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('large')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(1024)
-            ->optimize()
-            ->performOnCollections('story_images');
-
-        $this->addMediaConversion('medium')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(768)
-            ->optimize()
-            ->performOnCollections('story_images');
-
-        $this->addMediaConversion('thumb')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(100)
-            ->blur(1)
-            ->optimize()
-            ->performOnCollections('story_images');
+        $this->addMediaConversion('large')->format(Manipulations::FORMAT_WEBP)->width(1024)->optimize()->performOnCollections('story_images');
+        $this->addMediaConversion('medium')->format(Manipulations::FORMAT_WEBP)->width(768)->optimize()->performOnCollections('story_images');
+        $this->addMediaConversion('thumb')->format(Manipulations::FORMAT_WEBP)->width(100)->blur(1)->optimize()->performOnCollections('story_images');
     }
 
     public function getImageUrlsAttribute(): ?array
     {
-        if (! $this->hasMedia('story_images')) {
-            return null;
-        }
-
-        return [
-            'original_url' => $this->getFirstMedia('story_images')->getTemporaryUrl(Carbon::now()->addDays(3)),
-            'large_url' => $this->getFirstMedia('story_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
-            'medium_url' => $this->getFirstMedia('story_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
-            'thumb_url' => $this->getFirstMedia('story_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
-        ];
+        return $this->firstMediaUrls('story_images', ['large', 'medium', 'thumb'], null);
     }
 
     public function notifications(): HasMany

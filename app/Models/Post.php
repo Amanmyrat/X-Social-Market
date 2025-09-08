@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Contracts\NotifiableModel;
+use App\Models\Concerns\HasMediaUrls;
 use DB;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -91,6 +92,7 @@ class Post extends BaseModel implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
+    use HasMediaUrls;
 
     /**
      * The attributes that are mass assignable.
@@ -162,9 +164,7 @@ class Post extends BaseModel implements HasMedia
 
     public function activeComments(): HasMany
     {
-        return $this->hasMany(PostComment::class)
-            ->where('is_active', true)
-            ->orderByDesc('created_at');
+        return $this->hasMany(PostComment::class)->where('is_active', true)->orderByDesc('created_at');
     }
 
     public function ratings(): HasMany
@@ -431,8 +431,7 @@ class Post extends BaseModel implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('post_medias')
-            ->useDisk('posts');
+        $this->addMediaCollection('post_medias')->useDisk('posts');
     }
 
     /**
@@ -440,83 +439,18 @@ class Post extends BaseModel implements HasMedia
      */
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('large')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(1024)
-            ->optimize()
-            ->performOnCollections('post_medias');
-
-        $this->addMediaConversion('medium')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(768)
-            ->optimize()
-            ->performOnCollections('post_medias');
-
-        $this->addMediaConversion('thumb')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(100)
-            ->blur(1)
-            ->optimize()
-            ->performOnCollections('post_medias');
-
-        $this->addMediaConversion('video_thumb')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(368)
-            ->height(232)
-            ->extractVideoFrameAtSecond(3)
-            ->optimize()
-            ->performOnCollections('post_medias');
+        $this->addMediaConversion('large')->format(Manipulations::FORMAT_WEBP)->width(1024)->optimize()->performOnCollections('post_medias');
+        $this->addMediaConversion('medium')->format(Manipulations::FORMAT_WEBP)->width(768)->optimize()->performOnCollections('post_medias');
+        $this->addMediaConversion('thumb')->format(Manipulations::FORMAT_WEBP)->width(100)->blur(1)->optimize()->performOnCollections('post_medias');
+        $this->addMediaConversion('video_thumb')->format(Manipulations::FORMAT_WEBP)->width(368)->height(232)->extractVideoFrameAtSecond(3)->optimize()->performOnCollections('post_medias');
     }
-
     public function getFirstImageUrlsAttribute(): ?array
     {
-        if (!$this->hasMedia('post_medias')) {
-            return null;
-        }
-
-        $media = $this->getFirstMedia('post_medias');
-
-        if (str_starts_with($media->mime_type, 'video')) {
-            return [
-                'original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3)),
-                'video_thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'video_thumb'),
-            ];
-        }
-
-        return [
-            'original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3)),
-            'large_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
-            'medium_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
-            'thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
-        ];
+        return $this->firstMediaUrls('post_medias');
     }
 
     public function getImageUrlsAttribute(): ?array
     {
-        if (!$this->hasMedia('post_medias')) {
-            return null;
-        }
-
-        $medias = [];
-        foreach ($this->getMedia('post_medias') as $media) {
-
-            $mediaUrls = ['original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3))];
-
-            if (str_starts_with($media->mime_type, 'image')) {
-                $mediaUrls += [
-                    'large_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
-                    'medium_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
-                    'thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
-                ];
-            } else {
-                $mediaUrls += [
-                    'video_thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'video_thumb'),
-                ];
-            }
-
-            array_push($medias, $mediaUrls);
-        }
-
-        return $medias;
+        return $this->allMediaUrls('post_medias');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasMediaUrls;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -63,6 +64,7 @@ class UserProfile extends BaseModel implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
+    use HasMediaUrls;
 
     /**
      * The attributes that are mass assignable.
@@ -122,9 +124,7 @@ class UserProfile extends BaseModel implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('user_images')
-            ->useDisk('users')
-            ->singleFile();
+        $this->addMediaCollection('user_images')->useDisk('users')->singleFile();
     }
 
     /**
@@ -132,37 +132,13 @@ class UserProfile extends BaseModel implements HasMedia
      */
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('large')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(1024)
-            ->optimize()
-            ->performOnCollections('user_images');
-
-        $this->addMediaConversion('medium')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(768)
-            ->optimize()
-            ->performOnCollections('user_images');
-
-        $this->addMediaConversion('thumb')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(100)
-            ->blur(1)
-            ->optimize()
-            ->performOnCollections('user_images');
+        $this->addMediaConversion('large')->format(Manipulations::FORMAT_WEBP)->width(1024)->optimize()->performOnCollections('user_images');
+        $this->addMediaConversion('medium')->format(Manipulations::FORMAT_WEBP)->width(768)->optimize()->performOnCollections('user_images');
+        $this->addMediaConversion('thumb')->format(Manipulations::FORMAT_WEBP)->width(100)->blur(1)->optimize()->performOnCollections('user_images');
     }
 
     public function getImageUrlsAttribute(): ?array
     {
-        if (! $this->hasMedia('user_images')) {
-            return null;
-        }
-
-        return [
-            'original_url' => $this->getFirstMedia('user_images')->getTemporaryUrl(Carbon::now()->addDays(3)),
-            'large_url' => $this->getFirstMedia('user_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
-            'medium_url' => $this->getFirstMedia('user_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
-            'thumb_url' => $this->getFirstMedia('user_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
-        ];
+        return $this->firstMediaUrls('user_images', ['large', 'medium', 'thumb'], null);
     }
 }

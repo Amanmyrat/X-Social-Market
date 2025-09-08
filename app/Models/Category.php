@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasMediaUrls;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -53,6 +54,7 @@ class Category extends BaseModel implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia, HasTranslations;
+    use HasMediaUrls;
 
     /**
      * The attributes that are mass assignable.
@@ -85,9 +87,7 @@ class Category extends BaseModel implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('category_images')
-            ->useDisk('categories')
-            ->singleFile();
+        $this->addMediaCollection('category_images')->useDisk('categories')->singleFile();
     }
 
     /**
@@ -95,46 +95,13 @@ class Category extends BaseModel implements HasMedia
      */
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('large')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(1024)
-            ->optimize()
-            ->performOnCollections('category_images');
-
-        $this->addMediaConversion('thumb')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(100)
-            ->blur(1)
-            ->optimize()
-            ->performOnCollections('category_images');
+        $this->addMediaConversion('large')->format(Manipulations::FORMAT_WEBP)->width(1024)->optimize()->performOnCollections('category_images');
+        $this->addMediaConversion('thumb')->format(Manipulations::FORMAT_WEBP)->width(100)->blur(1)->optimize()->performOnCollections('category_images');
     }
-
-//    public function getImageUrlsAttribute(): ?array
-//    {
-//        if (! $this->hasMedia('category_images')) {
-//            return null;
-//        }
-//
-//        return [
-//            'original_url' => $this->getFirstMedia('category_images')->getTemporaryUrl(Carbon::now()->addDays(3)),
-//            'large_url' => $this->getFirstMedia('category_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
-//            'thumb_url' => $this->getFirstMedia('category_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
-//        ];
-//    }
 
     public function getImageUrlsAttribute(): ?array
     {
-        if (! $this->hasMedia('category_images')) {
-            return null;
-        }
-
-        $media = $this->getFirstMedia('category_images');
-
-        return [
-            'original_url' => route('media.show', ['media' => $media->id]),
-            'large_url' => route('media.show', ['media' => $media->id, 'conversion' => 'large']),
-            'thumb_url' => route('media.show', ['media' => $media->id, 'conversion' => 'thumb']),
-        ];
+        return $this->firstMediaUrls('category_images', ['large','thumb'], null);
     }
 
 }

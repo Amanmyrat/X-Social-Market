@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasMediaUrls;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -53,6 +54,7 @@ class Admin extends Authenticatable implements HasMedia
 {
     use HasApiTokens, HasFactory, HasRoles;
     use InteractsWithMedia;
+    use HasMediaUrls;
 
     protected string $guard_name = 'admin';
 
@@ -92,9 +94,7 @@ class Admin extends Authenticatable implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('admin_images')
-            ->useDisk('admins')
-            ->singleFile();
+        $this->addMediaCollection('admin_images')->useDisk('admins')->singleFile();
     }
 
     /**
@@ -102,37 +102,13 @@ class Admin extends Authenticatable implements HasMedia
      */
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('large')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(1024)
-            ->optimize()
-            ->performOnCollections('admin_images');
-
-        $this->addMediaConversion('medium')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(768)
-            ->optimize()
-            ->performOnCollections('admin_images');
-
-        $this->addMediaConversion('thumb')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(100)
-            ->blur(1)
-            ->optimize()
-            ->performOnCollections('admin_images');
+        $this->addMediaConversion('large')->format(Manipulations::FORMAT_WEBP)->width(1024)->optimize()->performOnCollections('admin_images');
+        $this->addMediaConversion('medium')->format(Manipulations::FORMAT_WEBP)->width(768)->optimize()->performOnCollections('admin_images');
+        $this->addMediaConversion('thumb')->format(Manipulations::FORMAT_WEBP)->width(100)->blur(1)->optimize()->performOnCollections('admin_images');
     }
 
     public function getImageUrlsAttribute(): ?array
     {
-        if (! $this->hasMedia('admin_images')) {
-            return null;
-        }
-
-        return [
-            'original_url' => $this->getFirstMedia('admin_images')->getTemporaryUrl(Carbon::now()->addDays(3)),
-            'large_url' => $this->getFirstMedia('admin_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
-            'medium_url' => $this->getFirstMedia('admin_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
-            'thumb_url' => $this->getFirstMedia('admin_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
-        ];
+        return $this->firstMediaUrls('admin_images', ['large', 'medium', 'thumb'], null);
     }
 }

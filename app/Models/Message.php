@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasMediaUrls;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
@@ -60,6 +60,7 @@ class Message extends BaseModel implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
+    use HasMediaUrls;
 
     public const TYPE_MESSAGE = 'message';
     public const TYPE_SHARE_STORY = 'share_story';
@@ -105,8 +106,7 @@ class Message extends BaseModel implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('message_medias')
-            ->useDisk('messages');
+        $this->addMediaCollection('message_medias')->useDisk('messages');
     }
 
     /**
@@ -114,49 +114,14 @@ class Message extends BaseModel implements HasMedia
      */
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('large')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(1024)
-            ->optimize()
-            ->performOnCollections('message_medias');
-
-        $this->addMediaConversion('medium')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(768)
-            ->optimize()
-            ->performOnCollections('message_medias');
-
-        $this->addMediaConversion('thumb')
-            ->format(Manipulations::FORMAT_WEBP)
-            ->width(100)
-            ->blur(1)
-            ->optimize()
-            ->performOnCollections('message_medias');
+        $this->addMediaConversion('large')->format(Manipulations::FORMAT_WEBP)->width(1024)->optimize()->performOnCollections('message_medias');
+        $this->addMediaConversion('medium')->format(Manipulations::FORMAT_WEBP)->width(768)->optimize()->performOnCollections('message_medias');
+        $this->addMediaConversion('thumb')->format(Manipulations::FORMAT_WEBP)->width(100)->blur(1)->optimize()->performOnCollections('message_medias');
     }
 
     public function getImageUrlsAttribute(): ?array
     {
-        if (! $this->hasMedia('message_medias')) {
-            return null;
-        }
-
-        $medias = [];
-        foreach ($this->getMedia('message_medias') as $media) {
-
-            $mediaUrls = ['original_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3))];
-
-            if (str_starts_with($media->mime_type, 'image/')) {
-                $mediaUrls += [
-                    'large_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
-                    'medium_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'medium'),
-                    'thumb_url' => $media->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
-                ];
-            }
-
-            array_push($medias, $mediaUrls);
-        }
-
-        return $medias;
+        return $this->firstMediaUrls('message_medias', ['large','medium', 'thumb'], null);
     }
 
     protected function extra(): Attribute

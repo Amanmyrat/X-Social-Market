@@ -83,11 +83,6 @@ class Category extends BaseModel implements HasMedia
         return $this->hasMany(Post::class);
     }
 
-    public function userProfiles(): HasMany
-    {
-        return $this->hasMany(UserProfile::class);
-    }
-
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('category_images')
@@ -114,16 +109,32 @@ class Category extends BaseModel implements HasMedia
             ->performOnCollections('category_images');
     }
 
+//    public function getImageUrlsAttribute(): ?array
+//    {
+//        if (! $this->hasMedia('category_images')) {
+//            return null;
+//        }
+//
+//        return [
+//            'original_url' => $this->getFirstMedia('category_images')->getTemporaryUrl(Carbon::now()->addDays(3)),
+//            'large_url' => $this->getFirstMedia('category_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
+//            'thumb_url' => $this->getFirstMedia('category_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
+//        ];
+//    }
+
     public function getImageUrlsAttribute(): ?array
     {
         if (! $this->hasMedia('category_images')) {
             return null;
         }
 
+        $media = $this->getFirstMedia('category_images');
+
         return [
-            'original_url' => $this->getFirstMedia('category_images')->getTemporaryUrl(Carbon::now()->addDays(3)),
-            'large_url' => $this->getFirstMedia('category_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'large'),
-            'thumb_url' => $this->getFirstMedia('category_images')->getTemporaryUrl(Carbon::now()->addDays(3), 'thumb'),
+            'original_url' => route('media.show', ['media' => $media->id]),
+            'large_url' => route('media.show', ['media' => $media->id, 'conversion' => 'large']),
+            'thumb_url' => route('media.show', ['media' => $media->id, 'conversion' => 'thumb']),
         ];
     }
+
 }

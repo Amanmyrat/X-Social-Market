@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MediaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DeviceRedirectController;
 use App\Http\Controllers\DeepLinkController;
@@ -37,3 +38,7 @@ Route::get('/.well-known/assetlinks.json', function () {
     return response($content, 200)
         ->header('Content-Type', 'application/json');
 });
+
+Route::get('/media/{media}/{conversion?}', [MediaController::class, 'show'])
+    ->where('conversion', '.*')
+    ->name('media.show');

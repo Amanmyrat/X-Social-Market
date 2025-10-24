@@ -1,9 +1,7 @@
 <?php
 
-use App\Http\Controllers\MediaController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DeviceRedirectController;
-use App\Http\Controllers\DeepLinkController;
+use App\Http\Controllers\ReverbStatusController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,29 +14,12 @@ use App\Http\Controllers\DeepLinkController;
 |
 */
 
-//Route::get('/', function () {
-//    return view('welcome');
-//});
-
-Route::get('/device-redirect', [DeviceRedirectController::class, 'redirectToPlatform']);
-
-// Deep linking routes
-Route::get('/profile/{profileId}', [DeepLinkController::class, 'profile'])->name('deeplink.profile');
-Route::get('/post/{postId}', [DeepLinkController::class, 'post'])->name('deeplink.post');
-
-// Well-known files for deep linking
-Route::get('/.well-known/apple-app-site-association', function () {
-    $content = file_get_contents(resource_path('well-known/apple-app-site-association'));
-    return response($content, 200)
-        ->header('Content-Type', 'application/json');
+Route::get('/', function () {
+    return view('welcome');
 });
 
-Route::get('/.well-known/assetlinks.json', function () {
-    $content = file_get_contents(resource_path('well-known/assetlinks.json'));
-    return response($content, 200)
-        ->header('Content-Type', 'application/json');
-});
+// Reverb Status Dashboard (like old laravel-websockets)
+Route::get('/reverb-status', [ReverbStatusController::class, 'index'])->name('reverb.status');
 
-Route::get('/media/{media}/{conversion?}', [MediaController::class, 'show'])
-    ->where('conversion', '.*')
-    ->name('media.show');
+// API endpoint to check if Reverb is responding (with real-time stats)
+Route::get('/api/reverb-check', [ReverbStatusController::class, 'apiCheck'])->name('reverb.check');

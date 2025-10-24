@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Connection Tester & Debugger</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .panel h2 {
+            color: #2d3748;
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ef4444;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.connected {
+            background: #10b981;
+        }
+
+        .status-indicator.connecting {
+            background: #f59e0b;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #4a5568;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .button:hover:not(:disabled) {
+            background: #5a67d8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        .button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+
+        .button.secondary {
+            background: #718096;
+        }
+
+        .button.secondary:hover:not(:disabled) {
+            background: #4a5568;
+        }
+
+        .button.danger {
+            background: #ef4444;
+        }
+
+        .button.danger:hover:not(:disabled) {
+            background: #dc2626;
+        }
+
+        .button.success {
+            background: #10b981;
+        }
+
+        .button.success:hover:not(:disabled) {
+            background: #059669;
+        }
+
+        .log-container {
+            background: #1a202c;
+            border-radius: 6px;
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            color: #e2e8f0;
+            margin-top: 15px;
+        }
+
+        .log-entry {
+            padding: 4px 0;
+            border-bottom: 1px solid #2d3748;
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-timestamp {
+            color: #718096;
+            margin-right: 8px;
+        }
+
+        .log-type {
+            font-weight: 600;
+            margin-right: 8px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+        }
+
+        .log-type.info { background: #3b82f6; color: white; }
+        .log-type.success { background: #10b981; color: white; }
+        .log-type.error { background: #ef4444; color: white; }
+        .log-type.warning { background: #f59e0b; color: white; }
+        .log-type.event { background: #8b5cf6; color: white; }
+
+        .channel-list {
+            background: #f7fafc;
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 15px;
+            min-height: 100px;
+        }
+
+        .channel-item {
+            background: white;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .channel-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .channel-name {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #2d3748;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stat-box {
+            background: #f7fafc;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #718096;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .code-block {
+            background: #1a202c;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            color: #10b981;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .alert.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #3b82f6;
+        }
+
+        .alert.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        @media (max-width: 1024px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔌 WebSocket Connection Tester & Debugger</h1>
+            <p>Test and debug your Reverb/Pusher WebSocket connections in real-time</p>
+        </div>
+
+        <!-- Pusher Loading Error Alert (hidden by default) -->
+        <div id="pusher-error" class="alert error" style="display: none;">
+            <span>⚠️</span>
+            <div>
+                <strong>Pusher Library Failed to Load!</strong><br>
+                <small>
+                    The Pusher JavaScript library couldn't be loaded from the CDN. This might be due to:
+                    <ul style="margin-top: 8px; margin-left: 20px;">
+                        <li>No internet connection</li>
+                        <li>Firewall or ad-blocker blocking the CDN</li>
+                        <li>Corporate network restrictions</li>
+                    </ul>
+                    <strong>Solutions:</strong>
+                    <ol style="margin-top: 8px; margin-left: 20px;">
+                        <li>Check your internet connection and reload the page</li>
+                        <li>Disable ad-blockers temporarily</li>
+                        <li>Try accessing from a different network</li>
+                        <li>Download Pusher JS and host it locally (see console for link)</li>
+                    </ol>
+                </small>
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- Connection Panel -->
+            <div class="panel">
+                <h2>
+                    <span class="status-indicator" id="status-indicator"></span>
+                    Connection Settings
+                </h2>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-value" id="stat-state">INIT</div>
+                        <div class="stat-label">State</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="stat-channels">0</div>
+                        <div class="stat-label">Channels</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="stat-messages">0</div>
+                        <div class="stat-label">Messages</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>WebSocket Host</label>
+                    <input type="text" id="ws-host" value="localhost" placeholder="localhost">
+                </div>
+
+                <div class="form-group">
+                    <label>WebSocket Port</label>
+                    <input type="number" id="ws-port" value="6001" placeholder="6001">
+                </div>
+
+                <div class="form-group">
+                    <label>App Key</label>
+                    <input type="text" id="app-key" placeholder="your-app-key">
+                </div>
+
+                <div class="form-group">
+                    <label>App ID (optional)</label>
+                    <input type="text" id="app-id" placeholder="your-app-id">
+                </div>
+
+                <div class="form-group">
+                    <label>Auth Endpoint (for private/presence channels)</label>
+                    <input type="text" id="auth-endpoint" placeholder="/broadcasting/auth">
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="use-tls" style="width: auto; margin-right: 8px;">
+                        Use TLS (wss://)
+                    </label>
+                </div>
+
+                <button class="button success" onclick="connect()" id="connect-btn">
+                    Connect
+                </button>
+                <button class="button danger" onclick="disconnect()" id="disconnect-btn" disabled>
+                    Disconnect
+                </button>
+                <button class="button secondary" onclick="clearLogs()">
+                    Clear Logs
+                </button>
+            </div>
+
+            <!-- Channels Panel -->
+            <div class="panel">
+                <h2>📡 Channel Subscriptions</h2>
+
+                <div class="form-group">
+                    <label>Channel Type</label>
+                    <select id="channel-type">
+                        <option value="public">Public Channel</option>
+                        <option value="private">Private Channel</option>
+                        <option value="presence">Presence Channel</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Channel Name</label>
+                    <input type="text" id="channel-name" placeholder="my-channel">
+                </div>
+
+                <div class="form-group">
+                    <label>Event Name (to listen for)</label>
+                    <input type="text" id="event-name" placeholder="MyEvent or .client-event">
+                </div>
+
+                <button class="button success" onclick="subscribeChannel()" id="subscribe-btn" disabled>
+                    Subscribe to Channel
+                </button>
+                <button class="button secondary" onclick="unsubscribeAll()">
+                    Unsubscribe All
+                </button>
+
+                <div class="channel-list" id="channel-list">
+                    <p style="color: #718096; font-size: 13px; text-align: center;">No channels subscribed</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Send Message Panel -->
+        <div class="panel full-width">
+            <h2>📤 Send Message (Client Events)</h2>
+            
+            <div class="alert info">
+                <span>💡</span>
+                <span>Client events must start with "client-" prefix and can only be sent on private/presence channels</span>
+            </div>
+
+            <div class="grid">
+                <div class="form-group">
+                    <label>Target Channel</label>
+                    <select id="send-channel">
+                        <option value="">Select a channel</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Event Name (must start with "client-")</label>
+                    <input type="text" id="send-event" placeholder="client-my-event">
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Message Data (JSON)</label>
+                    <textarea id="send-data" placeholder='{"message": "Hello World"}'></textarea>
+                </div>
+            </div>
+
+            <button class="button success" onclick="sendMessage()">
+                Send Message
+            </button>
+        </div>
+
+        <!-- Debug Log -->
+        <div class="panel full-width">
+            <h2>🐛 Debug Log</h2>
+            <div class="log-container" id="log-container">
+                <div class="log-entry">
+                    <span class="log-timestamp">[Ready]</span>
+                    <span class="log-type info">INFO</span>
+                    <span>WebSocket tester initialized. Configure connection and click Connect.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Start Guide -->
+        <div class="panel full-width">
+            <h2>📚 Quick Start Guide</h2>
+            
+            <div style="color: #4a5568; font-size: 14px; line-height: 1.6;">
+                <h3 style="color: #2d3748; margin-bottom: 10px; margin-top: 15px;">1. Configure Connection</h3>
+                <p>Enter your WebSocket host, port, and app key. These are typically found in your <code style="background: #f7fafc; padding: 2px 6px; border-radius: 3px;">.env</code> file:</p>
+                <div class="code-block">
+REVERB_HOST=localhost<br>
+REVERB_PORT=6001<br>
+REVERB_APP_KEY=your-app-key
+                </div>
+
+                <h3 style="color: #2d3748; margin-bottom: 10px; margin-top: 15px;">2. Connect</h3>
+                <p>Click the "Connect" button. Watch the debug log for connection status.</p>
+
+                <h3 style="color: #2d3748; margin-bottom: 10px; margin-top: 15px;">3. Subscribe to Channels</h3>
+                <ul style="margin-left: 20px; margin-top: 8px;">
+                    <li><strong>Public:</strong> <code style="background: #f7fafc; padding: 2px 6px; border-radius: 3px;">my-channel</code></li>
+                    <li><strong>Private:</strong> <code style="background: #f7fafc; padding: 2px 6px; border-radius: 3px;">private-my-channel</code></li>
+                    <li><strong>Presence:</strong> <code style="background: #f7fafc; padding: 2px 6px; border-radius: 3px;">presence-my-channel</code></li>
+                </ul>
+
+                <h3 style="color: #2d3748; margin-bottom: 10px; margin-top: 15px;">4. Listen for Events</h3>
+                <p>Enter the event name (e.g., <code style="background: #f7fafc; padding: 2px 6px; border-radius: 3px;">MessageSent</code>) and subscribe. Watch the debug log for incoming messages.</p>
+
+                <h3 style="color: #2d3748; margin-bottom: 10px; margin-top: 15px;">5. Send Messages (Optional)</h3>
+                <p>Send client events on private/presence channels. Event names must start with "client-".</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js" crossorigin="anonymous"></script>
+    <script>
+        // Check if Pusher loaded
+        if (typeof Pusher === 'undefined') {
+            console.error('❌ Pusher library failed to load from CDN!');
+            console.error('CDN URL: https://js.pusher.com/8.2.0/pusher.min.js');
+            console.log('💡 Solution: Download Pusher JS from https://github.com/pusher/pusher-js/releases');
+            console.log('Then place pusher.min.js in your public/ directory and update the script tag');
+            
+            // Show error alert
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('pusher-error').style.display = 'flex';
+            });
+        }
+
+        let pusher = null;
+        let subscribedChannels = {};
+        let messageCount = 0;
+
+        function log(message, type = 'info') {
+            const container = document.getElementById('log-container');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            
+            const timestamp = new Date().toLocaleTimeString();
+            entry.innerHTML = `
+                <span class="log-timestamp">[${timestamp}]</span>
+                <span class="log-type ${type}">${type.toUpperCase()}</span>
+                <span>${message}</span>
+            `;
+            
+            container.appendChild(entry);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function updateStats() {
+            const state = pusher ? pusher.connection.state : 'INIT';
+            document.getElementById('stat-state').textContent = state.toUpperCase();
+            document.getElementById('stat-channels').textContent = Object.keys(subscribedChannels).length;
+            document.getElementById('stat-messages').textContent = messageCount;
+        }
+
+        function updateChannelList() {
+            const list = document.getElementById('channel-list');
+            const sendChannelSelect = document.getElementById('send-channel');
+            
+            if (Object.keys(subscribedChannels).length === 0) {
+                list.innerHTML = '<p style="color: #718096; font-size: 13px; text-align: center;">No channels subscribed</p>';
+                sendChannelSelect.innerHTML = '<option value="">Select a channel</option>';
+            } else {
+                list.innerHTML = '';
+                sendChannelSelect.innerHTML = '<option value="">Select a channel</option>';
+                
+                for (const [channelName, channel] of Object.entries(subscribedChannels)) {
+                    const item = document.createElement('div');
+                    item.className = 'channel-item';
+                    item.innerHTML = `
+                        <span class="channel-name">${channelName}</span>
+                        <button class="button danger" onclick="unsubscribeChannel('${channelName}')" style="margin: 0; padding: 6px 12px; font-size: 12px;">
+                            Unsubscribe
+                        </button>
+                    `;
+                    list.appendChild(item);
+                    
+                    // Add to send channel dropdown
+                    const option = document.createElement('option');
+                    option.value = channelName;
+                    option.textContent = channelName;
+                    sendChannelSelect.appendChild(option);
+                }
+            }
+            
+            updateStats();
+        }
+
+        function connect() {
+            // Check if Pusher is loaded
+            if (typeof Pusher === 'undefined') {
+                log('❌ Pusher library not loaded! Please reload the page.', 'error');
+                alert('Pusher library failed to load. Please check your internet connection and reload the page.');
+                return;
+            }
+
+            const host = document.getElementById('ws-host').value;
+            const port = document.getElementById('ws-port').value;
+            const key = document.getElementById('app-key').value;
+            const authEndpoint = document.getElementById('auth-endpoint').value;
+            const useTLS = document.getElementById('use-tls').checked;
+
+            if (!host || !port || !key) {
+                alert('Please fill in Host, Port, and App Key');
+                return;
+            }
+
+            log('Connecting to WebSocket server...', 'info');
+            
+            const config = {
+                wsHost: host,
+                wsPort: parseInt(port),
+                forceTLS: useTLS,
+                disableStats: true,
+                enabledTransports: ['ws', 'wss'],
+                cluster: 'mt1',
+            };
+
+            if (authEndpoint) {
+                config.authEndpoint = authEndpoint;
+            }
+
+            try {
+                pusher = new Pusher(key, config);
+
+                // Connection events
+                pusher.connection.bind('connecting', () => {
+                    log('Connection state: Connecting...', 'info');
+                    document.getElementById('status-indicator').className = 'status-indicator connecting';
+                    updateStats();
+                });
+
+                pusher.connection.bind('connected', () => {
+                    log('✅ Successfully connected to WebSocket server!', 'success');
+                    log(`Socket ID: ${pusher.connection.socket_id}`, 'success');
+                    document.getElementById('status-indicator').className = 'status-indicator connected';
+                    document.getElementById('connect-btn').disabled = true;
+                    document.getElementById('disconnect-btn').disabled = false;
+                    document.getElementById('subscribe-btn').disabled = false;
+                    updateStats();
+                });
+
+                pusher.connection.bind('unavailable', () => {
+                    log('❌ Connection unavailable - server may not be running', 'error');
+                    document.getElementById('status-indicator').className = 'status-indicator';
+                    updateStats();
+                });
+
+                pusher.connection.bind('failed', () => {
+                    log('❌ Connection failed', 'error');
+                    document.getElementById('status-indicator').className = 'status-indicator';
+                    updateStats();
+                });
+
+                pusher.connection.bind('disconnected', () => {
+                    log('Disconnected from server', 'warning');
+                    document.getElementById('status-indicator').className = 'status-indicator';
+                    updateStats();
+                });
+
+                pusher.connection.bind('error', (err) => {
+                    log(`Error: ${err.error?.data?.message || JSON.stringify(err)}`, 'error');
+                });
+
+                pusher.connection.bind('state_change', (states) => {
+                    log(`State changed: ${states.previous} → ${states.current}`, 'info');
+                    updateStats();
+                });
+
+            } catch (error) {
+                log(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        function disconnect() {
+            if (pusher) {
+                log('Disconnecting...', 'warning');
+                
+                // Unsubscribe from all channels
+                for (const channelName in subscribedChannels) {
+                    pusher.unsubscribe(channelName);
+                }
+                subscribedChannels = {};
+                
+                pusher.disconnect();
+                pusher = null;
+                
+                document.getElementById('connect-btn').disabled = false;
+                document.getElementById('disconnect-btn').disabled = true;
+                document.getElementById('subscribe-btn').disabled = true;
+                document.getElementById('status-indicator').className = 'status-indicator';
+                
+                updateChannelList();
+                updateStats();
+                log('Disconnected', 'info');
+            }
+        }
+
+        function subscribeChannel() {
+            if (!pusher) {
+                alert('Please connect first');
+                return;
+            }
+
+            const channelType = document.getElementById('channel-type').value;
+            let channelName = document.getElementById('channel-name').value.trim();
+            const eventName = document.getElementById('event-name').value.trim();
+
+            if (!channelName) {
+                alert('Please enter a channel name');
+                return;
+            }
+
+            // Add prefix if needed
+            if (channelType === 'private' && !channelName.startsWith('private-')) {
+                channelName = 'private-' + channelName;
+            } else if (channelType === 'presence' && !channelName.startsWith('presence-')) {
+                channelName = 'presence-' + channelName;
+            }
+
+            // Check if already subscribed
+            if (subscribedChannels[channelName]) {
+                alert('Already subscribed to this channel');
+                return;
+            }
+
+            log(`Subscribing to channel: ${channelName}`, 'info');
+
+            try {
+                const channel = pusher.subscribe(channelName);
+
+                // Subscription events
+                channel.bind('pusher:subscription_succeeded', (data) => {
+                    log(`✅ Successfully subscribed to ${channelName}`, 'success');
+                    if (data) {
+                        log(`Subscription data: ${JSON.stringify(data)}`, 'info');
+                    }
+                });
+
+                channel.bind('pusher:subscription_error', (error) => {
+                    log(`❌ Subscription error for ${channelName}: ${JSON.stringify(error)}`, 'error');
+                });
+
+                // Listen for specific event if provided
+                if (eventName) {
+                    channel.bind(eventName, (data) => {
+                        messageCount++;
+                        log(`📨 Event "${eventName}" received on ${channelName}`, 'event');
+                        log(`Data: ${JSON.stringify(data, null, 2)}`, 'event');
+                        updateStats();
+                    });
+                    log(`Listening for event: ${eventName}`, 'info');
+                }
+
+                // Listen for all events (catch-all)
+                channel.bind_global((eventName, data) => {
+                    if (!eventName.startsWith('pusher:')) {
+                        messageCount++;
+                        log(`📨 Event "${eventName}" received on ${channelName}`, 'event');
+                        log(`Data: ${JSON.stringify(data, null, 2)}`, 'event');
+                        updateStats();
+                    }
+                });
+
+                // Presence channel specific events
+                if (channelType === 'presence') {
+                    channel.bind('pusher:member_added', (member) => {
+                        log(`👤 Member joined ${channelName}: ${JSON.stringify(member)}`, 'info');
+                    });
+
+                    channel.bind('pusher:member_removed', (member) => {
+                        log(`👋 Member left ${channelName}: ${JSON.stringify(member)}`, 'info');
+                    });
+                }
+
+                subscribedChannels[channelName] = channel;
+                updateChannelList();
+
+            } catch (error) {
+                log(`Error subscribing: ${error.message}`, 'error');
+            }
+        }
+
+        function unsubscribeChannel(channelName) {
+            if (pusher && subscribedChannels[channelName]) {
+                log(`Unsubscribing from ${channelName}`, 'warning');
+                pusher.unsubscribe(channelName);
+                delete subscribedChannels[channelName];
+                updateChannelList();
+            }
+        }
+
+        function unsubscribeAll() {
+            if (pusher) {
+                log('Unsubscribing from all channels...', 'warning');
+                for (const channelName in subscribedChannels) {
+                    pusher.unsubscribe(channelName);
+                }
+                subscribedChannels = {};
+                updateChannelList();
+            }
+        }
+
+        function sendMessage() {
+            const channelName = document.getElementById('send-channel').value;
+            const eventName = document.getElementById('send-event').value.trim();
+            const dataStr = document.getElementById('send-data').value.trim();
+
+            if (!channelName) {
+                alert('Please select a channel');
+                return;
+            }
+
+            if (!eventName || !eventName.startsWith('client-')) {
+                alert('Event name must start with "client-"');
+                return;
+            }
+
+            let data = {};
+            if (dataStr) {
+                try {
+                    data = JSON.parse(dataStr);
+                } catch (error) {
+                    alert('Invalid JSON data');
+                    return;
+                }
+            }
+
+            const channel = subscribedChannels[channelName];
+            if (!channel) {
+                alert('Channel not found');
+                return;
+            }
+
+            log(`📤 Sending "${eventName}" to ${channelName}`, 'info');
+            log(`Data: ${JSON.stringify(data)}`, 'info');
+
+            try {
+                channel.trigger(eventName, data);
+                log('✅ Message sent successfully', 'success');
+            } catch (error) {
+                log(`❌ Error sending message: ${error.message}`, 'error');
+            }
+        }
+
+        function clearLogs() {
+            document.getElementById('log-container').innerHTML = `
+                <div class="log-entry">
+                    <span class="log-timestamp">[${new Date().toLocaleTimeString()}]</span>
+                    <span class="log-type info">INFO</span>
+                    <span>Logs cleared</span>
+                </div>
+            `;
+        }
+
+        // Load saved configuration
+        window.addEventListener('load', () => {
+            const savedHost = localStorage.getItem('ws-host');
+            const savedPort = localStorage.getItem('ws-port');
+            const savedKey = localStorage.getItem('app-key');
+            const savedAuthEndpoint = localStorage.getItem('auth-endpoint');
+
+            if (savedHost) document.getElementById('ws-host').value = savedHost;
+            if (savedPort) document.getElementById('ws-port').value = savedPort;
+            if (savedKey) document.getElementById('app-key').value = savedKey;
+            if (savedAuthEndpoint) document.getElementById('auth-endpoint').value = savedAuthEndpoint;
+        });
+
+        // Save configuration on change
+        document.getElementById('ws-host').addEventListener('change', (e) => {
+            localStorage.setItem('ws-host', e.target.value);
+        });
+        document.getElementById('ws-port').addEventListener('change', (e) => {
+            localStorage.setItem('ws-port', e.target.value);
+        });
+        document.getElementById('app-key').addEventListener('change', (e) => {
+            localStorage.setItem('app-key', e.target.value);
+        });
+        document.getElementById('auth-endpoint').addEventListener('change', (e) => {
+            localStorage.setItem('auth-endpoint', e.target.value);
+        });
+    </script>
+</body>
+</html>
+

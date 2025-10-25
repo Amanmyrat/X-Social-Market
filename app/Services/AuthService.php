@@ -6,10 +6,18 @@ use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use Exception;
 use Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class AuthService
 {
+    protected ReferralService $referralService;
+
+    public function __construct(ReferralService $referralService)
+    {
+        $this->referralService = $referralService;
+    }
+
     /**
      * @throws Exception
      */
@@ -24,7 +32,32 @@ class AuthService
             'type' => User::TYPE_USER,
         ]);
 
-        $user?->profile()->create([]);
+        // Generate unique referral code for the new user
+        if ($user) {
+            $user->referral_code = User::generateReferralCode();
+            $user->save();
+            
+            $user->profile()->create([]);
+            
+            // Process referral if code was provided
+            if (!empty($registerData['referral_code'])) {
+                try {
+                    $result = $this->referralService->processReferral($user, $registerData['referral_code']);
+                    Log::info('Referral processed successfully', [
+                        'new_user_id' => $user->id,
+                        'referrer_id' => $result['referrer']->id,
+                        'reward' => $result['reward_amount']
+                    ]);
+                } catch (Exception $e) {
+                    // Log error but don't block registration
+                    Log::warning('Referral processing failed', [
+                        'user_id' => $user->id,
+                        'referral_code' => $registerData['referral_code'],
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
+        }
 
         return $user;
     }

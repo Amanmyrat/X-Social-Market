@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlockedUserController;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\DailyRewardController;
 use App\Http\Controllers\Api\FollowerController;
 use App\Http\Controllers\Api\FollowerRequestController;
 use App\Http\Controllers\Api\GuestPostController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Api\PostFavoritesController;
 use App\Http\Controllers\Api\PostRatingController;
 use App\Http\Controllers\Api\PostReportController;
 use App\Http\Controllers\Api\PostViewController;
+use App\Http\Controllers\Api\ReferralController;
 use App\Http\Controllers\Api\StoryController;
 use App\Http\Controllers\Api\StoryReportController;
 use App\Http\Controllers\Api\StoryViewController;
@@ -199,6 +201,20 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::post('/messages/{message}/read', [MessageController::class, 'readMessage']);
         Route::post('/messages/{message}/delete', [MessageController::class, 'delete']);
         Route::post('/messages/{message}/image/{media}/delete', [MessageController::class, 'deleteImage']);
+    });
+
+    // TNT Coin & Rewards System
+    Route::prefix('rewards')->group(function () {
+        Route::post('/daily-login', [DailyRewardController::class, 'claimDailyReward']);
+        Route::get('/daily-login/status', [DailyRewardController::class, 'getDailyLoginStatus']);
+        Route::get('/transactions', [DailyRewardController::class, 'getTransactionHistory']);
+        Route::get('/balance', [DailyRewardController::class, 'getBalance']);
+    });
+
+    // Referral System
+    Route::prefix('referrals')->group(function () {
+        Route::get('/info', [ReferralController::class, 'getReferralInfo']);
+        Route::post('/validate', [ReferralController::class, 'validateReferralCode']);
     });
 
 });

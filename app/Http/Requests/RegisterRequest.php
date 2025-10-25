@@ -32,6 +32,15 @@ class RegisterRequest extends FormRequest
              * @example 12345678
              */
             'password' => ['required', 'confirmed', Password::defaults()],
+            
+            /**
+             * Referral code (optional).
+             *
+             * @var string
+             *
+             * @example AB12CD34
+             */
+            'referral_code' => ['nullable', 'string', 'size:8'],
         ];
     }
 
@@ -49,6 +58,7 @@ class RegisterRequest extends FormRequest
             'device_token.string' => 'Enjam tokeni dogry görnüşde giriziň.',
             'password.required' => 'Parol hökmanydyr.',
             'password.confirmed' => 'Parollar gabat gelmeli.',
+            'referral_code.size' => 'Referral kody 8 simwol bolmaly.',
         ];
     }
 

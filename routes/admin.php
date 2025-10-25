@@ -11,7 +11,9 @@ use App\Http\Controllers\Admin\AdminLocationController;
 use App\Http\Controllers\Admin\AdminPostController;
 use App\Http\Controllers\Admin\AdminPostReportController;
 use App\Http\Controllers\Admin\AdminPrivacyPolicyController;
+use App\Http\Controllers\Admin\AdminReferralController;
 use App\Http\Controllers\Admin\AdminReportTypeController;
+use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\Admin\AdminSizeController;
 use App\Http\Controllers\Admin\AdminStatisticsController;
 use App\Http\Controllers\Admin\AdminStoryController;
@@ -153,6 +155,20 @@ Route::group(['prefix' => 'admin', 'middleware' => ['role:super-admin|admin']], 
 
         Route::prefix('mobile')->middleware('role:super-admin')->group(function () {
             Route::post('/update-version', [MobileVersionController::class, 'updateVersion']);
+        });
+
+        // TNT Coin System Settings
+        Route::prefix('settings')->group(function () {
+            Route::get('/daily-login-reward', [AdminSettingsController::class, 'getDailyLoginReward']);
+            Route::patch('/daily-login-reward', [AdminSettingsController::class, 'updateDailyLoginReward']);
+            Route::get('/referral-reward', [AdminReferralController::class, 'getReferralReward']);
+            Route::patch('/referral-reward', [AdminReferralController::class, 'updateReferralReward']);
+        });
+
+        // TNT Coin System Statistics
+        Route::prefix('statistics')->group(function () {
+            Route::get('/daily-login', [AdminSettingsController::class, 'getDailyLoginStatistics']);
+            Route::get('/referrals', [AdminReferralController::class, 'getReferralStatistics']);
         });
     });
 });

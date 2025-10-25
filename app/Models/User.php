@@ -105,6 +105,9 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'balance_tnt',
+        'referral_code',
+        'referred_by',
         'phone',
         'username',
         'email',
@@ -265,5 +268,51 @@ class User extends Authenticatable
     public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class, 'recipient_id');
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function dailyLoginReward(): HasOne
+    {
+        return $this->hasOne(DailyLoginReward::class);
+    }
+
+    /**
+     * Get the user who referred this user.
+     */
+    public function referredBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'referred_by');
+    }
+
+    /**
+     * Get all users referred by this user.
+     */
+    public function referrals(): HasMany
+    {
+        return $this->hasMany(Referral::class, 'referrer_id');
+    }
+
+    /**
+     * Get all successful referrals (completed status).
+     */
+    public function successfulReferrals(): HasMany
+    {
+        return $this->hasMany(Referral::class, 'referrer_id')->where('status', 'completed');
+    }
+
+    /**
+     * Generate unique referral code.
+     */
+    public static function generateReferralCode(): string
+    {
+        do {
+            $code = strtoupper(substr(md5(uniqid(rand(), true)), 0, 8));
+        } while (self::where('referral_code', $code)->exists());
+
+        return $code;
     }
 }

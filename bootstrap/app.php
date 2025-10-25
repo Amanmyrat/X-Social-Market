@@ -51,17 +51,7 @@ return Application::configure(basePath: dirname(__DIR__))
             ConvertEmptyStringsToNull::class,
         ]);
 
-        // Web middleware group
-        $middleware->web(append: [
-            EncryptCookies::class,
-            AddQueuedCookiesToResponse::class,
-            StartSession::class,
-            ShareErrorsFromSession::class,
-            VerifyCsrfToken::class,
-            SubstituteBindings::class,
-        ]);
-
-        // API middleware group
+        // API middleware group - add locale middleware
         $middleware->api(prepend: [
             LocaleMiddleware::class,
         ]);

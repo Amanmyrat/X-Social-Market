@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\Concerns\HasMediaUrls;
 use Eloquent;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -50,7 +52,7 @@ use Spatie\Permission\Traits\HasRoles;
  *
  * @mixin Eloquent
  */
-class Admin extends Authenticatable implements HasMedia
+class Admin extends Authenticatable implements HasMedia, FilamentUser
 {
     use HasApiTokens, HasFactory, HasRoles;
     use InteractsWithMedia;
@@ -110,5 +112,22 @@ class Admin extends Authenticatable implements HasMedia
     public function getImageUrlsAttribute(): ?array
     {
         return $this->firstMediaUrls('admin_images', ['large', 'medium', 'thumb'], null);
+    }
+
+    /**
+     * Determine if the admin can access the Filament panel.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Allow access to admins with super-admin or admin role
+        return $this->hasRole(['super-admin', 'admin']) && $this->is_active;
+    }
+
+    /**
+     * Get the admin's full name for Filament.
+     */
+    public function getFilamentName(): string
+    {
+        return $this->name . ' ' . $this->surname;
     }
 }

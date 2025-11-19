@@ -9,6 +9,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Throwable;
 
 class DailyLoginService
 {
@@ -20,12 +21,11 @@ class DailyLoginService
      *
      * @param User $user
      * @return array
-     * @throws Exception
+     * @throws Exception|Throwable
      */
     public function claimDailyReward(User $user): array
     {
         return DB::transaction(function () use ($user) {
-            // Get or create daily login reward record
             $dailyReward = DailyLoginReward::firstOrCreate(
                 ['user_id' => $user->id],
                 [
@@ -40,28 +40,21 @@ class DailyLoginService
             $today = Carbon::today();
             $lastLoginDate = $dailyReward->last_login_date;
 
-            // Check if already claimed today
             if ($lastLoginDate && $lastLoginDate->isSameDay($today)) {
                 throw new Exception('You have already claimed your daily reward today. Come back tomorrow!');
             }
 
-            // Calculate new streak
             $newStreak = $this->calculateStreak($lastLoginDate, $today, $dailyReward->current_streak);
 
-            // Get base reward from settings
             $baseReward = AppSetting::get('daily_login_base_reward', 2);
 
-            // Calculate actual reward amount
             $rewardAmount = $baseReward * $newStreak;
 
-            // Get user's current balance before update
             $balanceBefore = $user->balance_tnt;
 
-            // Update user balance
             $user->balance_tnt = $balanceBefore + $rewardAmount;
             $user->save();
 
-            // Update daily login reward record
             $dailyReward->current_streak = $newStreak;
             $dailyReward->highest_streak = max($dailyReward->highest_streak, $newStreak);
             $dailyReward->last_login_date = $today;
@@ -85,7 +78,6 @@ class DailyLoginService
                 ],
             ]);
 
-            // Calculate next reward preview
             $nextStreak = $newStreak >= self::MAX_STREAK_DAYS ? 1 : $newStreak + 1;
             $nextReward = $baseReward * $nextStreak;
 
@@ -128,7 +120,6 @@ class DailyLoginService
         $today = Carbon::today();
         $canClaimToday = !$dailyReward->last_login_date || !$dailyReward->last_login_date->isSameDay($today);
 
-        // Calculate what the next streak would be
         $nextStreak = $canClaimToday
             ? $this->calculateStreak($dailyReward->last_login_date, $today, $dailyReward->current_streak)
             : ($dailyReward->current_streak >= self::MAX_STREAK_DAYS ? 1 : $dailyReward->current_streak + 1);
@@ -157,27 +148,21 @@ class DailyLoginService
      */
     protected function calculateStreak(?Carbon $lastLoginDate, Carbon $today, int $currentStreak): int
     {
-        // First time login
         if (!$lastLoginDate) {
             return 1;
         }
 
-        // Calculate days difference
-        $daysDiff = $lastLoginDate->diffInDays($today);
+        $daysDiff = (int)$lastLoginDate->diffInDays($today);
 
-        // Same day (shouldn't happen due to earlier check, but safety)
         if ($daysDiff === 0) {
             return $currentStreak;
         }
 
-        // Yesterday - continue streak
         if ($daysDiff === 1) {
             $newStreak = $currentStreak + 1;
-            // Reset to 1 if reached max streak
             return $newStreak > self::MAX_STREAK_DAYS ? 1 : $newStreak;
         }
 
-        // Gap of more than 1 day - reset streak
         return 1;
     }
 
@@ -220,26 +205,20 @@ class DailyLoginService
     {
         $today = Carbon::today();
 
-        // Users who claimed today
         $dailyActiveUsers = DailyLoginReward::whereDate('last_login_date', $today)->count();
 
-        // Total TNT distributed via daily login
         $totalDistributed = Transaction::where('source', self::TRANSACTION_SOURCE)
             ->where('type', 'earn')
             ->sum('amount');
 
-        // Average streak
         $averageStreak = DailyLoginReward::where('current_streak', '>', 0)
             ->avg('current_streak');
 
-        // Highest streak record
         $highestStreak = DailyLoginReward::max('highest_streak');
 
-        // Weekly active users (claimed in last 7 days)
         $weeklyActiveUsers = DailyLoginReward::where('last_login_date', '>=', $today->copy()->subDays(7))
             ->count();
 
-        // Monthly distributed
         $monthlyDistributed = Transaction::where('source', self::TRANSACTION_SOURCE)
             ->where('type', 'earn')
             ->whereMonth('created_at', $today->month)

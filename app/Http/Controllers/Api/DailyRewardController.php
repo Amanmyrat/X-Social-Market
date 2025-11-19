@@ -7,6 +7,7 @@ use App\Services\DailyLoginService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Exception;
+use Throwable;
 
 class DailyRewardController extends Controller
 {
@@ -22,12 +23,13 @@ class DailyRewardController extends Controller
      *
      * @param Request $request
      * @return JsonResponse
+     * @throws Throwable
      */
     public function claimDailyReward(Request $request): JsonResponse
     {
         try {
             $user = $request->user();
-            
+
             $result = $this->dailyLoginService->claimDailyReward($user);
 
             return response()->json([
@@ -59,7 +61,7 @@ class DailyRewardController extends Controller
     {
         try {
             $user = $request->user();
-            
+
             $status = $this->dailyLoginService->getDailyLoginStatus($user);
 
             return response()->json([
@@ -85,10 +87,10 @@ class DailyRewardController extends Controller
     {
         try {
             $user = $request->user();
-            
+
             $perPage = $request->get('per_page', 20);
-            $type = $request->get('type'); // filter by type
-            $source = $request->get('source'); // filter by source
+            $type = $request->get('type');
+            $source = $request->get('source');
 
             $query = $user->transactions()->latest();
 

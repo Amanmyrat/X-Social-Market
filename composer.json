@@ -19,6 +19,7 @@
         "laravel/tinker": "^2.8",
         "league/flysystem-aws-s3-v3": "^3.25",
         "php-ffmpeg/php-ffmpeg": "^1.2",
+        "spatie/image": "^3.8",
         "spatie/laravel-fractal": "^6.0",
         "spatie/laravel-medialibrary": "*",
         "spatie/laravel-permission": "^6.4",

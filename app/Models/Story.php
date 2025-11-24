@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 use Spatie\Image\Exceptions\InvalidManipulation;
-use Spatie\Image\Manipulations;
+
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
@@ -119,14 +119,12 @@ class Story extends BaseModel implements HasMedia
         $this->addMediaCollection('story_images')->useDisk('stories')->singleFile();
     }
 
-    /**
-     * @throws InvalidManipulation
-     */
+
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('large')->format(Manipulations::FORMAT_WEBP)->width(1024)->optimize()->performOnCollections('story_images');
-        $this->addMediaConversion('medium')->format(Manipulations::FORMAT_WEBP)->width(768)->optimize()->performOnCollections('story_images');
-        $this->addMediaConversion('thumb')->format(Manipulations::FORMAT_WEBP)->width(100)->blur(1)->optimize()->performOnCollections('story_images');
+        $this->addMediaConversion('large')->format('webp')->width(1024)->optimize()->performOnCollections('story_images');
+        $this->addMediaConversion('medium')->format('webp')->width(768)->optimize()->performOnCollections('story_images');
+        $this->addMediaConversion('thumb')->format('webp')->width(100)->blur(1)->optimize()->performOnCollections('story_images');
     }
 
     public function getImageUrlsAttribute(): ?array

@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 use Spatie\Image\Exceptions\InvalidManipulation;
-use Spatie\Image\Manipulations;
+
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
@@ -434,15 +434,13 @@ class Post extends BaseModel implements HasMedia
         $this->addMediaCollection('post_medias')->useDisk('posts');
     }
 
-    /**
-     * @throws InvalidManipulation
-     */
+
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('large')->format(Manipulations::FORMAT_WEBP)->width(1024)->optimize()->performOnCollections('post_medias');
-        $this->addMediaConversion('medium')->format(Manipulations::FORMAT_WEBP)->width(768)->optimize()->performOnCollections('post_medias');
-        $this->addMediaConversion('thumb')->format(Manipulations::FORMAT_WEBP)->width(100)->blur(1)->optimize()->performOnCollections('post_medias');
-        $this->addMediaConversion('video_thumb')->format(Manipulations::FORMAT_WEBP)->width(368)->height(232)->extractVideoFrameAtSecond(3)->optimize()->performOnCollections('post_medias');
+        $this->addMediaConversion('large')->format('webp')->width(1024)->optimize()->performOnCollections('post_medias');
+        $this->addMediaConversion('medium')->format('webp')->width(768)->optimize()->performOnCollections('post_medias');
+        $this->addMediaConversion('thumb')->format('webp')->width(100)->blur(1)->optimize()->performOnCollections('post_medias');
+        $this->addMediaConversion('video_thumb')->format('webp')->width(368)->height(232)->extractVideoFrameAtSecond(3)->optimize()->performOnCollections('post_medias');
     }
     public function getFirstImageUrlsAttribute(): ?array
     {

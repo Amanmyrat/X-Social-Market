@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Spatie\Image\Exceptions\InvalidManipulation;
-use Spatie\Image\Manipulations;
+
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
@@ -109,14 +109,12 @@ class Message extends BaseModel implements HasMedia
         $this->addMediaCollection('message_medias')->useDisk('messages');
     }
 
-    /**
-     * @throws InvalidManipulation
-     */
+
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('large')->format(Manipulations::FORMAT_WEBP)->width(1024)->optimize()->performOnCollections('message_medias');
-        $this->addMediaConversion('medium')->format(Manipulations::FORMAT_WEBP)->width(768)->optimize()->performOnCollections('message_medias');
-        $this->addMediaConversion('thumb')->format(Manipulations::FORMAT_WEBP)->width(100)->blur(1)->optimize()->performOnCollections('message_medias');
+        $this->addMediaConversion('large')->format('webp')->width(1024)->optimize()->performOnCollections('message_medias');
+        $this->addMediaConversion('medium')->format('webp')->width(768)->optimize()->performOnCollections('message_medias');
+        $this->addMediaConversion('thumb')->format('webp')->width(100)->blur(1)->optimize()->performOnCollections('message_medias');
     }
 
     public function getImageUrlsAttribute(): ?array

@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserProfileController;
 use App\Http\Controllers\Api\UserReportController;
 use App\Http\Controllers\Api\UserStatisticsController;
+use App\Http\Controllers\Api\MarketController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -215,6 +216,13 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
     Route::prefix('referrals')->group(function () {
         Route::get('/info', [ReferralController::class, 'getReferralInfo']);
         Route::post('/validate', [ReferralController::class, 'validateReferralCode']);
+    });
+
+    // Market System
+    Route::prefix('market')->group(function () {
+        Route::get('/products', [MarketController::class, 'getProducts']);
+        Route::post('/purchase/{product}', [MarketController::class, 'purchaseProduct']);
+        Route::get('/purchases', [MarketController::class, 'getUserPurchases']);
     });
 
 });

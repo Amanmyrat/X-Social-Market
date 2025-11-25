@@ -305,6 +305,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get all purchases made by this user.
+     */
+    public function purchases(): HasMany
+    {
+        return $this->hasMany(Purchase::class);
+    }
+
+    /**
      * Generate unique referral code.
      */
     public static function generateReferralCode(): string

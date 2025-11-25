@@ -10,7 +10,7 @@ use Google\Client;
 
 class FirebaseNotificationService
 {
-    public function sendFirebaseNotification(int $notificationId, string $deviceToken)
+    public function sendFirebaseNotification(int $notificationId, string $deviceToken): void
     {
         $notification = Notification::find($notificationId);
         $serviceAccountPath = base_path('tanat-firebase-adminsdk.json');

@@ -10,4 +10,5 @@ enum NotificationType: string
     case POST_COMMENT_REJECTED = 'post_comment_rejected';
     case POST_FAVORITE = 'post_favorite';
     case POST_RATING = 'post_rating';
+    case MARKET_PURCHASE = 'market_purchase';
 }

@@ -10,8 +10,18 @@ fi
 
 chmod -R ugo+rw /.composer
 
-# Запуск npm run watch в фоновом режиме
-gosu $WWWUSER npm run watch &
+# Install Composer dependencies if vendor directory doesn't exist
+if [ ! -d /var/www/html/vendor ]; then
+    composer install --no-interaction --prefer-dist
+fi
+
+# Install Node dependencies if node_modules directory doesn't exist
+if [ ! -d /var/www/html/node_modules ]; then
+    npm ci
+fi
+
+# Run npm watch in background
+npm run watch &
 
 if [ $# -gt 0 ]; then
     exec gosu $WWWUSER "$@"

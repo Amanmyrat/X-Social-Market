@@ -10,18 +10,28 @@ fi
 
 chmod -R ugo+rw /.composer
 
-# Install Composer dependencies if vendor directory doesn't exist
-if [ ! -d /var/www/html/vendor ]; then
-    composer install --no-interaction --prefer-dist
+# Fix permissions on application directory
+chown -R $WWWUSER:$WWWUSER /var/www/html 2>/dev/null || true
+
+# Always run composer install to ensure dependencies are properly installed in the container
+echo "Installing Composer dependencies..."
+gosu $WWWUSER composer install --no-interaction --prefer-dist --working-dir=/var/www/html
+if [ $? -ne 0 ]; then
+    echo "ERROR: Composer install failed!"
+    exit 1
 fi
 
-# Install Node dependencies if node_modules directory doesn't exist
-if [ ! -d /var/www/html/node_modules ]; then
-    npm ci
+# Install Node dependencies
+echo "Installing Node dependencies..."
+gosu $WWWUSER npm ci --prefix=/var/www/html
+if [ $? -ne 0 ]; then
+    echo "ERROR: npm ci failed!"
+    exit 1
 fi
 
 # Run npm watch in background
-npm run watch &
+echo "Starting asset watcher..."
+gosu $WWWUSER npm run watch --prefix=/var/www/html &
 
 if [ $# -gt 0 ]; then
     exec gosu $WWWUSER "$@"

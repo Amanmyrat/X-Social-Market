@@ -17,7 +17,7 @@ class AuthController extends ApiBaseController
     }
 
     /**
-     * Create User
+     * Register user with OTP validation
      *
      * @unauthenticated
      *
@@ -25,18 +25,22 @@ class AuthController extends ApiBaseController
      */
     public function register(RegisterRequest $request): JsonResponse
     {
-        $user = $this->service->register($request->validated());
+        try {
+            $user = $this->service->register($request->validated());
 
-        $user = array_merge($user->toArray(), ['token' => $user->createToken('mobile', ['role:user'])->plainTextToken]);
+            $user = array_merge($user->toArray(), ['token' => $user->createToken('mobile', ['role:user'])->plainTextToken]);
 
-        return $this->respondWithItem(
-            $user,
-            new UserTransformer()
-        );
+            return $this->respondWithItem(
+                $user,
+                new UserTransformer()
+            );
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
     }
 
     /**
-     * Login user
+     * Login user with OTP validation
      *
      * @unauthenticated
      *
@@ -44,13 +48,17 @@ class AuthController extends ApiBaseController
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        $this->service->login($request);
+        try {
+            $user = $this->service->login($request->validated());
 
-        $user = array_merge($request->user()->toArray(), ['token' => $request->user()->createToken('mobile', ['role:user'])->plainTextToken]);
+            $user = array_merge($user->toArray(), ['token' => $user->createToken('mobile', ['role:user'])->plainTextToken]);
 
-        return $this->respondWithItem(
-            $user,
-            new UserTransformer()
-        );
+            return $this->respondWithItem(
+                $user,
+                new UserTransformer()
+            );
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
     }
 }

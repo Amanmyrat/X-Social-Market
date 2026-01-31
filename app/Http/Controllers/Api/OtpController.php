@@ -15,7 +15,7 @@ class OtpController
     }
 
     /**
-     * Send otp code
+     * Send OTP code to phone number
      *
      * @unauthenticated
      *
@@ -36,7 +36,7 @@ class OtpController
     }
 
     /**
-     * Confirm otp code
+     * Confirm OTP code for phone verification
      *
      * @unauthenticated
      */
@@ -45,10 +45,12 @@ class OtpController
         try {
             $this->service->confirmOtp($request->validated());
 
-            return response()->json(['success' => true]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Telefon belgisi üstünlikli tassyklady'
+            ]);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
-
     }
 }

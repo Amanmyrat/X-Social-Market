@@ -3,8 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
+use App\Rules\ValidOtpCode;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Password;
 
 class RegisterRequest extends FormRequest
 {
@@ -15,24 +15,32 @@ class RegisterRequest extends FormRequest
     {
         return [
             /**
-             * User login(phone or username).
+             * User phone number.
              *
              * @var string
              *
              * @example 65021734
              */
             'phone' => ['required', 'integer', 'unique:'.User::class],
-            'device_token' => ['required', 'string'],
 
             /**
-             * Admin password.
+             * OTP code sent via SMS.
+             *
+             * @var integer
+             *
+             * @example 1234
+             */
+            'code' => ['required', 'integer', 'between:1000,9999', new ValidOtpCode('phone')],
+
+            /**
+             * Device token for push notifications.
              *
              * @var string
              *
-             * @example 12345678
+             * @example firebase_token_xyz
              */
-            'password' => ['required', 'confirmed', Password::defaults()],
-            
+            'device_token' => ['required', 'string'],
+
             /**
              * Referral code (optional).
              *
@@ -50,16 +58,19 @@ class RegisterRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'phone.exists' => 'Bu telefon belgisi ulanylýar.',
             'phone.required' => 'Telefon belgi hökmanydyr.',
             'phone.integer' => 'Telefon belgi diňe sanlardan durmalydyr.',
             'phone.unique' => 'Bu telefon belgi eýýäm bar.',
+
+            'code.required' => 'OTP kod hökmanydyr.',
+            'code.integer' => 'OTP kod diňe sanlardan durmalydyr.',
+            'code.between' => 'OTP kod 1000 bilen 9999 arasynda bolmalydyr.',
+
             'device_token.required' => 'Enjam tokeni hökmanydyr.',
             'device_token.string' => 'Enjam tokeni dogry görnüşde giriziň.',
-            'password.required' => 'Parol hökmanydyr.',
-            'password.confirmed' => 'Parollar gabat gelmeli.',
+
             'referral_code.size' => 'Referral kody 8 simwol bolmaly.',
         ];
     }
-
 }
+

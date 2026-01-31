@@ -3,12 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
-use Illuminate\Auth\Events\Lockout;
+use App\Rules\ValidOtpCode;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
@@ -27,87 +23,50 @@ class LoginRequest extends FormRequest
     {
         return [
             /**
-             * User login(phone or username).
+             * User login (phone or username).
              *
              * @var string
              *
-             * @example 65021734
+             * @example 65021734 or ulanyjy_12345678
              */
-            'login' => 'required',
+            'login' => ['required', 'string'],
 
             /**
-             * Admin password.
+             * OTP code sent via SMS.
+             *
+             * @var integer
+             *
+             * @example 1234
+             */
+            'code' => ['required', 'integer', 'between:1000,9999', new ValidOtpCode('phone_from_login')],
+
+            /**
+             * Device token for push notifications.
              *
              * @var string
              *
-             * @example 12345678
+             * @example firebase_token_xyz
              */
-            'password' => 'required',
-            'device_token' => ['filled', 'string'],
+            'device_token' => ['nullable', 'string'],
         ];
     }
 
     /**
-     * Attempt to authenticate the request's credentials.
-     *
-     * @throws ValidationException
+     * Prepare the data for validation.
      */
-    public function authenticate(): void
+    protected function prepareForValidation(): void
     {
-        $this->ensureIsNotRateLimited();
+        // Get phone from login field (could be phone or username)
+        $login = $this->input('login');
+        $field = filter_var($login, FILTER_VALIDATE_INT) ? 'phone' : 'username';
 
-        $field = filter_var($this->input('login'), FILTER_VALIDATE_INT) ? 'phone' : 'username';
+        // Find user by phone or username
+        $user = User::where($field, $login)->first();
 
-        $this->merge([$field => $this->input('login')]);
-
-        $user = User::where($field, $this->input($field))->first();
-
-        if ($user && $user->blocked_at) {
-            throw ValidationException::withMessages([
-                'login' => 'Your account is blocked. Reason: '.$user->block_reason,
-            ]);
+        if ($user) {
+            // Store actual phone in a temp field for ValidOtpCode rule
+            $this->merge(['phone_from_login' => $user->phone]);
         }
-
-        if (! Auth::attempt($this->only($field, 'password'), $remember = true)) {
-            RateLimiter::hit($this->throttleKey());
-
-            throw ValidationException::withMessages([
-                'login' => trans('auth.failed'),
-            ]);
-        }
-
-        RateLimiter::clear($this->throttleKey());
-    }
-
-    /**
-     * Ensure the login request is not rate limited.
-     *
-     * @throws ValidationException
-     */
-    public function ensureIsNotRateLimited(): void
-    {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
-            return;
-        }
-
-        event(new Lockout($this));
-
-        $seconds = RateLimiter::availableIn($this->throttleKey());
-
-        throw ValidationException::withMessages([
-            'login' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
-        ]);
-    }
-
-    /**
-     * Get the rate limiting throttle key for the request.
-     */
-    public function throttleKey(): string
-    {
-        return Str::transliterate(Str::lower($this->input('login')).'|'.$this->ip());
     }
 
     /**
@@ -116,13 +75,14 @@ class LoginRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'login.required' => 'Giriş maglumatlary hökmanydyr.',
-            'password.required' => 'Parol hökmanydyr.',
-            'device_token.filled' => 'Enjam tokeni girizilen bolmalydyr.',
+            'login.required' => 'Telefon ýa-da ulanyjy ady hökmanydyr.',
+            'login.string' => 'Telefon ýa-da ulanyjy ady dogry görnüşde giriziň.',
+
+            'code.required' => 'OTP kod hökmanydyr.',
+            'code.integer' => 'OTP kod diňe sanlardan durmalydyr.',
+            'code.between' => 'OTP kod 1000 bilen 9999 arasynda bolmalydyr.',
+
             'device_token.string' => 'Enjam tokeni dogry görnüşde giriziň.',
-            'auth.failed' => 'Ulanyjy ady ýa-da açar sözi nädogry.',
-            'login.exists' => 'Bu telefon belgisi ulanylýar.',
         ];
     }
-
 }

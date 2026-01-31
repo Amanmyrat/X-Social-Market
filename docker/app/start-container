@@ -23,9 +23,15 @@ fi
 
 # Install Node dependencies
 echo "Installing Node dependencies..."
-gosu $WWWUSER npm ci --prefix=/var/www/html
+if [ -f /var/www/html/package-lock.json ]; then
+    echo "Using npm ci with package-lock.json..."
+    gosu $WWWUSER npm ci --prefix=/var/www/html
+else
+    echo "Using npm install (package-lock.json not found)..."
+    gosu $WWWUSER npm install --prefix=/var/www/html
+fi
 if [ $? -ne 0 ]; then
-    echo "ERROR: npm ci failed!"
+    echo "ERROR: npm install failed!"
     exit 1
 fi
 
